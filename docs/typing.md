@@ -15,11 +15,31 @@ After name instead of standard `=` keywords `giving` or `gives` and then value o
 ### Declaring variables:
 \>{variable type} {variable name} (assigning value)
 
+### examples
+```GTL
+(String mada = "elo")
+>hear mada giving "elo"
+(String madb = mada)
+>hear madb giving mada
+(double value)
+>taste value
+```
+
 ## collections
 - `single` (jeśli będzie potrzebne - jeśli nie zaimplementujemy bez niego)
 - `some` - keyword when declaring list
 - `about` - keyword when declaring array
 - `multiple` - keyword when declaring dictionary
+
+### array
+on declaration we specify array after datatype using `about` keyword followed by ammount of allocated memory.\
+For example: `>see about 500 pigeons` allocates array of 500 integers called "pigeons".
+
+#### Assigning values to the whole array
+We can assign values after `giving` keyword using `,` or `and` as separators between values.
+
+For example: `>pigeons giving 5, 3 and 7.`\
+or with declaration: `>see about 8 pigeons giving 5, 3, 7`. That will result with `[5, 3, 7, 0, 0, 0, 0, 0]`.
 
 
 ## defining data structures:

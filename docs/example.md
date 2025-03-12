@@ -1,9 +1,9 @@
 Example program in GTL:
 ```
 > be Ivona
-> like multiple baddies
+> love hearing multiple baddies
 > hear message
-> interpret as number #castowanie
+> God says message
 > multiply that message by first baddie
 > spit message
 > profit
@@ -37,3 +37,5 @@ int main(){
 }
 ```
 
+Another
+```
