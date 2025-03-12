@@ -23,3 +23,10 @@ my_label:
   return 0;
 }
 ```
+
+## while loop
+```
+>think {expression}
+{body}
+>reconsider
+```
