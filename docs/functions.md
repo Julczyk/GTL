@@ -20,6 +20,16 @@ equivalent to
 double foo(int chicks[5], double guy)
 ```
 
+## function calls
+```
+>call {function name} regarding {arg1}, {arg2} and {arg3}
+```
+
+examples:
+- `call friend regarding a and b`
+- `call bob regarding 2, "Ur mom" and :c`
+- `call her`
+
 
 ## return statements
 The return statement consists of 2 lines:
