@@ -24,9 +24,9 @@ my_label:
 }
 ```
 
-## while loop
+## think (while) loop
 ```
->think {expression}
+>think that {expression}
 {body}
 >reconsider
 ```
