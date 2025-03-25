@@ -2,6 +2,14 @@ lexer grammar GreenTextLangLexer;
 
 // Keywords
 
+ENTRY: ' > ' -> pushMode(CODE);
+COMMENT      :  ~[ \n] ~[\r\n]* NEWLINE
+             | ' ' ~[>\n] ~[\r\n]* NEWLINE
+             | ' ' NEWLINE
+             | NEWLINE
+             ;
+
+mode CODE;
 BE: 'be';
 SEE: 'see';
 TASTE: 'taste';
@@ -18,7 +26,6 @@ S: '\'s';
 SPIT: 'spit';
 SWALLOW: 'swallow';
 PROFIT: 'profit';
-ENTRY: ' > ';
 
 // Literals
 
@@ -51,12 +58,9 @@ NOT: 'not';
 JOINED_BY: 'joined by';
 
 // Whitespace and comments
-
-NEWLINE      : ('\r'? '\n' | '\r')+ ;
-SPACE        : ' ';
-//WS           : [ \t\r\n\u000C]+ ;
-//COMMENT      : ~[\r\n]*     ;
-LINE_COMMENT : '#' ~[\r\n]*    ;
+NEWLINE : '\r'? '\n' -> popMode;
+SPACE        : ' '+;
+LINE_COMMENT : '#' ~[\r\n]*;
 
 // Identifiers
 

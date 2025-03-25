@@ -5,18 +5,21 @@ options {
 }
 
 program
-    : (functionDecleration)* EOF
+    : (functionDecleration
+    | COMMENT
+    )* EOF
     ;
 
 functionDecleration
-    : ENTRY BE SPACE IDENTIFIER NEWLINE functionBody ENTRY PROFIT NEWLINE?
+    : ENTRY BE SPACE IDENTIFIER NEWLINE functionBody ENTRY PROFIT NEWLINE
     ;
 
 functionBody
     : (variableDeclaration
     //| structDeclaration
     | functionDecleration
-    | statement)*
+    | statement
+    | COMMENT)*
     ;
 
 statement
