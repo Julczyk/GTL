@@ -17,11 +17,7 @@ program
 
 code_blocks
     : code_block NEWLINE END_LIFE+ code_blocks
-    | final_code_block
-    ;
-
-final_code_block
-    : code_block NEWLINE? END_LIFE* EOF
+    | code_block NEWLINE? END_LIFE* EOF
     ;
 
 code_block
@@ -47,8 +43,7 @@ compound_statement
 // =================
 
 spit
-    : ENTRY SPIT WS literal NEWLINE
-    | ENTRY SPIT WS IDENTIFIER NEWLINE
+    : ENTRY SPIT WS expression NEWLINE
     ;
 
 swallow
@@ -93,4 +88,11 @@ primitiveType
     | TASTE
     | HEAR
     | SMELL
+    ;
+
+//expressions
+
+expression
+    : literal
+    | IDENTIFIER
     ;
