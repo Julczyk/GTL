@@ -71,6 +71,13 @@ variable_declaration
 variable_assignment
     : NAME WS IS WS expressions
     | NAME WS IS WS SOMEONE_ELSES NAME
+    | NAME WS IS WS JOINED_BY WS expression
+    | NAME WS EVOLVES
+    | NAME WS DEVOLVES
+    | NAME WS IS WS BREEDING_LIKE WS expression WS TIMES
+    | NAME WS IS WS FLIPPED WS expression
+    | NAME WS IS WS THE_LITERAL_OPPOSITE_OF WS expression
+    | NAME WS IS WS WHATEVER_LEFT_FROM WS expression
     ;
 
 function_call
@@ -228,18 +235,35 @@ expressions
     ;
 
 expression
-    : literal
+    : expression WS VIBE_WITH WS expression
+    | expression WS DOESNT_VIBE_WITH WS expression
+    | expression WS BEATEN_BY WS expression
+    | expression WS DOESNT_BEAT WS expression
+    | expression WS BEATS WS expression
+    | expression WS UNBEATEN_BY WS expression
+    | expression WS ALSO WS expression
+    | expression WS ALTERNATIVELY WS expression
+    | NOT WS expression
+    | expression WS JOINED_BY WS expression
+    | expression WS EVOLVES
+    | expression WS DEVOLVES
+    | expression WS BREEDING_LIKE WS expression WS TIMES
+    | FLIPPED WS expression
+    | THE_LITERAL_OPPOSITE_OF WS expression
+    | expression WS WHATEVER_LEFT_FROM WS expression
+    | literal
     | function_call
     | NAME
     ;
 
 separator
-    : WS? ',' WS?
+    : WS? (',' | AND) WS?
     | NEWLINE (COMMENT_NEWLINE)* ENTRY AND WS
     ;
 
 //TODO 'th - for table access
 //TODO 's - for struct access
-//TODO bool expressions
-//TODO math expressions
+//TODO expression order
+//TODO fix bugs with end life and comments
 //TODO update docs to match new grammar
+//TODO add import method

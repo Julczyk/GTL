@@ -85,6 +85,13 @@ ALTERNATIVELY: 'alternatively';
 NOT: 'not';
 
 JOINED_BY: 'joined by';
+EVOLVES: 'evolves';
+DEVOLVES: 'devolves';
+BREEDING_LIKE: 'breeding like';
+TIMES: 'times';
+THE_LITERAL_OPPOSITE_OF: 'the literal opposite of';
+FLIPPED: 'flipped';
+WHATEVER_LEFT_FROM: 'whatever left from';
 
 // Whitespace and comments
 
@@ -98,15 +105,7 @@ NAME: Letter LetterOrDigit*;
 
 // Fragment rules
 
-fragment EscapeSequence:
-    '\\' 'u005c'? [btnfr"'\\]
-    | '\\' 'u005c'? ([0-3]? [0-7])? [0-7]
-    | '\\' 'u'+ HexDigit HexDigit HexDigit HexDigit
-;
-
-fragment HexDigits: HexDigit ((HexDigit | '_')* HexDigit)?;
-
-fragment HexDigit: [0-9a-fA-F];
+fragment EscapeSequence: '\\' [btnfr"'\\];
 
 fragment Digits: [0-9] ([0-9_]* [0-9])?;
 
