@@ -16,7 +16,7 @@ program
 // ==================
 
 code_blocks
-    : code_block NEWLINE END_LIFE+ code_blocks
+    : (code_block NEWLINE | COMMENT_NEWLINE) END_LIFE+ code_blocks
     | code_block WS? NEWLINE? END_LIFE* EOF
     ;
 
@@ -264,6 +264,5 @@ separator
 //TODO 'th - for table access
 //TODO 's - for struct access
 //TODO expression order
-//TODO fix bugs with end life and comments
 //TODO update docs to match new grammar
 //TODO add import method

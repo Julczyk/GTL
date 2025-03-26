@@ -16,7 +16,7 @@ COMMENT_NEWLINE
       | ' ' NEWLINE
       ;
 
-END_LIFE     : NEWLINE;
+END_LIFE     : '\r'? '\n';
 
 // code words
 
