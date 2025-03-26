@@ -2,17 +2,19 @@ lexer grammar GreenTextLangLexer;
 
 // default words
 
-ENTRY        : ' >' WS -> pushMode(CODE);
+ENTRY        : ' >' WS? -> pushMode(CODE);
 
-COMMENT_NO_NEWLINE:  ~[ \n] ~[\r\n]*
-                   | ' ' ~[>\n] ~[\r\n]*
-                   | ' '
-                   ;
+COMMENT
+    :  ~[ \n] ~[\r\n]*
+    | ' ' ~[>\n] ~[\r\n]*
+    | ' '
+    ;
 
-COMMENT      :  ~[ \n] ~[\r\n]* NEWLINE
-             | ' ' ~[>\n] ~[\r\n]* NEWLINE
-             | ' ' NEWLINE
-             ;
+COMMENT_NEWLINE
+      :  ~[ \n] ~[\r\n]* NEWLINE
+      | ' ' ~[>\n] ~[\r\n]* NEWLINE
+      | ' ' NEWLINE
+      ;
 
 END_LIFE     : NEWLINE;
 
@@ -24,10 +26,15 @@ mode CODE;
 
 BE: 'be';
 SEE: 'see';
+SEEING: 'seeing';
 TASTE: 'taste';
+TASTING: 'tasting';
 HEAR: 'hear';
+HEARING: 'hearing';
 SMELL: 'smell';
+SMELLING: 'smelling';
 SPOT: 'spot';
+SPOTTING: 'spotting';
 SOMEONE_ELSES: 'someone elses';
 ABOUT: 'about';
 MULTIPLE: 'multiple';
@@ -38,6 +45,16 @@ S: '\'s';
 SPIT: 'spit';
 SWALLOW: 'swallow';
 PROFIT: 'profit';
+CALL: 'call';
+REGARDING: 'regarding';
+ING: 'ing';
+LIKES: 'likes';
+THINK_THAT: 'think that';
+RECONSIDER: 'reconsider';
+IMPLYING: 'implying';
+OR_STH: 'or sth';
+OR: 'or';
+OR_NOT: 'or not';
 
 // Literals
 
@@ -71,13 +88,13 @@ JOINED_BY: 'joined by';
 
 // Whitespace and comments
 
-NEWLINE : '\r'? '\n' -> popMode;
+NEWLINE : WS? LINE_COMMENT? '\r'? '\n' -> popMode;
 WS        : [ \t\f]+;
 LINE_COMMENT : '#' ~[\r\n]*;
 
 // Identifiers
 
-IDENTIFIER: Letter LetterOrDigit*;
+NAME: Letter LetterOrDigit*;
 
 // Fragment rules
 
