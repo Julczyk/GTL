@@ -4,41 +4,71 @@ options {
     tokenVocab = GreenTextLangLexer;
 }
 
+// STARTING RULES
+// ==============
+
 program
-    : (functionDecleration
-    | COMMENT
-    )* EOF
+    : END_LIFE* code_blocks
+    | EOF
     ;
 
-functionDecleration
-    : ENTRY BE SPACE IDENTIFIER NEWLINE functionBody ENTRY PROFIT NEWLINE
+// GENERAL STATEMENTS
+// ==================
+
+code_blocks
+    : code_block NEWLINE END_LIFE+ code_blocks
+    | final_code_block
     ;
 
-functionBody
-    : (variableDeclaration
-    //| structDeclaration
-    | functionDecleration
-    | statement
-    | COMMENT)*
+final_code_block
+    : code_block NEWLINE? END_LIFE* EOF
+    ;
+
+code_block
+    : (statement NEWLINE | COMMENT)* (statement | COMMENT_NO_NEWLINE)
     ;
 
 statement
-    : spit
-    | swallow
+    : compound_statement
+    | simple_statement
     ;
 
+simple_statement
+    : spit
+    | swallow
+    | variableDeclaration
+    ;
+
+compound_statement
+    : functionDecleration
+    ;
+
+// SIMPLE STATEMENTS
+// =================
+
 spit
-    : ENTRY SPIT SPACE literal NEWLINE
-    | ENTRY SPIT SPACE IDENTIFIER NEWLINE
+    : ENTRY SPIT WS literal NEWLINE
+    | ENTRY SPIT WS IDENTIFIER NEWLINE
     ;
 
 swallow
-    : ENTRY SWALLOW SPACE IDENTIFIER NEWLINE
+    : ENTRY SWALLOW WS IDENTIFIER NEWLINE
     ;
 
 variableDeclaration
     : ENTRY type IDENTIFIER NEWLINE
     | ENTRY type IDENTIFIER IS literal NEWLINE
+    ;
+
+// COMPOUND STATEMENTS
+// ===================
+
+functionDecleration
+    : ENTRY BE WS IDENTIFIER NEWLINE functionBody ENTRY PROFIT
+    ;
+
+functionBody
+    : (statement | COMMENT)*
     ;
 
 literal

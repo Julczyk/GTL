@@ -1,15 +1,27 @@
 lexer grammar GreenTextLangLexer;
 
-// Keywords
+// default words
 
-ENTRY: ' > ' -> pushMode(CODE);
+ENTRY        : ' >' WS -> pushMode(CODE);
+
+COMMENT_NO_NEWLINE:  ~[ \n] ~[\r\n]*
+                   | ' ' ~[>\n] ~[\r\n]*
+                   | ' '
+                   ;
+
 COMMENT      :  ~[ \n] ~[\r\n]* NEWLINE
              | ' ' ~[>\n] ~[\r\n]* NEWLINE
              | ' ' NEWLINE
-             | NEWLINE
              ;
 
+END_LIFE     : NEWLINE;
+
+// code words
+
 mode CODE;
+
+// Keywords
+
 BE: 'be';
 SEE: 'see';
 TASTE: 'taste';
@@ -58,8 +70,9 @@ NOT: 'not';
 JOINED_BY: 'joined by';
 
 // Whitespace and comments
+
 NEWLINE : '\r'? '\n' -> popMode;
-SPACE        : ' '+;
+WS        : [ \t\f]+;
 LINE_COMMENT : '#' ~[\r\n]*;
 
 // Identifiers
