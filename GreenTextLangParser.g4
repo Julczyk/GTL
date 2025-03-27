@@ -73,18 +73,18 @@ variable_assignment
     : variable IS expressions
     | variable IS variable
     | variable IS SOMEONE_ELSES variable
-    | variable IS JOINED_BY math_expression
+    | variable IS JOINED_BY expression
     | variable EVOLVES
     | variable DEVOLVES
-    | variable IS BREEDING_LIKE math_expression TIMES
-    | variable IS FLIPPED math_expression
-    | variable IS THE_LITERAL_OPPOSITE_OF math_expression
-    | variable IS WHATEVER_LEFT_FROM math_expression
+    | variable IS BREEDING_LIKE (NEWLINE ENTRY)? expression (NEWLINE ENTRY)? TIMES
+    | variable IS FLIPPED expression
+    | variable IS THE_LITERAL_OPPOSITE_OF expression
+    | variable IS WHATEVER_LEFT_FROM expression
     ;
 // what is a variable
 variable
     : NAME S variable
-    | math_expression TH variable
+    | (NAME | DECIMAL_LITERAL) TH variable // access to an array can only be a name or a int literal
     | NAME
     ;
 
@@ -98,7 +98,11 @@ function
     ;
 
 invite
-    : INVITE NAME
+    : INVITE module
+    ;
+// what is a module
+module
+    : NAME (S module)? (separator NAME)*
     ;
 
 // COMPOUND STATEMENTS
@@ -141,7 +145,7 @@ type_ing
 
 complex_type_ing
     : primitive_type_ing MULTIPLE
-    | primitive_type_ing ABOUT math_expression
+    | primitive_type_ing ABOUT expression
     ;
 
 primitive_type_ing
@@ -171,7 +175,7 @@ struct_name
 // loops declaration
 
 loop_declaration
-    : ENTRY THINK_THAT bool_expression NEWLINE
+    : ENTRY THINK_THAT expression NEWLINE
     statement_newline*
     ENTRY RECONSIDER
     ;
@@ -179,7 +183,7 @@ loop_declaration
 // if declaration
 
 if_declaration
-    : ENTRY IMPLYING bool_expression NEWLINE
+    : ENTRY IMPLYING expression NEWLINE
    statement_newline*
     or_statement?
     or_not_statement?
@@ -187,7 +191,7 @@ if_declaration
     ;
 
 or_statement
-    : ENTRY OR bool_expression NEWLINE
+    : ENTRY OR expression NEWLINE
     statement_newline*
     or_statement?
     or_not_statement?
@@ -209,7 +213,7 @@ type
 
 complex_type
     : primitive_type MULTIPLE
-    | primitive_type ABOUT math_expression
+    | primitive_type ABOUT expression
     ;
 
 primitive_type
@@ -231,46 +235,58 @@ expressions
     ;
 
 expression
-    : math_expression
-    | bool_expression
+    : also (ALTERNATIVELY also)*
     ;
 
-bool_expression
-    : NAME S variable
-    | math_expression TH variable
-    | math_expression VIBE_WITH math_expression
-    | math_expression DOESNT_VIBE_WITH math_expression
-    | math_expression BEATEN_BY math_expression
-    | math_expression DOESNT_BEAT math_expression
-    | math_expression BEATS math_expression
-    | math_expression UNBEATEN_BY math_expression
-    | bool_expression ALSO bool_expression
-    | bool_expression ALTERNATIVELY bool_expression
-    | bool_expression (VIBE_WITH | DOESNT_VIBE_WITH) bool_expression
-    | NOT bool_expression
-    | BOOL_LITERAL
-    | function_call
-    | NAME
+also
+    : inversion (ALSO inversion)*
     ;
 
-math_expression
-    : NAME S variable
-    | math_expression TH variable
-    | FLIPPED math_expression
-    | THE_LITERAL_OPPOSITE_OF math_expression
-    | math_expression (EVOLVES | DEVOLVES)
-    | math_expression BREEDING_LIKE (NEWLINE ENTRY)? math_expression (NEWLINE ENTRY)? TIMES
-    | math_expression JOINED_BY math_expression
-    | math_expression WHATEVER_LEFT_FROM math_expression
-    | math_literal
-    | function_call
-    | NAME
+inversion
+    : NOT inversion
+    | comparison
     ;
 
-math_literal
+comparison
+    : sum compare_sum?
+    ;
+
+compare_sum
+    : VIBE_WITH sum
+    | DOESNT_VIBE_WITH sum
+    | BEATEN_BY sum
+    | DOESNT_BEAT sum
+    | BEATS sum
+    | UNBEATEN_BY sum
+    ;
+
+sum
+    : sum JOINED_BY term
+    | term
+    ;
+
+term
+    : term BREEDING_LIKE (NEWLINE ENTRY)? sum (NEWLINE ENTRY)? TIMES
+    | term WHATEVER_LEFT_FROM factor
+    | factor
+    ;
+
+factor
+    : THE_LITERAL_OPPOSITE_OF factor
+    | FLIPPED factor
+    | atom
+    ;
+
+atom
+    : variable
+    | literal
+    ;
+
+literal
     : DECIMAL_LITERAL
     | FLOAT_LITERAL
     | STRING_LITERAL
+    | BOOL_LITERAL
     ;
 
 // UNCATEGORIZED
@@ -283,4 +299,3 @@ separator
     ;
 
 //TODO update docs to match new grammar
-//TODO move around the expression statements to be more intutive
