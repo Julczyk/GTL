@@ -39,8 +39,8 @@ simple_statement
     | swallow
     | variable_declaration
     | variable_assignment
-    | expression
     | function_call
+    | invite
     ;
 
 compound_statement
@@ -58,30 +58,46 @@ spit
     ;
 
 swallow
-    : SWALLOW WS NAME
+    : SWALLOW WS variable
     ;
 
 variable_declaration
     : type WS NAME
     | type WS NAME WS IS WS expressions
-    | type WS NAME WS IS WS SOMEONE_ELSES NAME
+    | type WS NAME WS IS WS SOMEONE_ELSES variable
     ;
 
 variable_assignment
-    : NAME WS IS WS expressions
-    | NAME WS IS WS SOMEONE_ELSES NAME
-    | NAME WS IS WS JOINED_BY WS expression
-    | NAME WS EVOLVES
-    | NAME WS DEVOLVES
-    | NAME WS IS WS BREEDING_LIKE WS expression WS TIMES
-    | NAME WS IS WS FLIPPED WS expression
-    | NAME WS IS WS THE_LITERAL_OPPOSITE_OF WS expression
-    | NAME WS IS WS WHATEVER_LEFT_FROM WS expression
+    : variable WS IS WS SOMEONE_ELSES variable
+    | variable WS IS WS expressions
+    | variable WS IS WS JOINED_BY WS math_expression
+    | variable WS EVOLVES
+    | variable WS DEVOLVES
+    | variable WS IS WS BREEDING_LIKE WS math_expression WS TIMES
+    | variable WS IS WS FLIPPED WS math_expression
+    | variable WS IS WS THE_LITERAL_OPPOSITE_OF WS math_expression
+    | variable WS IS WS WHATEVER_LEFT_FROM WS math_expression
+    ;
+
+variable
+    : NAME
+    | NAME S WS variable
+    | math_expression TH WS variable
     ;
 
 function_call
-    : CALL WS NAME (WS REGARDING WS expressions)?
+    : CALL WS function (WS REGARDING WS expressions)?
     ;
+
+function
+    : NAME
+    | variable S WS function
+    ;
+
+invite
+    : INVITE WS NAME
+    ;
+
 
 // COMPOUND STATEMENTS
 // ===================
@@ -155,13 +171,14 @@ struct_name
     ;
 
 struct_body
-    : (ENTRY variable_declaration NEWLINE | COMMENT_NEWLINE)*
+    : (statement_newline | COMMENT_NEWLINE)*
+    //: (ENTRY variable_declaration NEWLINE | COMMENT_NEWLINE)*
     ;
 
 // loops
 
 loop_declaration
-    : ENTRY THINK_THAT WS expression NEWLINE
+    : ENTRY THINK_THAT WS bool_expression NEWLINE
     loop_body
     ENTRY RECONSIDER
     ;
@@ -173,7 +190,7 @@ loop_body
 // if
 
 if_declaration
-    : ENTRY IMPLYING WS expression NEWLINE
+    : ENTRY IMPLYING WS bool_expression NEWLINE
     if_body
     or_statement?
     or_not_statement?
@@ -181,7 +198,7 @@ if_declaration
     ;
 
 or_statement
-    : ENTRY OR WS expression NEWLINE
+    : ENTRY OR WS bool_expression NEWLINE
     if_body
     or_statement?
     or_not_statement?
@@ -205,8 +222,8 @@ type
     ;
 
 complex_type
-    : primitive_type MULTIPLE
-    | primitive_type ABOUT DECIMAL_LITERAL
+    : primitive_type WS MULTIPLE
+    | primitive_type WS ABOUT WS math_expression
     ;
 
 primitive_type
@@ -222,10 +239,9 @@ struct_type
 
 // expressions
 
-literal
+math_literal
     : DECIMAL_LITERAL
     | FLOAT_LITERAL
-    | BOOL_LITERAL
     | STRING_LITERAL
     ;
 
@@ -234,25 +250,40 @@ expressions
     ;
 
 expression
-    : expression WS VIBE_WITH WS expression
-    | expression WS DOESNT_VIBE_WITH WS expression
-    | expression WS BEATEN_BY WS expression
-    | expression WS DOESNT_BEAT WS expression
-    | expression WS BEATS WS expression
-    | expression WS UNBEATEN_BY WS expression
-    | expression WS ALSO WS expression
-    | expression WS ALTERNATIVELY WS expression
-    | NOT WS expression
-    | expression WS JOINED_BY WS expression
-    | expression WS EVOLVES
-    | expression WS DEVOLVES
-    | expression WS BREEDING_LIKE WS expression WS TIMES
-    | FLIPPED WS expression
-    | THE_LITERAL_OPPOSITE_OF WS expression
-    | expression WS WHATEVER_LEFT_FROM WS expression
-    | literal
+    : bool_expression
+    | math_expression
+    ;
+
+bool_expression
+    : math_expression WS VIBE_WITH WS math_expression
+    | math_expression WS DOESNT_VIBE_WITH WS math_expression
+    | math_expression WS BEATEN_BY WS math_expression
+    | math_expression WS DOESNT_BEAT WS math_expression
+    | math_expression WS BEATS WS math_expression
+    | math_expression WS UNBEATEN_BY WS math_expression
+    | bool_expression WS ALSO WS bool_expression
+    | bool_expression WS ALTERNATIVELY WS bool_expression
+    | bool_expression WS (VIBE_WITH | DOESNT_VIBE_WITH) WS bool_expression
+    | NOT WS bool_expression
+    | BOOL_LITERAL
     | function_call
     | NAME
+    | NAME S WS variable
+    | math_expression TH WS variable
+    ;
+
+math_expression
+    : FLIPPED WS math_expression
+    | THE_LITERAL_OPPOSITE_OF WS math_expression
+    | math_expression WS (EVOLVES | DEVOLVES)
+    | math_expression WS BREEDING_LIKE (WS | NEWLINE (COMMENT_NEWLINE)* ENTRY) math_expression (WS | NEWLINE (COMMENT_NEWLINE)* ENTRY) TIMES
+    | math_expression WS JOINED_BY WS math_expression
+    | math_expression WS WHATEVER_LEFT_FROM WS math_expression
+    | math_literal
+    | function_call
+    | NAME
+    | NAME S WS variable
+    | math_expression TH WS variable
     ;
 
 separator
@@ -260,8 +291,4 @@ separator
     | NEWLINE (COMMENT_NEWLINE)* ENTRY AND WS
     ;
 
-//TODO 'th - for table access
-//TODO 's - for struct access
-//TODO expression order
 //TODO update docs to match new grammar
-//TODO add import method

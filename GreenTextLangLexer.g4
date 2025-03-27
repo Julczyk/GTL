@@ -24,6 +24,7 @@ mode CODE;
 
 // Keywords
 
+INVITE: 'invite';
 BE: 'be';
 SEE: 'see';
 SEEING: 'seeing';
