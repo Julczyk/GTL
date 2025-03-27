@@ -16,16 +16,17 @@ program
 // ==================
 
 code_blocks
-    : ((code_block NEWLINE | COMMENT_NEWLINE) END_LIFE+)* code_block WS? NEWLINE? END_LIFE* EOF
+    : (code_block NEWLINE END_LIFE+)* code_block NEWLINE? END_LIFE* EOF
     ;
 
 code_block
-    : (statement_newline | COMMENT_NEWLINE)* (statement | COMMENT)
+    : statement_newline* statement
     ;
 
 statement
     : compound_statement
     | ENTRY simple_statement
+    | ENTRY
     ;
 
 statement_newline
@@ -54,52 +55,51 @@ compound_statement
 // =================
 
 spit
-    : SPIT WS expressions
+    : SPIT expressions
     ;
 
 swallow
-    : SWALLOW WS variable
+    : SWALLOW variable
     ;
 
 variable_declaration
-    : type WS NAME WS IS WS SOMEONE_ELSES WS variable
-    | type WS NAME WS IS WS expressions
-    | type WS NAME WS IS WS variable
-    | type WS NAME
+    : type NAME IS SOMEONE_ELSES variable
+    | type NAME IS expressions
+    | type NAME IS variable
+    | type NAME
     ;
 
 variable_assignment
-    : variable WS IS WS variable
-    | variable WS IS WS SOMEONE_ELSES WS variable
-    | variable WS IS WS expressions
-    | variable WS IS WS JOINED_BY WS math_expression
-    | variable WS EVOLVES
-    | variable WS DEVOLVES
-    | variable WS IS WS BREEDING_LIKE WS math_expression WS TIMES
-    | variable WS IS WS FLIPPED WS math_expression
-    | variable WS IS WS THE_LITERAL_OPPOSITE_OF WS math_expression
-    | variable WS IS WS WHATEVER_LEFT_FROM WS math_expression
+    : variable IS variable
+    | variable IS SOMEONE_ELSES variable
+    | variable IS expressions
+    | variable IS JOINED_BY math_expression
+    | variable EVOLVES
+    | variable DEVOLVES
+    | variable IS BREEDING_LIKE math_expression TIMES
+    | variable IS FLIPPED math_expression
+    | variable IS THE_LITERAL_OPPOSITE_OF math_expression
+    | variable IS WHATEVER_LEFT_FROM math_expression
     ;
-
+// what is a variable
 variable
-    : math_expression TH WS variable
-    | NAME S WS variable
+    : math_expression TH variable
+    | NAME S variable
     | NAME
     ;
 
 function_call
-    : CALL WS function (WS REGARDING WS expressions)?
+    : CALL function (REGARDING expressions)?
     ;
-
+// what is a function
 function
     : NAME
-    | variable S WS function
+    | variable S function
     ;
 
 invite
-    : INVITE WS NAME
+    : INVITE NAME
     ;
-
 
 // COMPOUND STATEMENTS
 // ===================
@@ -110,12 +110,12 @@ function_declaration
     : function_name
     function_return?
     function_arguments?
-    function_body
+    statement_newline*
     ENTRY PROFIT
     ;
 
 function_name
-    : ENTRY BE WS NAME NEWLINE
+    : ENTRY BE NAME NEWLINE
     ;
 
 function_return
@@ -123,18 +123,14 @@ function_return
     ;
 
 function_arguments
-    : ENTRY LIKES WS variable_declaration_ing (separator variable_declaration_ing)* NEWLINE
+    : ENTRY LIKES variable_declaration_ing (separator variable_declaration_ing)* NEWLINE
     ;
 
-function_body
-    : (statement_newline | COMMENT_NEWLINE)*
-    ;
-
-// function helpers
+// function strict type-ing
 
 variable_declaration_ing
     : type_ing NAME
-    | type_ing NAME WS IS WS expression
+    | type_ing NAME IS expression
     ;
 
 type_ing
@@ -144,26 +140,26 @@ type_ing
     ;
 
 complex_type_ing
-    : primitive_type_ing MULTIPLE WS
-    | primitive_type_ing ABOUT WS DECIMAL_LITERAL WS
+    : primitive_type_ing MULTIPLE
+    | primitive_type_ing ABOUT math_expression
     ;
 
 primitive_type_ing
-    : SEEING WS
-    | TASTING WS
-    | HEARING WS
-    | SMELLING WS
+    : SEEING
+    | TASTING
+    | HEARING
+    | SMELLING
     ;
 
 struct_type_ing
-    : SPOTTING WS NAME WS
+    : SPOTTING NAME
     ;
 
 // struct declaration
 
 struct_declaration
     : struct_name
-    struct_body
+    statement_newline*
     ENTRY LOSE_INTEREST
     ;
 
@@ -172,50 +168,38 @@ struct_name
     ENTRY NAME NEWLINE
     ;
 
-struct_body
-    : (statement_newline | COMMENT_NEWLINE)*
-    //: (ENTRY variable_declaration NEWLINE | COMMENT_NEWLINE)*
-    ;
-
-// loops
+// loops declaration
 
 loop_declaration
-    : ENTRY THINK_THAT WS bool_expression NEWLINE
-    loop_body
+    : ENTRY THINK_THAT bool_expression NEWLINE
+    statement_newline*
     ENTRY RECONSIDER
     ;
 
-loop_body
-    : (statement_newline | COMMENT_NEWLINE)*
-    ;
-
-// if
+// if declaration
 
 if_declaration
-    : ENTRY IMPLYING WS bool_expression NEWLINE
-    if_body
+    : ENTRY IMPLYING bool_expression NEWLINE
+   statement_newline*
     or_statement?
     or_not_statement?
     ENTRY OR_STH
     ;
 
 or_statement
-    : ENTRY OR WS bool_expression NEWLINE
-    if_body
+    : ENTRY OR bool_expression NEWLINE
+    statement_newline*
     or_statement?
     or_not_statement?
     ;
 
 or_not_statement
     : ENTRY OR_NOT NEWLINE
-    if_body
+    statement_newline*
     ;
 
-if_body
-    : (statement_newline | COMMENT_NEWLINE)*
-    ;
-
-// types
+// TYPES
+// =====
 
 type
     : complex_type
@@ -224,8 +208,8 @@ type
     ;
 
 complex_type
-    : primitive_type WS MULTIPLE
-    | primitive_type WS ABOUT WS math_expression
+    : primitive_type MULTIPLE
+    | primitive_type ABOUT math_expression
     ;
 
 primitive_type
@@ -236,16 +220,11 @@ primitive_type
     ;
 
 struct_type
-    : SPOT WS NAME
+    : SPOT NAME
     ;
 
-// expressions
-
-math_literal
-    : DECIMAL_LITERAL
-    | FLOAT_LITERAL
-    | STRING_LITERAL
-    ;
+// EXPRESSIONS
+// ===========
 
 expressions
     : expression (separator expressions)?
@@ -257,40 +236,50 @@ expression
     ;
 
 bool_expression
-    : math_expression WS VIBE_WITH WS math_expression
-    | math_expression WS DOESNT_VIBE_WITH WS math_expression
-    | math_expression WS BEATEN_BY WS math_expression
-    | math_expression WS DOESNT_BEAT WS math_expression
-    | math_expression WS BEATS WS math_expression
-    | math_expression WS UNBEATEN_BY WS math_expression
-    | bool_expression WS ALSO WS bool_expression
-    | bool_expression WS ALTERNATIVELY WS bool_expression
-    | bool_expression WS (VIBE_WITH | DOESNT_VIBE_WITH) WS bool_expression
-    | NOT WS bool_expression
+    : NAME S variable
+    | math_expression TH variable
+    | math_expression VIBE_WITH math_expression
+    | math_expression DOESNT_VIBE_WITH math_expression
+    | math_expression BEATEN_BY math_expression
+    | math_expression DOESNT_BEAT math_expression
+    | math_expression BEATS math_expression
+    | math_expression UNBEATEN_BY math_expression
+    | bool_expression ALSO bool_expression
+    | bool_expression ALTERNATIVELY bool_expression
+    | bool_expression (VIBE_WITH | DOESNT_VIBE_WITH) bool_expression
+    | NOT bool_expression
     | BOOL_LITERAL
     | function_call
     | NAME
-    | NAME S WS variable
-    | math_expression TH WS variable
     ;
 
 math_expression
-    : FLIPPED WS math_expression
-    | THE_LITERAL_OPPOSITE_OF WS math_expression
-    | math_expression WS (EVOLVES | DEVOLVES)
-    | math_expression WS BREEDING_LIKE (WS | NEWLINE (COMMENT_NEWLINE)* ENTRY) math_expression (WS | NEWLINE (COMMENT_NEWLINE)* ENTRY) TIMES
-    | math_expression WS JOINED_BY WS math_expression
-    | math_expression WS WHATEVER_LEFT_FROM WS math_expression
+    : NAME S variable
+    | math_expression TH variable
+    | FLIPPED math_expression
+    | THE_LITERAL_OPPOSITE_OF math_expression
+    | math_expression (EVOLVES | DEVOLVES)
+    | math_expression BREEDING_LIKE (NEWLINE ENTRY)? math_expression (NEWLINE ENTRY)? TIMES
+    | math_expression JOINED_BY math_expression
+    | math_expression WHATEVER_LEFT_FROM math_expression
     | math_literal
     | function_call
     | NAME
-    | NAME S WS variable
-    | math_expression TH WS variable
     ;
 
+math_literal
+    : DECIMAL_LITERAL
+    | FLOAT_LITERAL
+    | STRING_LITERAL
+    ;
+
+// UNCATEGORIZED
+// =============
+
 separator
-    : WS? (',' | AND) WS?
-    | NEWLINE (COMMENT_NEWLINE)* ENTRY AND WS
+    : COMMA
+    | AND
+    | NEWLINE ENTRY AND
     ;
 
 //TODO update docs to match new grammar
