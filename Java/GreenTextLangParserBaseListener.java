@@ -196,6 +196,18 @@ public class GreenTextLangParserBaseListener implements GreenTextLangParserListe
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterModule(GreenTextLangParser.ModuleContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitModule(GreenTextLangParser.ModuleContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFunction_declaration(GreenTextLangParser.Function_declarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -448,37 +460,109 @@ public class GreenTextLangParserBaseListener implements GreenTextLangParserListe
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBool_expression(GreenTextLangParser.Bool_expressionContext ctx) { }
+	@Override public void enterAlso(GreenTextLangParser.AlsoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitBool_expression(GreenTextLangParser.Bool_expressionContext ctx) { }
+	@Override public void exitAlso(GreenTextLangParser.AlsoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMath_expression(GreenTextLangParser.Math_expressionContext ctx) { }
+	@Override public void enterInversion(GreenTextLangParser.InversionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMath_expression(GreenTextLangParser.Math_expressionContext ctx) { }
+	@Override public void exitInversion(GreenTextLangParser.InversionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMath_literal(GreenTextLangParser.Math_literalContext ctx) { }
+	@Override public void enterComparison(GreenTextLangParser.ComparisonContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMath_literal(GreenTextLangParser.Math_literalContext ctx) { }
+	@Override public void exitComparison(GreenTextLangParser.ComparisonContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCompare_sum(GreenTextLangParser.Compare_sumContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCompare_sum(GreenTextLangParser.Compare_sumContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSum(GreenTextLangParser.SumContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSum(GreenTextLangParser.SumContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterTerm(GreenTextLangParser.TermContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTerm(GreenTextLangParser.TermContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFactor(GreenTextLangParser.FactorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFactor(GreenTextLangParser.FactorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAtom(GreenTextLangParser.AtomContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAtom(GreenTextLangParser.AtomContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLiteral(GreenTextLangParser.LiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLiteral(GreenTextLangParser.LiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

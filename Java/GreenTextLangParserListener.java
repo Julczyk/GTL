@@ -157,6 +157,16 @@ public interface GreenTextLangParserListener extends ParseTreeListener {
 	 */
 	void exitInvite(GreenTextLangParser.InviteContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link GreenTextLangParser#module}.
+	 * @param ctx the parse tree
+	 */
+	void enterModule(GreenTextLangParser.ModuleContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GreenTextLangParser#module}.
+	 * @param ctx the parse tree
+	 */
+	void exitModule(GreenTextLangParser.ModuleContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link GreenTextLangParser#function_declaration}.
 	 * @param ctx the parse tree
 	 */
@@ -367,35 +377,95 @@ public interface GreenTextLangParserListener extends ParseTreeListener {
 	 */
 	void exitExpression(GreenTextLangParser.ExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GreenTextLangParser#bool_expression}.
+	 * Enter a parse tree produced by {@link GreenTextLangParser#also}.
 	 * @param ctx the parse tree
 	 */
-	void enterBool_expression(GreenTextLangParser.Bool_expressionContext ctx);
+	void enterAlso(GreenTextLangParser.AlsoContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GreenTextLangParser#bool_expression}.
+	 * Exit a parse tree produced by {@link GreenTextLangParser#also}.
 	 * @param ctx the parse tree
 	 */
-	void exitBool_expression(GreenTextLangParser.Bool_expressionContext ctx);
+	void exitAlso(GreenTextLangParser.AlsoContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GreenTextLangParser#math_expression}.
+	 * Enter a parse tree produced by {@link GreenTextLangParser#inversion}.
 	 * @param ctx the parse tree
 	 */
-	void enterMath_expression(GreenTextLangParser.Math_expressionContext ctx);
+	void enterInversion(GreenTextLangParser.InversionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GreenTextLangParser#math_expression}.
+	 * Exit a parse tree produced by {@link GreenTextLangParser#inversion}.
 	 * @param ctx the parse tree
 	 */
-	void exitMath_expression(GreenTextLangParser.Math_expressionContext ctx);
+	void exitInversion(GreenTextLangParser.InversionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GreenTextLangParser#math_literal}.
+	 * Enter a parse tree produced by {@link GreenTextLangParser#comparison}.
 	 * @param ctx the parse tree
 	 */
-	void enterMath_literal(GreenTextLangParser.Math_literalContext ctx);
+	void enterComparison(GreenTextLangParser.ComparisonContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GreenTextLangParser#math_literal}.
+	 * Exit a parse tree produced by {@link GreenTextLangParser#comparison}.
 	 * @param ctx the parse tree
 	 */
-	void exitMath_literal(GreenTextLangParser.Math_literalContext ctx);
+	void exitComparison(GreenTextLangParser.ComparisonContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GreenTextLangParser#compare_sum}.
+	 * @param ctx the parse tree
+	 */
+	void enterCompare_sum(GreenTextLangParser.Compare_sumContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GreenTextLangParser#compare_sum}.
+	 * @param ctx the parse tree
+	 */
+	void exitCompare_sum(GreenTextLangParser.Compare_sumContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GreenTextLangParser#sum}.
+	 * @param ctx the parse tree
+	 */
+	void enterSum(GreenTextLangParser.SumContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GreenTextLangParser#sum}.
+	 * @param ctx the parse tree
+	 */
+	void exitSum(GreenTextLangParser.SumContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GreenTextLangParser#term}.
+	 * @param ctx the parse tree
+	 */
+	void enterTerm(GreenTextLangParser.TermContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GreenTextLangParser#term}.
+	 * @param ctx the parse tree
+	 */
+	void exitTerm(GreenTextLangParser.TermContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GreenTextLangParser#factor}.
+	 * @param ctx the parse tree
+	 */
+	void enterFactor(GreenTextLangParser.FactorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GreenTextLangParser#factor}.
+	 * @param ctx the parse tree
+	 */
+	void exitFactor(GreenTextLangParser.FactorContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GreenTextLangParser#atom}.
+	 * @param ctx the parse tree
+	 */
+	void enterAtom(GreenTextLangParser.AtomContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GreenTextLangParser#atom}.
+	 * @param ctx the parse tree
+	 */
+	void exitAtom(GreenTextLangParser.AtomContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GreenTextLangParser#literal}.
+	 * @param ctx the parse tree
+	 */
+	void enterLiteral(GreenTextLangParser.LiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GreenTextLangParser#literal}.
+	 * @param ctx the parse tree
+	 */
+	void exitLiteral(GreenTextLangParser.LiteralContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GreenTextLangParser#separator}.
 	 * @param ctx the parse tree

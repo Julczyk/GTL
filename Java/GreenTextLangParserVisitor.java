@@ -100,6 +100,12 @@ public interface GreenTextLangParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInvite(GreenTextLangParser.InviteContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link GreenTextLangParser#module}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitModule(GreenTextLangParser.ModuleContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link GreenTextLangParser#function_declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -226,23 +232,59 @@ public interface GreenTextLangParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpression(GreenTextLangParser.ExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GreenTextLangParser#bool_expression}.
+	 * Visit a parse tree produced by {@link GreenTextLangParser#also}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitBool_expression(GreenTextLangParser.Bool_expressionContext ctx);
+	T visitAlso(GreenTextLangParser.AlsoContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GreenTextLangParser#math_expression}.
+	 * Visit a parse tree produced by {@link GreenTextLangParser#inversion}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMath_expression(GreenTextLangParser.Math_expressionContext ctx);
+	T visitInversion(GreenTextLangParser.InversionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GreenTextLangParser#math_literal}.
+	 * Visit a parse tree produced by {@link GreenTextLangParser#comparison}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMath_literal(GreenTextLangParser.Math_literalContext ctx);
+	T visitComparison(GreenTextLangParser.ComparisonContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GreenTextLangParser#compare_sum}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCompare_sum(GreenTextLangParser.Compare_sumContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GreenTextLangParser#sum}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSum(GreenTextLangParser.SumContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GreenTextLangParser#term}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTerm(GreenTextLangParser.TermContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GreenTextLangParser#factor}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFactor(GreenTextLangParser.FactorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GreenTextLangParser#atom}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAtom(GreenTextLangParser.AtomContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GreenTextLangParser#literal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLiteral(GreenTextLangParser.LiteralContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GreenTextLangParser#separator}.
 	 * @param ctx the parse tree
