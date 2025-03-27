@@ -62,7 +62,7 @@ swallow
     ;
 
 variable_declaration
-    : type WS NAME WS IS WS SOMEONE_ELSES variable
+    : type WS NAME WS IS WS SOMEONE_ELSES WS variable
     | type WS NAME WS IS WS expressions
     | type WS NAME WS IS WS variable
     | type WS NAME
@@ -70,7 +70,7 @@ variable_declaration
 
 variable_assignment
     : variable WS IS WS variable
-    | variable WS IS WS SOMEONE_ELSES variable
+    | variable WS IS WS SOMEONE_ELSES WS variable
     | variable WS IS WS expressions
     | variable WS IS WS JOINED_BY WS math_expression
     | variable WS EVOLVES
