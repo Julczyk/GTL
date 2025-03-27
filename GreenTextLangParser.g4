@@ -16,8 +16,7 @@ program
 // ==================
 
 code_blocks
-    : (code_block NEWLINE | COMMENT_NEWLINE) END_LIFE+ code_blocks
-    | code_block WS? NEWLINE? END_LIFE* EOF
+    : ((code_block NEWLINE | COMMENT_NEWLINE) END_LIFE+)* code_block WS? NEWLINE? END_LIFE* EOF
     ;
 
 code_block
