@@ -5,7 +5,7 @@ lexer grammar GreenTextLangLexer;
 
 ENTRY: ' >' -> pushMode(CODE); //start symbol of every line, starts CODE
 
-COMMENT:  (~[ \n] ~[\r\n]* | ' ' ~[>\n] ~[\r\n]* | ' ')  -> channel(HIDDEN); //don't bother undestanding that, anything but the entry
+COMMENT:  (~[ \n] ~[\r\n]* | ' ' ~[>\n] ~[\r\n]* | ' ') -> channel(HIDDEN); //don't bother undestanding that, anything but the entry
 
 COMMENT_NEWLINE: COMMENT NEWLINE -> channel(HIDDEN); //needed because NEWLINE is not HIDDEN
 

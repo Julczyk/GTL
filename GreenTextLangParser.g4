@@ -70,9 +70,9 @@ variable_declaration
     ;
 
 variable_assignment
-    : variable IS variable
+    : variable IS expressions
+    | variable IS variable
     | variable IS SOMEONE_ELSES variable
-    | variable IS expressions
     | variable IS JOINED_BY math_expression
     | variable EVOLVES
     | variable DEVOLVES
@@ -83,8 +83,8 @@ variable_assignment
     ;
 // what is a variable
 variable
-    : math_expression TH variable
-    | NAME S variable
+    : NAME S variable
+    | math_expression TH variable
     | NAME
     ;
 
@@ -231,8 +231,8 @@ expressions
     ;
 
 expression
-    : bool_expression
-    | math_expression
+    : math_expression
+    | bool_expression
     ;
 
 bool_expression
@@ -283,3 +283,4 @@ separator
     ;
 
 //TODO update docs to match new grammar
+//TODO move around the expression statements to be more intutive
