@@ -130,36 +130,6 @@ public interface GreenTextLangParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunction_arguments(GreenTextLangParser.Function_argumentsContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GreenTextLangParser#variable_declaration_ing}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitVariable_declaration_ing(GreenTextLangParser.Variable_declaration_ingContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link GreenTextLangParser#type_ing}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitType_ing(GreenTextLangParser.Type_ingContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link GreenTextLangParser#complex_type_ing}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitComplex_type_ing(GreenTextLangParser.Complex_type_ingContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link GreenTextLangParser#primitive_type_ing}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitPrimitive_type_ing(GreenTextLangParser.Primitive_type_ingContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link GreenTextLangParser#struct_type_ing}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStruct_type_ing(GreenTextLangParser.Struct_type_ingContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link GreenTextLangParser#struct_declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -219,6 +189,42 @@ public interface GreenTextLangParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitStruct_type(GreenTextLangParser.Struct_typeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GreenTextLangParser#variable_declaration_ing_without_elses}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVariable_declaration_ing_without_elses(GreenTextLangParser.Variable_declaration_ing_without_elsesContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GreenTextLangParser#variable_declaration_ing}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVariable_declaration_ing(GreenTextLangParser.Variable_declaration_ingContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GreenTextLangParser#type_ing}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitType_ing(GreenTextLangParser.Type_ingContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GreenTextLangParser#complex_type_ing}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComplex_type_ing(GreenTextLangParser.Complex_type_ingContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GreenTextLangParser#primitive_type_ing}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrimitive_type_ing(GreenTextLangParser.Primitive_type_ingContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GreenTextLangParser#struct_type_ing}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStruct_type_ing(GreenTextLangParser.Struct_type_ingContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GreenTextLangParser#expressions}.
 	 * @param ctx the parse tree

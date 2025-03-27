@@ -65,13 +65,13 @@ swallow
 variable_declaration
     : type NAME IS SOMEONE_ELSES variable
     | type NAME IS expressions
-    | type NAME IS variable
+    | type NAME IS function_call
     | type NAME
     ;
 
 variable_assignment
     : variable IS expressions
-    | variable IS variable
+    | variable IS function_call
     | variable IS SOMEONE_ELSES variable
     | variable IS JOINED_BY expression
     | variable EVOLVES
@@ -123,40 +123,11 @@ function_name
     ;
 
 function_return
-    : ENTRY variable_declaration_ing NEWLINE
+    : ENTRY variable_declaration_ing_without_elses NEWLINE
     ;
 
 function_arguments
     : ENTRY LIKES variable_declaration_ing (separator variable_declaration_ing)* NEWLINE
-    ;
-
-// function strict type-ing
-
-variable_declaration_ing
-    : type_ing NAME
-    | type_ing NAME IS expression
-    ;
-
-type_ing
-    : complex_type_ing
-    | primitive_type_ing
-    | struct_type_ing
-    ;
-
-complex_type_ing
-    : primitive_type_ing MULTIPLE
-    | primitive_type_ing ABOUT expression
-    ;
-
-primitive_type_ing
-    : SEEING
-    | TASTING
-    | HEARING
-    | SMELLING
-    ;
-
-struct_type_ing
-    : SPOTTING NAME
     ;
 
 // struct declaration
@@ -214,6 +185,8 @@ type
 complex_type
     : primitive_type MULTIPLE
     | primitive_type ABOUT expression
+    | SPOT ABOUT expression NAME
+    | SPOT MULTIPLE NAME
     ;
 
 primitive_type
@@ -225,6 +198,45 @@ primitive_type
 
 struct_type
     : SPOT NAME
+    ;
+
+// function strict type-ing
+
+variable_declaration_ing_without_elses
+    : type_ing NAME IS expressions
+    | type_ing NAME IS function_call
+    | type_ing NAME
+    ;
+
+variable_declaration_ing
+    : type_ing SOMEONE_ELSES NAME
+    | type_ing NAME IS expressions
+    | type_ing NAME IS function_call
+    | type_ing NAME
+    ;
+
+type_ing
+    : complex_type_ing
+    | primitive_type_ing
+    | struct_type_ing
+    ;
+
+complex_type_ing
+    : primitive_type_ing MULTIPLE
+    | primitive_type_ing ABOUT expression
+    | SPOTTING ABOUT expression NAME
+    | SPOTTING MULTIPLE NAME
+    ;
+
+primitive_type_ing
+    : SEEING
+    | TASTING
+    | HEARING
+    | SMELLING
+    ;
+
+struct_type_ing
+    : SPOTTING NAME
     ;
 
 // EXPRESSIONS
@@ -266,7 +278,7 @@ sum
     ;
 
 term
-    : term BREEDING_LIKE (NEWLINE ENTRY)? sum (NEWLINE ENTRY)? TIMES
+    : term BREEDING_LIKE (NEWLINE ENTRY)? expression (NEWLINE ENTRY)? TIMES
     | term WHATEVER_LEFT_FROM factor
     | factor
     ;

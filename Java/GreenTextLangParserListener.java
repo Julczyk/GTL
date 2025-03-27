@@ -207,56 +207,6 @@ public interface GreenTextLangParserListener extends ParseTreeListener {
 	 */
 	void exitFunction_arguments(GreenTextLangParser.Function_argumentsContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GreenTextLangParser#variable_declaration_ing}.
-	 * @param ctx the parse tree
-	 */
-	void enterVariable_declaration_ing(GreenTextLangParser.Variable_declaration_ingContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GreenTextLangParser#variable_declaration_ing}.
-	 * @param ctx the parse tree
-	 */
-	void exitVariable_declaration_ing(GreenTextLangParser.Variable_declaration_ingContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GreenTextLangParser#type_ing}.
-	 * @param ctx the parse tree
-	 */
-	void enterType_ing(GreenTextLangParser.Type_ingContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GreenTextLangParser#type_ing}.
-	 * @param ctx the parse tree
-	 */
-	void exitType_ing(GreenTextLangParser.Type_ingContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GreenTextLangParser#complex_type_ing}.
-	 * @param ctx the parse tree
-	 */
-	void enterComplex_type_ing(GreenTextLangParser.Complex_type_ingContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GreenTextLangParser#complex_type_ing}.
-	 * @param ctx the parse tree
-	 */
-	void exitComplex_type_ing(GreenTextLangParser.Complex_type_ingContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GreenTextLangParser#primitive_type_ing}.
-	 * @param ctx the parse tree
-	 */
-	void enterPrimitive_type_ing(GreenTextLangParser.Primitive_type_ingContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GreenTextLangParser#primitive_type_ing}.
-	 * @param ctx the parse tree
-	 */
-	void exitPrimitive_type_ing(GreenTextLangParser.Primitive_type_ingContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GreenTextLangParser#struct_type_ing}.
-	 * @param ctx the parse tree
-	 */
-	void enterStruct_type_ing(GreenTextLangParser.Struct_type_ingContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GreenTextLangParser#struct_type_ing}.
-	 * @param ctx the parse tree
-	 */
-	void exitStruct_type_ing(GreenTextLangParser.Struct_type_ingContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link GreenTextLangParser#struct_declaration}.
 	 * @param ctx the parse tree
 	 */
@@ -356,6 +306,66 @@ public interface GreenTextLangParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStruct_type(GreenTextLangParser.Struct_typeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GreenTextLangParser#variable_declaration_ing_without_elses}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariable_declaration_ing_without_elses(GreenTextLangParser.Variable_declaration_ing_without_elsesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GreenTextLangParser#variable_declaration_ing_without_elses}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariable_declaration_ing_without_elses(GreenTextLangParser.Variable_declaration_ing_without_elsesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GreenTextLangParser#variable_declaration_ing}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariable_declaration_ing(GreenTextLangParser.Variable_declaration_ingContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GreenTextLangParser#variable_declaration_ing}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariable_declaration_ing(GreenTextLangParser.Variable_declaration_ingContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GreenTextLangParser#type_ing}.
+	 * @param ctx the parse tree
+	 */
+	void enterType_ing(GreenTextLangParser.Type_ingContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GreenTextLangParser#type_ing}.
+	 * @param ctx the parse tree
+	 */
+	void exitType_ing(GreenTextLangParser.Type_ingContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GreenTextLangParser#complex_type_ing}.
+	 * @param ctx the parse tree
+	 */
+	void enterComplex_type_ing(GreenTextLangParser.Complex_type_ingContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GreenTextLangParser#complex_type_ing}.
+	 * @param ctx the parse tree
+	 */
+	void exitComplex_type_ing(GreenTextLangParser.Complex_type_ingContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GreenTextLangParser#primitive_type_ing}.
+	 * @param ctx the parse tree
+	 */
+	void enterPrimitive_type_ing(GreenTextLangParser.Primitive_type_ingContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GreenTextLangParser#primitive_type_ing}.
+	 * @param ctx the parse tree
+	 */
+	void exitPrimitive_type_ing(GreenTextLangParser.Primitive_type_ingContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GreenTextLangParser#struct_type_ing}.
+	 * @param ctx the parse tree
+	 */
+	void enterStruct_type_ing(GreenTextLangParser.Struct_type_ingContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GreenTextLangParser#struct_type_ing}.
+	 * @param ctx the parse tree
+	 */
+	void exitStruct_type_ing(GreenTextLangParser.Struct_type_ingContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GreenTextLangParser#expressions}.
 	 * @param ctx the parse tree
