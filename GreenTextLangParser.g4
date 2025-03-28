@@ -25,14 +25,13 @@ code_block
 
 statement
     : compound_statement
-    | ENTRY simple_statement
-    | ENTRY
+    | simple_statement
     ;
 
 statement_newline
     : compound_statement NEWLINE
-    | ENTRY simple_statement NEWLINE
-    | ENTRY NEWLINE
+    | simple_statement NEWLINE
+    | NEWLINE
     ;
 
 simple_statement
@@ -65,18 +64,18 @@ swallow
 variable_declaration
     : type NAME IS SOMEONE_ELSES variable
     | type NAME IS expressions
-    | type NAME IS function_call
+    | type NAME IS function_call_ing
     | type NAME
     ;
 
 variable_assignment
     : variable IS expressions
-    | variable IS function_call
+    | variable IS function_call_ing
     | variable IS SOMEONE_ELSES variable
     | variable IS JOINED_BY expression
     | variable EVOLVES
     | variable DEVOLVES
-    | variable IS BREEDING_LIKE (NEWLINE ENTRY)? expression (NEWLINE ENTRY)? TIMES
+    | variable IS BREEDING_LIKE NEWLINE? expression NEWLINE? TIMES
     | variable IS FLIPPED expression
     | variable IS THE_LITERAL_OPPOSITE_OF expression
     | variable IS WHATEVER_LEFT_FROM expression
@@ -89,20 +88,15 @@ variable
     ;
 
 function_call
-    : CALL function (REGARDING expressions)?
+    : CALL variable (REGARDING expressions)?
     ;
-// what is a function
-function
-    : NAME
-    | variable S function
+
+function_call_ing
+    : CALLING variable (REGARDING expressions)?
     ;
 
 invite
-    : INVITE module
-    ;
-// what is a module
-module
-    : NAME (S module)? (separator NAME)*
+    : INVITE nested_name (separator NAME)*
     ;
 
 // COMPOUND STATEMENTS
@@ -115,19 +109,19 @@ function_declaration
     function_return?
     function_arguments?
     statement_newline*
-    ENTRY PROFIT
+    PROFIT
     ;
 
 function_name
-    : ENTRY BE NAME NEWLINE
+    : BE NAME NEWLINE
     ;
 
 function_return
-    : ENTRY variable_declaration_ing_without_elses NEWLINE
+    : variable_declaration_ing_without_elses NEWLINE
     ;
 
 function_arguments
-    : ENTRY LIKES variable_declaration_ing (separator variable_declaration_ing)* NEWLINE
+    : LIKES variable_declaration_ing (separator variable_declaration_ing)* NEWLINE
     ;
 
 // struct declaration
@@ -135,41 +129,41 @@ function_arguments
 struct_declaration
     : struct_name
     statement_newline*
-    ENTRY LOSE_INTEREST
+    LOSE_INTEREST
     ;
 
 struct_name
-    : ENTRY LOOK_AROUND NEWLINE
-    ENTRY NAME NEWLINE
+    : LOOK_AROUND NEWLINE
+    NAME NEWLINE
     ;
 
 // loops declaration
 
 loop_declaration
-    : ENTRY THINK_THAT expression NEWLINE
+    : THINK_THAT expression NEWLINE
     statement_newline*
-    ENTRY RECONSIDER
+    RECONSIDER
     ;
 
 // if declaration
 
 if_declaration
-    : ENTRY IMPLYING expression NEWLINE
-   statement_newline*
+    : IMPLYING expression NEWLINE
+    statement_newline*
     or_statement?
     or_not_statement?
-    ENTRY OR_STH
+    OR_STH
     ;
 
 or_statement
-    : ENTRY OR expression NEWLINE
+    : OR expression NEWLINE
     statement_newline*
     or_statement?
     or_not_statement?
     ;
 
 or_not_statement
-    : ENTRY OR_NOT NEWLINE
+    : OR_NOT NEWLINE
     statement_newline*
     ;
 
@@ -185,8 +179,8 @@ type
 complex_type
     : primitive_type MULTIPLE
     | primitive_type ABOUT expression
-    | SPOT ABOUT expression NAME
-    | SPOT MULTIPLE NAME
+    | SPOT ABOUT expression nested_name
+    | SPOT MULTIPLE nested_name
     ;
 
 primitive_type
@@ -197,21 +191,21 @@ primitive_type
     ;
 
 struct_type
-    : SPOT NAME
+    : SPOT nested_name
     ;
 
 // function strict type-ing
 
 variable_declaration_ing_without_elses
     : type_ing NAME IS expressions
-    | type_ing NAME IS function_call
+    | type_ing NAME IS function_call_ing
     | type_ing NAME
     ;
 
 variable_declaration_ing
     : type_ing SOMEONE_ELSES NAME
     | type_ing NAME IS expressions
-    | type_ing NAME IS function_call
+    | type_ing NAME IS function_call_ing
     | type_ing NAME
     ;
 
@@ -278,7 +272,7 @@ sum
     ;
 
 term
-    : term BREEDING_LIKE (NEWLINE ENTRY)? expression (NEWLINE ENTRY)? TIMES
+    : term BREEDING_LIKE NEWLINE? expression NEWLINE? TIMES
     | term WHATEVER_LEFT_FROM factor
     | factor
     ;
@@ -304,10 +298,14 @@ literal
 // UNCATEGORIZED
 // =============
 
+nested_name
+    : NAME (S nested_name)*
+    ;
+
 separator
     : COMMA
     | AND
-    | NEWLINE ENTRY AND
+    | NEWLINE AND
     ;
 
 //TODO update docs to match new grammar

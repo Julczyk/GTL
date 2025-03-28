@@ -88,23 +88,17 @@ public interface GreenTextLangParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunction_call(GreenTextLangParser.Function_callContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GreenTextLangParser#function}.
+	 * Visit a parse tree produced by {@link GreenTextLangParser#function_call_ing}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFunction(GreenTextLangParser.FunctionContext ctx);
+	T visitFunction_call_ing(GreenTextLangParser.Function_call_ingContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GreenTextLangParser#invite}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitInvite(GreenTextLangParser.InviteContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link GreenTextLangParser#module}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitModule(GreenTextLangParser.ModuleContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GreenTextLangParser#function_declaration}.
 	 * @param ctx the parse tree
@@ -291,6 +285,12 @@ public interface GreenTextLangParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitLiteral(GreenTextLangParser.LiteralContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GreenTextLangParser#nested_name}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNested_name(GreenTextLangParser.Nested_nameContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GreenTextLangParser#separator}.
 	 * @param ctx the parse tree

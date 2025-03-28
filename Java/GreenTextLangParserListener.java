@@ -137,15 +137,15 @@ public interface GreenTextLangParserListener extends ParseTreeListener {
 	 */
 	void exitFunction_call(GreenTextLangParser.Function_callContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GreenTextLangParser#function}.
+	 * Enter a parse tree produced by {@link GreenTextLangParser#function_call_ing}.
 	 * @param ctx the parse tree
 	 */
-	void enterFunction(GreenTextLangParser.FunctionContext ctx);
+	void enterFunction_call_ing(GreenTextLangParser.Function_call_ingContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link GreenTextLangParser#function}.
+	 * Exit a parse tree produced by {@link GreenTextLangParser#function_call_ing}.
 	 * @param ctx the parse tree
 	 */
-	void exitFunction(GreenTextLangParser.FunctionContext ctx);
+	void exitFunction_call_ing(GreenTextLangParser.Function_call_ingContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GreenTextLangParser#invite}.
 	 * @param ctx the parse tree
@@ -156,16 +156,6 @@ public interface GreenTextLangParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitInvite(GreenTextLangParser.InviteContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GreenTextLangParser#module}.
-	 * @param ctx the parse tree
-	 */
-	void enterModule(GreenTextLangParser.ModuleContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GreenTextLangParser#module}.
-	 * @param ctx the parse tree
-	 */
-	void exitModule(GreenTextLangParser.ModuleContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GreenTextLangParser#function_declaration}.
 	 * @param ctx the parse tree
@@ -476,6 +466,16 @@ public interface GreenTextLangParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLiteral(GreenTextLangParser.LiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GreenTextLangParser#nested_name}.
+	 * @param ctx the parse tree
+	 */
+	void enterNested_name(GreenTextLangParser.Nested_nameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GreenTextLangParser#nested_name}.
+	 * @param ctx the parse tree
+	 */
+	void exitNested_name(GreenTextLangParser.Nested_nameContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GreenTextLangParser#separator}.
 	 * @param ctx the parse tree

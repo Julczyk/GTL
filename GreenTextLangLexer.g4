@@ -3,7 +3,7 @@ lexer grammar GreenTextLangLexer;
 // DEFAULT TOP LEVEL WORDS
 // =======================
 
-ENTRY: ' >' -> pushMode(CODE); //start symbol of every line, starts CODE
+ENTRY: ' >' -> pushMode(CODE), channel(HIDDEN); //start symbol of every line, starts CODE
 
 COMMENT:  (~[ \n] ~[\r\n]* | ' ' ~[>\n] ~[\r\n]* | ' ') -> channel(HIDDEN); //don't bother undestanding that, anything but the entry
 
@@ -41,6 +41,7 @@ SPIT         : 'spit';
 SWALLOW      : 'swallow';
 PROFIT       : 'profit';
 CALL         : 'call';
+CALLING      : 'calling';
 REGARDING    : 'regarding';
 LIKES        : 'likes';
 THINK_THAT   : 'think that';
