@@ -69,9 +69,9 @@ COMMA: ',';
 IS: 'is';
 // bool
 VIBE_WITH       : 'vibe with';
-DOESNT_VIBE_WITH: 'doesn’t vibe with';
+DOESNT_VIBE_WITH: 'doesn\'t vibe with';
 BEATEN_BY       : 'beaten by';
-DOESNT_BEAT     : 'doesn’t beat';
+DOESNT_BEAT     : 'doesn\'t beat';
 BEATS           : 'beats';
 UNBEATEN_BY     : 'unbeaten by';
 ALSO            : 'also';

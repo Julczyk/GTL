@@ -62,8 +62,8 @@ public class GreenTextLangLexer extends Lexer {
 			"'look around'", "'lose interest'", "''s'", "'spit'", "'swallow'", "'profit'", 
 			"'call'", "'calling'", "'regarding'", "'likes'", "'think that'", "'reconsider'", 
 			"'implying'", "'or sth'", "'or'", "'or not'", null, null, null, null, 
-			"'and'", "','", "'is'", "'vibe with'", "'doesn\\u2019t vibe with'", "'beaten by'", 
-			"'doesn\\u2019t beat'", "'beats'", "'unbeaten by'", "'also'", "'alternatively'", 
+			"'and'", "','", "'is'", "'vibe with'", "'doesn't vibe with'", "'beaten by'", 
+			"'doesn't beat'", "'beats'", "'unbeaten by'", "'also'", "'alternatively'", 
 			"'not'", "'joined by'", "'evolves'", "'devolves'", "'breeding like'", 
 			"'times'", "'the literal opposite of'", "'flipped'", "'whatever left from'"
 		};
@@ -451,7 +451,7 @@ public class GreenTextLangLexer extends Lexer {
 		"\u0005t\u0000\u0000\u01cb\u01cc\u0005h\u0000\u0000\u01ccY\u0001\u0000"+
 		"\u0000\u0000\u01cd\u01ce\u0005d\u0000\u0000\u01ce\u01cf\u0005o\u0000\u0000"+
 		"\u01cf\u01d0\u0005e\u0000\u0000\u01d0\u01d1\u0005s\u0000\u0000\u01d1\u01d2"+
-		"\u0005n\u0000\u0000\u01d2\u01d3\u0005\u2019\u0000\u0000\u01d3\u01d4\u0005"+
+		"\u0005n\u0000\u0000\u01d2\u01d3\u0005\'\u0000\u0000\u01d3\u01d4\u0005"+
 		"t\u0000\u0000\u01d4\u01d5\u0005 \u0000\u0000\u01d5\u01d6\u0005v\u0000"+
 		"\u0000\u01d6\u01d7\u0005i\u0000\u0000\u01d7\u01d8\u0005b\u0000\u0000\u01d8"+
 		"\u01d9\u0005e\u0000\u0000\u01d9\u01da\u0005 \u0000\u0000\u01da\u01db\u0005"+
@@ -463,7 +463,7 @@ public class GreenTextLangLexer extends Lexer {
 		"\u01e7\u0005b\u0000\u0000\u01e7\u01e8\u0005y\u0000\u0000\u01e8]\u0001"+
 		"\u0000\u0000\u0000\u01e9\u01ea\u0005d\u0000\u0000\u01ea\u01eb\u0005o\u0000"+
 		"\u0000\u01eb\u01ec\u0005e\u0000\u0000\u01ec\u01ed\u0005s\u0000\u0000\u01ed"+
-		"\u01ee\u0005n\u0000\u0000\u01ee\u01ef\u0005\u2019\u0000\u0000\u01ef\u01f0"+
+		"\u01ee\u0005n\u0000\u0000\u01ee\u01ef\u0005\'\u0000\u0000\u01ef\u01f0"+
 		"\u0005t\u0000\u0000\u01f0\u01f1\u0005 \u0000\u0000\u01f1\u01f2\u0005b"+
 		"\u0000\u0000\u01f2\u01f3\u0005e\u0000\u0000\u01f3\u01f4\u0005a\u0000\u0000"+
 		"\u01f4\u01f5\u0005t\u0000\u0000\u01f5_\u0001\u0000\u0000\u0000\u01f6\u01f7"+

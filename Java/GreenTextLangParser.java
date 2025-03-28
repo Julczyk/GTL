@@ -66,8 +66,8 @@ public class GreenTextLangParser extends Parser {
 			"'look around'", "'lose interest'", "''s'", "'spit'", "'swallow'", "'profit'", 
 			"'call'", "'calling'", "'regarding'", "'likes'", "'think that'", "'reconsider'", 
 			"'implying'", "'or sth'", "'or'", "'or not'", null, null, null, null, 
-			"'and'", "','", "'is'", "'vibe with'", "'doesn\\u2019t vibe with'", "'beaten by'", 
-			"'doesn\\u2019t beat'", "'beats'", "'unbeaten by'", "'also'", "'alternatively'", 
+			"'and'", "','", "'is'", "'vibe with'", "'doesn't vibe with'", "'beaten by'", 
+			"'doesn't beat'", "'beats'", "'unbeaten by'", "'also'", "'alternatively'", 
 			"'not'", "'joined by'", "'evolves'", "'devolves'", "'breeding like'", 
 			"'times'", "'the literal opposite of'", "'flipped'", "'whatever left from'"
 		};
