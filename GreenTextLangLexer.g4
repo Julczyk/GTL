@@ -99,12 +99,21 @@ NAME: Letter LetterOrDigit*;
 
 // FRAGMENT RULES
 
-fragment EscapeSequence: '\\' [btnfr"'\\];
+fragment EscapeSequence:
+    '\\' [btnfr"'\\]
+    | '\\u' HexDigit HexDigit HexDigit HexDigit
+    | '\\U' HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit
+;
+
+fragment HexDigit: [0-9A-Fa-f];
 
 fragment Digits: [0-9] ([0-9_]* [0-9])?;
 
 fragment LetterOrDigit: Letter | [0-9];
 
 fragment Letter:
-    [a-zA-Z_]    // standard letters, may be extended
+    [a-zA-Z_]                         // standard letters
+    | [!$&()*+./:;<=>?@[\]^`{|}~-]    // non-standard ASCII letters
+    | ~[\u0000-\u007F\uD800-\uDBFF]   // not letters from above and not invalid unicode 16-bit characters
+    | [\uD800-\uDBFF] [\uDC00-\uDFFF] // unicode 32-bit charaters
 ;
