@@ -80,19 +80,19 @@ variable_assignment
     | variable IS THE_LITERAL_OPPOSITE_OF expression
     | variable IS WHATEVER_LEFT_FROM expression
     ;
-// what is a variable
+
 variable
     : NAME S variable
-    | (NAME | DECIMAL_LITERAL) TH variable // access to an array can only be a name or a int literal
+    | (NAME | DECIMAL_LITERAL) TH variable // access to an array can only be a name or an int literal
     | NAME
-    ;
-
-function_call
-    : CALL variable (REGARDING expressions)?
     ;
 
 function_call_ing
     : CALLING variable (REGARDING expressions)?
+    ;
+
+function_call
+    : CALL variable (REGARDING expressions)?
     ;
 
 invite
@@ -105,15 +105,11 @@ invite
 // functions
 
 function_declaration
-    : function_name
+    : BE NAME NEWLINE
     function_return?
     function_arguments?
     statement_newline*
     PROFIT
-    ;
-
-function_name
-    : BE NAME NEWLINE
     ;
 
 function_return
@@ -127,14 +123,10 @@ function_arguments
 // struct declaration
 
 struct_declaration
-    : struct_name
-    statement_newline*
-    LOSE_INTEREST
-    ;
-
-struct_name
     : LOOK_AROUND NEWLINE
     NAME NEWLINE
+    statement_newline*
+    LOSE_INTEREST
     ;
 
 // loops declaration

@@ -160,18 +160,6 @@ public class GreenTextLangParserBaseListener implements GreenTextLangParserListe
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunction_call(GreenTextLangParser.Function_callContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFunction_call(GreenTextLangParser.Function_callContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterFunction_call_ing(GreenTextLangParser.Function_call_ingContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -179,6 +167,18 @@ public class GreenTextLangParserBaseListener implements GreenTextLangParserListe
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFunction_call_ing(GreenTextLangParser.Function_call_ingContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFunction_call(GreenTextLangParser.Function_callContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunction_call(GreenTextLangParser.Function_callContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -203,18 +203,6 @@ public class GreenTextLangParserBaseListener implements GreenTextLangParserListe
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFunction_declaration(GreenTextLangParser.Function_declarationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterFunction_name(GreenTextLangParser.Function_nameContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFunction_name(GreenTextLangParser.Function_nameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -251,18 +239,6 @@ public class GreenTextLangParserBaseListener implements GreenTextLangParserListe
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitStruct_declaration(GreenTextLangParser.Struct_declarationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterStruct_name(GreenTextLangParser.Struct_nameContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitStruct_name(GreenTextLangParser.Struct_nameContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

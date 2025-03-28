@@ -127,16 +127,6 @@ public interface GreenTextLangParserListener extends ParseTreeListener {
 	 */
 	void exitVariable(GreenTextLangParser.VariableContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GreenTextLangParser#function_call}.
-	 * @param ctx the parse tree
-	 */
-	void enterFunction_call(GreenTextLangParser.Function_callContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GreenTextLangParser#function_call}.
-	 * @param ctx the parse tree
-	 */
-	void exitFunction_call(GreenTextLangParser.Function_callContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link GreenTextLangParser#function_call_ing}.
 	 * @param ctx the parse tree
 	 */
@@ -146,6 +136,16 @@ public interface GreenTextLangParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFunction_call_ing(GreenTextLangParser.Function_call_ingContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link GreenTextLangParser#function_call}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunction_call(GreenTextLangParser.Function_callContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link GreenTextLangParser#function_call}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunction_call(GreenTextLangParser.Function_callContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GreenTextLangParser#invite}.
 	 * @param ctx the parse tree
@@ -166,16 +166,6 @@ public interface GreenTextLangParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFunction_declaration(GreenTextLangParser.Function_declarationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GreenTextLangParser#function_name}.
-	 * @param ctx the parse tree
-	 */
-	void enterFunction_name(GreenTextLangParser.Function_nameContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GreenTextLangParser#function_name}.
-	 * @param ctx the parse tree
-	 */
-	void exitFunction_name(GreenTextLangParser.Function_nameContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GreenTextLangParser#function_return}.
 	 * @param ctx the parse tree
@@ -206,16 +196,6 @@ public interface GreenTextLangParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStruct_declaration(GreenTextLangParser.Struct_declarationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link GreenTextLangParser#struct_name}.
-	 * @param ctx the parse tree
-	 */
-	void enterStruct_name(GreenTextLangParser.Struct_nameContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GreenTextLangParser#struct_name}.
-	 * @param ctx the parse tree
-	 */
-	void exitStruct_name(GreenTextLangParser.Struct_nameContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link GreenTextLangParser#loop_declaration}.
 	 * @param ctx the parse tree

@@ -82,17 +82,17 @@ public interface GreenTextLangParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVariable(GreenTextLangParser.VariableContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GreenTextLangParser#function_call}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFunction_call(GreenTextLangParser.Function_callContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link GreenTextLangParser#function_call_ing}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFunction_call_ing(GreenTextLangParser.Function_call_ingContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GreenTextLangParser#function_call}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunction_call(GreenTextLangParser.Function_callContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GreenTextLangParser#invite}.
 	 * @param ctx the parse tree
@@ -105,12 +105,6 @@ public interface GreenTextLangParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFunction_declaration(GreenTextLangParser.Function_declarationContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link GreenTextLangParser#function_name}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFunction_name(GreenTextLangParser.Function_nameContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GreenTextLangParser#function_return}.
 	 * @param ctx the parse tree
@@ -129,12 +123,6 @@ public interface GreenTextLangParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitStruct_declaration(GreenTextLangParser.Struct_declarationContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link GreenTextLangParser#struct_name}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStruct_name(GreenTextLangParser.Struct_nameContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GreenTextLangParser#loop_declaration}.
 	 * @param ctx the parse tree
