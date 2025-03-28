@@ -210,8 +210,8 @@ type_ing
 complex_type_ing
     : primitive_type_ing MULTIPLE
     | primitive_type_ing ABOUT expression
-    | SPOTTING ABOUT expression NAME
-    | SPOTTING MULTIPLE NAME
+    | SPOTTING ABOUT expression nested_name
+    | SPOTTING MULTIPLE nested_name
     ;
 
 primitive_type_ing
@@ -233,11 +233,11 @@ expressions
     ;
 
 expression
-    : also (ALTERNATIVELY also)*
+    : also (NEWLINE? ALTERNATIVELY also)*
     ;
 
 also
-    : inversion (ALSO inversion)*
+    : inversion (NEWLINE? ALSO inversion)*
     ;
 
 inversion
