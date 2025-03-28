@@ -299,5 +299,3 @@ separator
     | AND
     | NEWLINE AND
     ;
-
-//TODO update docs to match new grammar
