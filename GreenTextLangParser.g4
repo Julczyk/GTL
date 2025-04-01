@@ -291,7 +291,7 @@ literal
 // =============
 
 nested_name
-    : NAME (S nested_name)*
+    : NAME (S nested_name)?
     ;
 
 separator
