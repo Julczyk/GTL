@@ -222,7 +222,7 @@ primitive_type_ing
     ;
 
 struct_type_ing
-    : SPOTTING NAME
+    : SPOTTING nested_name
     ;
 
 // EXPRESSIONS
