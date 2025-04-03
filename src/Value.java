@@ -3,6 +3,8 @@ import java.util.function.BiFunction;
 /**
  * Value class that encapsulates numeric and string values.
  * Contains all operations between them and all type errors.
+ *
+ * Empty Value is filled with "", 0, false appropriately
  */
 public class Value {
     // Globals
@@ -12,6 +14,8 @@ public class Value {
     // Fields
     private Object value;
     private boolean isNull = false;
+    private Type type;
+    enum Type {STRING, INT, DOUBLE, BOOLEAN, EMPTY};
     // Private constructor
     private Value(Object value, boolean isNull) {
         this.value = value;
@@ -19,54 +23,70 @@ public class Value {
     }
 
     // TYPE CONSTRUTORS
+    public Value() {
+        this.value = null;
+        this.type = Type.EMPTY;
+    }
+
     public Value(String value) {
         this.value = value;
+        this.type = Type.STRING;
     }
 
     public Value(int value) {
         this.value = value;
+        this.type = Type.INT;
     }
 
     public Value(double value) {
         this.value = value;
+        this.type = Type.DOUBLE;
     }
 
     public Value(boolean value) {
         this.value = value;
+        this.type = Type.BOOLEAN;
     }
 
     // TYPE GETTERS
     public String getString() {
-        return (String)value;
+        return switch (type) {
+            case STRING -> (String) value;
+            case INT -> String.valueOf((Integer) value);
+            case DOUBLE -> String.valueOf((Double) value);
+            case BOOLEAN -> getBoolean() ? "c:" : ":c";
+            case EMPTY -> "";
+            default -> throw new UnknownException("func: Value.getString()" + getInfo()); // this won't happen
+        };
     }
 
     public int getNumber() {
-        return (int)value;
+        return (int)value; //TODO replace with type
     }
 
     public double getDouble() {
-        return (double)value;
+        return (double)value; //TODO replace with type
     }
 
     public boolean getBoolean() {
-        return (boolean)value;
+        return (boolean)value; //TODO replace with type
     }
 
     // IS TYPE
     public boolean isString() {
-        return value instanceof String;
+        return value instanceof String; //TODO replace with type
     }
 
     public boolean isNumber() {
-        return value instanceof Long;
+        return value instanceof Integer; //TODO replace with type
     }
 
     public boolean isDouble() {
-        return value instanceof Double;
+        return value instanceof Double; //TODO replace with type
     }
 
     public boolean isBoolean() {
-        return value instanceof Boolean;
+        return value instanceof Boolean; //TODO replace with type
     }
 
     public boolean isNull() {
@@ -80,12 +100,12 @@ public class Value {
             return !getString().isEmpty();  // empty string is false
         } else if (isNumber()) {
             return getNumber() != 0;        // int == 0 is false
-        } else if (isDouble()) {            // double can't be true nor false
-            throw new TypeException("You cannot taste what you smell.", "Invalid conversion between double and boolean");
-        } else if (isBoolean()) {           // bool is bool
-            return getBoolean();
+        } else if (isDouble()) {
+            return getDouble() != 0;        // double == 0 is false
+        } else if (isBoolean()) {
+            return getBoolean();            // bool is bool
         } else {                            // this won't happen
-            throw new UnknownException("func: Value.isTrue(), Value: " + value + " isNull: " + isNull);
+            throw new UnknownException("func: Value.isTrue()" + getInfo());
         }
     }
 
@@ -107,7 +127,7 @@ public class Value {
         } else if (isBoolean()) {
             return new Value(!getBoolean());// flipping bool
         } else {                            // this won't happen
-            throw new UnknownException("func: Value.flip(), Value: " + value + " isNull: " + isNull);
+            throw new UnknownException("func: Value.flip()" + getInfo());
         }
     }
 
@@ -123,7 +143,7 @@ public class Value {
         } else if (isBoolean()) {
             return new Value(!getBoolean());    // opposite bool
         } else {                                // this won't happen
-            throw new UnknownException("func: Value.opp(), Value: " + value + " isNull: " + isNull);
+            throw new UnknownException("func: Value.opp()" + getInfo());
         }
     }
 
@@ -163,7 +183,7 @@ public class Value {
         } else if (isBoolean() && right.isBoolean()) {
             return getBoolean() ? new Value(right.getBoolean()) : FALSE;
         } else {                                // this won't happen
-            throw new UnknownException("func: Value.mul(), Value: " + value + " isNull: " + isNull);
+            throw new UnknownException("func: Value.mul()" + getInfo());
         }
     }
 
@@ -177,40 +197,31 @@ public class Value {
 
     // COMPARISON OPERATORS
     public Value gt(Value right) {
-        return comparisonEval(right, (l, r) -> l > r);
+        return FALSE; // TODO
     }
 
     public Value gte(Value right) {
-        return comparisonEval(right, (l, r) -> l >= r);
+        return gt(right).equals(TRUE) ? TRUE : eq(right);
     }
 
     public Value lt(Value right) {
-        return comparisonEval(right, (l, r) -> l < r);
+        return FALSE; // TODO
     }
 
     public Value lte(Value right) {
-        return comparisonEval(right, (l, r) -> l <= r);
+        return lt(right).equals(TRUE) ? TRUE : eq(right);
     }
 
     public Value eq(Value right) {
-        if (isNumber() && right.isNumber()) {
-            return comparisonEval(right, (l, r) -> l == r);
-        } else if (isString() && right.isString()) {
-            return getString().equals(right.getString()) ? TRUE : FALSE;
-        }
-        return FALSE;
+        return FALSE; // TODO
     }
 
     public Value neq(Value right) {
-        Value eq = eq(right);
-        return eq.equals(TRUE) ? FALSE : TRUE;
+        return eq(right).equals(TRUE) ? FALSE : TRUE;
     }
 
     public Value not() {
-        if (getNumber() == 0) {
-            return TRUE;
-        }
-        return FALSE;
+        return isTrue() ? TRUE : FALSE;
     }
 
     public Value and(Value right) {
@@ -221,11 +232,8 @@ public class Value {
         return isTrue() || right.isTrue() ? TRUE : FALSE;
     }
 
-    private Value comparisonEval(Value right, BiFunction<Long, Long, Boolean> comparison) {
-        if (comparison.apply((long) getNumber(), (long) right.getNumber())) {
-            return TRUE;
-        }
-        return FALSE;
+    private String getInfo() {
+        return ", Value: " + value + ", isNull: " + isNull + ", type: " + type;
     }
 
     @Override
