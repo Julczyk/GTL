@@ -142,16 +142,14 @@ loop_declaration
 if_declaration
     : IMPLYING expression NEWLINE
     statement_newline*
-    or_statement?
-    or_not_statement?
+    (or_statement | or_not_statement)?
     OR_STH
     ;
 
 or_statement
     : OR expression NEWLINE
     statement_newline*
-    or_statement?
-    or_not_statement?
+    (or_statement | or_not_statement)?
     ;
 
 or_not_statement
