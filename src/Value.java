@@ -1,33 +1,25 @@
-import java.util.function.BiFunction;
-
 /**
  * Value class that encapsulates numeric and string values.
  * Contains all operations between them and all type errors.
- *
  * Empty Value is filled with "", 0, false appropriately
  */
 public class Value {
     // Globals
-    public static final Value FALSE = new Value(0);
-    public static final Value TRUE = new Value(1);
+    public static final Value FALSE = new Value(false);
+    public static final Value TRUE = new Value(true);
     public static final Value NULL = new Value(null, true);
     // Fields
     private Object value;
     private boolean isNull = false;
     private Type type;
-    enum Type {STRING, INT, DOUBLE, BOOLEAN, EMPTY};
+    enum Type {STRING, INT, DOUBLE, BOOLEAN}
     // Private constructor
     private Value(Object value, boolean isNull) {
         this.value = value;
         this.isNull = isNull;
     }
 
-    // TYPE CONSTRUTORS
-    public Value() {
-        this.value = null;
-        this.type = Type.EMPTY;
-    }
-
+    // TYPE CONSTRUCTORS
     public Value(String value) {
         this.value = value;
         this.type = Type.STRING;
@@ -49,44 +41,64 @@ public class Value {
     }
 
     // TYPE GETTERS
-    public String getString() {
-        return switch (type) {
-            case STRING -> (String) value;
-            case INT -> String.valueOf((Integer) value);
-            case DOUBLE -> String.valueOf((Double) value);
-            case BOOLEAN -> getBoolean() ? "c:" : ":c";
-            case EMPTY -> "";
-            default -> throw new UnknownException("func: Value.getString()" + getInfo()); // this won't happen
-        };
+    public Value getString() {
+        return new Value(
+                switch (type) {
+                    case STRING -> (String) value;
+                    case INT -> String.valueOf(value);
+                    case DOUBLE -> String.valueOf(value);
+                    case BOOLEAN -> internalGetBoolean() ? "c:" : ":c";
+                    default -> throw new UnknownException("func: Value.getString()" + getInfo()); // this won't happen
+        });
     }
 
-    public int getNumber() {
-        return (int)value; //TODO replace with type
+    public Value getNumber() {
+        if (type.equals(Type.INT)) return new Value((int)value);
+        if (type.equals(Type.DOUBLE)) return new Value((int)value);
+        throw new TypeException("You cannot see what you " + getMemeType() + ".", "Invalid type conversion between integer and " + type.toString().toLowerCase());
     }
 
-    public double getDouble() {
-        return (double)value; //TODO replace with type
+    public Value getDouble() {
+        if (type.equals(Type.INT)) return new Value((double)value);
+        if (type.equals(Type.DOUBLE)) return new Value((double)value);
+        throw new TypeException("You cannot taste what you " + getMemeType() + ".", "Invalid type conversion between integer and " + type.toString().toLowerCase());
     }
 
-    public boolean getBoolean() {
-        return (boolean)value; //TODO replace with type
+    public Value getBoolean() {
+        return new Value(isTrue());
+    }
+
+    private String internalGetString() {
+        return (String)value;
+    }
+
+    private int internalGetNumber() {
+        return (int)value;
+    }
+
+    private double internalGetDouble() {
+        return (double)value;
+    }
+
+    private boolean internalGetBoolean() {
+        return (boolean)value;
     }
 
     // IS TYPE
     public boolean isString() {
-        return value instanceof String; //TODO replace with type
+        return type.equals(Type.STRING);
     }
 
     public boolean isNumber() {
-        return value instanceof Integer; //TODO replace with type
+        return type.equals(Type.INT);
     }
 
     public boolean isDouble() {
-        return value instanceof Double; //TODO replace with type
+        return type.equals(Type.DOUBLE);
     }
 
     public boolean isBoolean() {
-        return value instanceof Boolean; //TODO replace with type
+        return type.equals(Type.BOOLEAN);
     }
 
     public boolean isNull() {
@@ -97,13 +109,13 @@ public class Value {
         if (isNull) {
             return false;
         } else if (isString()) {
-            return !getString().isEmpty();  // empty string is false
+            return !internalGetString().isEmpty();  // empty string is false
         } else if (isNumber()) {
-            return getNumber() != 0;        // int == 0 is false
+            return internalGetNumber() != 0;        // int == 0 is false
         } else if (isDouble()) {
-            return getDouble() != 0;        // double == 0 is false
+            return internalGetDouble() != 0;        // double == 0 is false
         } else if (isBoolean()) {
-            return getBoolean();            // bool is bool
+            return internalGetBoolean();            // bool is bool
         } else {                            // this won't happen
             throw new UnknownException("func: Value.isTrue()" + getInfo());
         }
@@ -120,12 +132,14 @@ public class Value {
         } else if (isString()) {
             throw new TypeException("You cannot flip what you hear.", "Invalid operation 'flipped' on string");
         } else if (isNumber() || isDouble()) {
-            if (getDouble() == 0) {
+            if (internalGetDouble() == 0) {
                 throw new ArithmeticException("You fool. Trying to flip a zero, huh? Not on my watch.", "Division by 0");
             }
-            return new Value(1/getDouble());// flipping int and double
+            double val = 1 / internalGetDouble();
+            if (Double.isInfinite(val) || Double.isNaN(val)) return NULL;
+            return new Value(val);      // flipping int and double
         } else if (isBoolean()) {
-            return new Value(!getBoolean());// flipping bool
+            return new Value(!internalGetBoolean());// flipping bool
         } else {                            // this won't happen
             throw new UnknownException("func: Value.flip()" + getInfo());
         }
@@ -135,13 +149,13 @@ public class Value {
         if (isNull) {
             throw new TypeException("You cannot inverse what you don't have.", "Invalid operation 'the literal opposite of' on null value");
         } else if (isString()) {                // opposite string, it's reversed
-            return new Value(new StringBuilder(getString()).reverse().toString());
+            return new Value(new StringBuilder(internalGetString()).reverse().toString());
         } else if (isNumber()) {
-            return new Value(-1 * getNumber()); // opposite int
+            return new Value(-1 * internalGetNumber()); // opposite int
         } else if (isDouble()) {
-            return new Value(-1 * getDouble()); // opposite double
+            return new Value(-1 * internalGetDouble()); // opposite double
         } else if (isBoolean()) {
-            return new Value(!getBoolean());    // opposite bool
+            return new Value(!internalGetBoolean());    // opposite bool
         } else {                                // this won't happen
             throw new UnknownException("func: Value.opp()" + getInfo());
         }
@@ -153,51 +167,84 @@ public class Value {
         } else if (isString() && right.isString()) {
             throw new TypeException("You cannot breed hear with hear.", "Invalid operation 'breeding like times' on 'string' and 'string'");
         } else if (isNumber() && right.isString()) {
-            return new Value(right.getString().repeat(getNumber()));
+            return new Value(right.internalGetString().repeat(internalGetNumber()));
         } else if (isString() && right.isNumber()) {
-            return new Value(getString().repeat(right.getNumber()));
+            return new Value(internalGetString().repeat(right.internalGetNumber()));
         } else if (isDouble() && right.isString()) {
             throw new TypeException("You cannot breed taste with hear.", "Invalid operation 'breeding like times' on 'double' and 'string'");
         } else if (isString() && right.isDouble()) {
             throw new TypeException("You cannot breed hear with taste.", "Invalid operation 'breeding like times' on 'string' and 'double'");
         } else if (isBoolean() && right.isString()) {
-            return getBoolean() ? new Value(right.getString()) : new Value("");
+            return internalGetBoolean() ? new Value(right.internalGetString()) : new Value("");
         } else if (isString() && right.isBoolean()) {
-            return right.getBoolean() ? new Value(getString()) : new Value("");
+            return right.internalGetBoolean() ? new Value(internalGetString()) : new Value("");
         } else if (isNumber() && right.isNumber()) {
-            return new Value(getNumber() * right.getNumber());
+            return new Value(internalGetNumber() * right.internalGetNumber());
         } else if (isNumber() && right.isDouble()) {
-            return new Value(getDouble() * right.getDouble());
+            return new Value(internalGetDouble() * right.internalGetDouble());
         } else if (isDouble() && right.isNumber()) {
-            return new Value(getDouble() * right.getDouble());
+            return new Value(internalGetDouble() * right.internalGetDouble());
         } else if (isNumber() && right.isBoolean()) {
-            return right.getBoolean() ? new Value(getNumber()) : new Value(0);
+            return right.internalGetBoolean() ? new Value(internalGetNumber()) : new Value(0);
         } else if (isBoolean() && right.isNumber()) {
-            return getBoolean() ? new Value(right.getNumber()) : new Value(0);
+            return internalGetBoolean() ? new Value(right.internalGetNumber()) : new Value(0);
         } else if (isDouble() && right.isDouble()) {
-            return new Value(getDouble() * right.getDouble());
+            return new Value(internalGetDouble() * right.internalGetDouble());
         } else if (isBoolean() && right.isDouble()) {
-            return getBoolean() ? new Value(right.getDouble()) : new Value(0);
+            return internalGetBoolean() ? new Value(right.internalGetDouble()) : new Value(0);
         } else if (isDouble() && right.isBoolean()) {
-            return right.getBoolean() ? new Value(getDouble()) : new Value(0);
+            return right.internalGetBoolean() ? new Value(internalGetDouble()) : new Value(0);
         } else if (isBoolean() && right.isBoolean()) {
-            return getBoolean() ? new Value(right.getBoolean()) : FALSE;
+            return internalGetBoolean() ? new Value(right.internalGetBoolean()) : FALSE;
         } else {                                // this won't happen
-            throw new UnknownException("func: Value.mul()" + getInfo());
+            throw new UnknownException("func: Value.mul()" + getInfo() + right.getInfo());
         }
     }
 
     public Value mod(Value right) {
-        return FALSE;
+        if (isNull || right.isNull) {
+            throw new TypeException("You cannot see whatever is left from nothing.", "Invalid operation 'whatever left from' on null value");
+        } else if (isNumber() && right.isNumber()) {
+            if (right.internalGetNumber() == 0) {
+                throw new ArithmeticException("You don't know what is left from zero? An idiot, who doesn't know how modulo operation works.", "Modulo by 0");
+            }
+            return new Value(internalGetNumber() % right.internalGetNumber());
+        } else if ((isDouble() || isBoolean() || isString() || isNumber())
+                && (right.isDouble() || right.isBoolean() || right.isString() || right.isNumber())) {
+            throw new TypeException("You cannot "+ getMemeType() +" hear with "+ right.getMemeType() +".", "Invalid operation 'whatever left from' on '"+ type +"' and '"+ right.type +"'");
+        } else {                                // this won't happen
+            throw new UnknownException("func: Value.mod()" + getInfo() + right.getInfo());
+        }
     }
 
     public Value add(Value right) {
-        return FALSE;
+        if (isNull || right.isNull) {
+            throw new TypeException("You cannot join nothing.", "Invalid operation 'joined by' on null value");
+        } else if ((isDouble() || isBoolean() || isString() || isNumber())
+        && (right.isDouble() || right.isBoolean() || right.isString() || right.isNumber())) {
+            return new Value(internalGetString() + right.internalGetString());
+        } else {                                // this won't happen
+            throw new UnknownException("func: Value.add()" + getInfo() + right.getInfo());
+        }
     }
 
     // COMPARISON OPERATORS
     public Value gt(Value right) {
-        return FALSE; // TODO
+        if (isNull || right.isNull) {
+            throw new TypeException("You cannot be beat nothing.", "Invalid operation 'beats' on null value");
+        } else if (isString() && right.isString()) {
+            int cmp = internalGetString().compareTo(right.internalGetString());
+            return cmp > 0 ? TRUE : FALSE;
+        } else if (isNumber() && right.isNumber()) {
+            return internalGetNumber() > right.internalGetNumber() ? TRUE : FALSE;
+        } else if (isDouble() && right.isDouble()) {
+            return internalGetNumber() > right.internalGetNumber() ? TRUE : FALSE;
+        } else if (isBoolean() && right.isBoolean()) {
+            return internalGetBoolean() && !right.internalGetBoolean() ? TRUE : FALSE;
+        } else {
+            throw new UnknownException("func: Value.gt()" + getInfo() + right.getInfo());
+        }
+
     }
 
     public Value gte(Value right) {
@@ -205,7 +252,20 @@ public class Value {
     }
 
     public Value lt(Value right) {
-        return FALSE; // TODO
+        if (isNull || right.isNull) {
+            throw new TypeException("You cannot be not beat nothing.", "Invalid operation 'doesn't beat' on null value");
+        } else if (isString() && right.isString()) {
+            int cmp = internalGetString().compareTo(right.internalGetString());
+            return cmp < 0 ? TRUE : FALSE;
+        } else if (isNumber() && right.isNumber()) {
+            return internalGetNumber() < right.internalGetNumber() ? TRUE : FALSE;
+        } else if (isDouble() && right.isDouble()) {
+            return internalGetNumber() < right.internalGetNumber() ? TRUE : FALSE;
+        } else if (isBoolean() && right.isBoolean()) {
+            return !internalGetBoolean() && right.internalGetBoolean() ? TRUE : FALSE;
+        } else {
+            throw new UnknownException("func: Value.lt()" + getInfo() + right.getInfo());
+        }
     }
 
     public Value lte(Value right) {
@@ -213,7 +273,20 @@ public class Value {
     }
 
     public Value eq(Value right) {
-        return FALSE; // TODO
+        if (isNull || right.isNull) {
+            throw new TypeException("You cannot be vibe with nothing.", "Invalid operation 'vibe with' on null value");
+        } else if (isString() && right.isString()) {
+            int cmp = internalGetString().compareTo(right.internalGetString());
+            return cmp == 0 ? TRUE : FALSE;
+        } else if (isNumber() && right.isNumber()) {
+            return internalGetNumber() == right.internalGetNumber() ? TRUE : FALSE;
+        } else if (isDouble() && right.isDouble()) {
+            return internalGetNumber() == right.internalGetNumber() ? TRUE : FALSE;
+        } else if (isBoolean() && right.isBoolean()) {
+            return internalGetBoolean() == right.internalGetBoolean() ? TRUE : FALSE;
+        } else {
+            throw new UnknownException("func: Value.eq()" + getInfo() + right.getInfo());
+        }
     }
 
     public Value neq(Value right) {
@@ -234,6 +307,16 @@ public class Value {
 
     private String getInfo() {
         return ", Value: " + value + ", isNull: " + isNull + ", type: " + type;
+    }
+
+    private String getMemeType() {
+        return switch(type) {
+            case STRING -> "hear";
+            case INT -> "see";
+            case BOOLEAN -> "smell";
+            case DOUBLE -> "taste";
+            default -> throw new UnknownException("func: Value.getMemeType()" + getInfo()); // this won't happen
+        };
     }
 
     @Override
