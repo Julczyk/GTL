@@ -41,31 +41,30 @@ public class Value {
     }
 
     // TYPE GETTERS
-    public Value getString() {
-        return new Value(
-                switch (type) {
+    public String getString() {
+        return switch (type) {
                     case STRING -> (String) value;
                     case INT -> String.valueOf(value);
                     case DOUBLE -> String.valueOf(value);
                     case BOOLEAN -> internalGetBoolean() ? "c:" : ":c";
                     default -> throw new UnknownException("func: Value.getString()" + getInfo()); // this won't happen
-        });
+        };
     }
 
-    public Value getNumber() {
-        if (type.equals(Type.INT)) return new Value((int)value);
-        if (type.equals(Type.DOUBLE)) return new Value((int)value);
+    public int getNumber() {
+        if (type.equals(Type.INT)) return (int)value;
+        if (type.equals(Type.DOUBLE)) return (int)value;
         throw new TypeException("You cannot see what you " + getMemeType() + ".", "Invalid type conversion between integer and " + type.toString().toLowerCase());
     }
 
-    public Value getDouble() {
-        if (type.equals(Type.INT)) return new Value((double)value);
-        if (type.equals(Type.DOUBLE)) return new Value((double)value);
+    public double getDouble() {
+        if (type.equals(Type.INT)) return (double)value;
+        if (type.equals(Type.DOUBLE)) return (double)value;
         throw new TypeException("You cannot taste what you " + getMemeType() + ".", "Invalid type conversion between integer and " + type.toString().toLowerCase());
     }
 
-    public Value getBoolean() {
-        return new Value(isTrue());
+    public boolean getBoolean() {
+        return isTrue();
     }
 
     private String internalGetString() {
