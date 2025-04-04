@@ -97,9 +97,16 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     }
 
     @Override
-    public Value  visitFactor(GreenTextLangParser.FactorContext ctx) {
-        Value value = visit(ctx.atom());
-        return value;
+    public Value visitFactor(GreenTextLangParser.FactorContext ctx) {
+        if (ctx.THE_LITERAL_OPPOSITE_OF() != null) {
+            return visit(ctx.factor()).opp();
+        } else if (ctx.FLIPPED() != null) {
+            return visit(ctx.factor()).flip();
+        } else if (ctx.atom() != null) {
+            return visit(ctx.atom());
+        } else {
+            throw new UnknownException("func: visitFactor()" + ctx.getText());
+        }
     }
 
     @Override
@@ -110,7 +117,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         } else if (ctx.literal() != null) {
             value = visit(ctx.literal());
         } else {
-            value = Value.NULL;
+            throw new UnknownException("func: visitAtom()" + ctx.getText());
         }
         return value;
     }
@@ -123,8 +130,18 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
 
     @Override
     public Value visitLiteral(GreenTextLangParser.LiteralContext ctx) {
-        String literal = ctx.getText();
-        Value value = new Value(literal);
+        Value value;
+        if (ctx.BOOL_LITERAL() != null) {
+            value = Value.parseBoolean(ctx.getText());
+        } else if (ctx.STRING_LITERAL() != null) {
+            value = Value.parseString(ctx.getText());
+        } else if (ctx.DECIMAL_LITERAL() != null) {
+            value = Value.parseInt(ctx.getText());
+        } else if (ctx.FLOAT_LITERAL() != null) {
+            value = Value.parseBoolean(ctx.getText());
+        } else {
+            value = Value.NULL;
+        }
         return value;
     }
 }

@@ -20,6 +20,43 @@ public class Value {
     }
 
     // TYPE CONSTRUCTORS
+    public static Value parseString(String text) {
+        String val = text.substring(1, text.length() - 1);
+        return new Value(val);
+    }
+
+    public static Value parseInt(String text) {
+        try {
+            int val = Integer.parseInt(text);
+            return new Value(val);
+        } catch (Exception e) {
+            throw new UnknownException("func: Value.parseInt()" + text);
+        }
+    }
+
+    public static Value parseDouble(String text) {
+        try {
+            double val = Double.parseDouble(text);
+            return new Value(val);
+        } catch (Exception e) {
+            throw new UnknownException("func: Value.parseDouble()" + text);
+        }
+    }
+
+    public static Value parseBoolean(String text) {
+        return switch (text) {
+            case "c:" -> TRUE;
+            case ":c" -> FALSE;
+            default -> throw new UnknownException("func: Value.parseBoolean()" + text);
+        };
+    }
+
+    public Value() {
+        this.isNull = true;
+        this.value = null;
+        this.type = null;
+    }
+
     public Value(String value) {
         this.value = value;
         this.type = Type.STRING;
@@ -76,7 +113,7 @@ public class Value {
     }
 
     private double internalGetDouble() {
-        return (double)value;
+        return (double)(int)value; // dirty Java hack to cast Int to Double
     }
 
     private boolean internalGetBoolean() {
