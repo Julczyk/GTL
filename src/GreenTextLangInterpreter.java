@@ -91,22 +91,36 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     }
 
     @Override
-    public Value  visitTerm(GreenTextLangParser.TermContext ctx) {
-        Value value = visit(ctx.factor());
-        return value;
+    public Value visitTerm(GreenTextLangParser.TermContext ctx) {
+        if (ctx.BREEDING_LIKE() != null) {
+            Value val1 = visit(ctx.term());
+            Value val2 = visit(ctx.expression());
+            return val1.mul(val2);
+        } else if (ctx.WHATEVER_LEFT_FROM() != null) {
+            Value val1 = visit(ctx.term());
+            Value val2 = visit(ctx.factor());
+            return val1.mod(val2);
+        } else if (ctx.factor() != null) {
+            return visit(ctx.factor());
+        }
+        throw new UnknownException("func: visitTerm()" + ctx.getText());
     }
 
     @Override
     public Value visitFactor(GreenTextLangParser.FactorContext ctx) {
-        if (ctx.THE_LITERAL_OPPOSITE_OF() != null) {
-            return visit(ctx.factor()).opp();
-        } else if (ctx.FLIPPED() != null) {
-            return visit(ctx.factor()).flip();
+        if (ctx.factor() != null) {
+            Value val = visit(ctx.factor());
+            try {
+                if (ctx.THE_LITERAL_OPPOSITE_OF() != null) return val.opp();
+                else if (ctx.FLIPPED() != null) return val.flip();
+            } catch (InterpreterException e) {
+                addLocation(e, ctx);
+                throw e;
+            }
         } else if (ctx.atom() != null) {
             return visit(ctx.atom());
-        } else {
-            throw new UnknownException("func: visitFactor()" + ctx.getText());
         }
+        throw new UnknownException("func: visitFactor()" + ctx.getText());
     }
 
     @Override
@@ -125,7 +139,12 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     @Override
     public Value visitVariable(GreenTextLangParser.VariableContext ctx) {
         String name = ctx.getText();
-        return memory.get(name);
+        try {
+            return memory.get(name);
+        } catch (InterpreterException e) {
+            addLocation(e, ctx);
+            throw e;
+        }
     }
 
     @Override
@@ -138,7 +157,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         } else if (ctx.DECIMAL_LITERAL() != null) {
             value = Value.parseInt(ctx.getText());
         } else if (ctx.FLOAT_LITERAL() != null) {
-            value = Value.parseBoolean(ctx.getText());
+            value = Value.parseDouble(ctx.getText());
         } else {
             value = Value.NULL;
         }

@@ -113,7 +113,8 @@ public class Value {
     }
 
     private double internalGetDouble() {
-        return (double)(int)value; // dirty Java hack to cast Int to Double
+        if (type.equals(Type.DOUBLE)) return (double)value;
+        else return (double)(int)value; // dirty Java hack to cast Int to Double
     }
 
     private boolean internalGetBoolean() {
@@ -247,7 +248,7 @@ public class Value {
             return new Value(internalGetNumber() % right.internalGetNumber());
         } else if ((isDouble() || isBoolean() || isString() || isNumber())
                 && (right.isDouble() || right.isBoolean() || right.isString() || right.isNumber())) {
-            throw new TypeException("You cannot "+ getMemeType() +" hear with "+ right.getMemeType() +".", "Invalid operation 'whatever left from' on '"+ type +"' and '"+ right.type +"'");
+            throw new TypeException("You cannot "+ getMemeType() +" whatever is left from what you "+ right.getMemeType() +".", "Invalid operation 'whatever left from' on '"+ type +"' and '"+ right.type +"'");
         } else {                                // this won't happen
             throw new UnknownException("func: Value.mod()" + getInfo() + right.getInfo());
         }
@@ -256,9 +257,17 @@ public class Value {
     public Value add(Value right) {
         if (isNull || right.isNull) {
             throw new TypeException("You cannot join nothing.", "Invalid operation 'joined by' on null value");
-        } else if ((isDouble() || isBoolean() || isString() || isNumber())
-        && (right.isDouble() || right.isBoolean() || right.isString() || right.isNumber())) {
+        } else if (((isDouble() || isBoolean() || isString() || isNumber()) && right.isString())
+                || ((right.isDouble() || right.isBoolean() || right.isString() || right.isNumber()) && isString())) {
             return new Value(internalGetString() + right.internalGetString());
+        } else if (isDouble() && right.isDouble()
+                || isDouble() && right.isNumber()
+                || isNumber() && right.isDouble()) {
+            return new Value(internalGetDouble() + right.internalGetDouble());
+        } else if (isNumber() && right.isNumber()) {
+            return new Value(internalGetNumber() + right.internalGetNumber());
+        } else if (isBoolean() && right.isBoolean()) {
+            return internalGetBoolean() ? TRUE : new Value(right.internalGetBoolean());
         } else {                                // this won't happen
             throw new UnknownException("func: Value.add()" + getInfo() + right.getInfo());
         }
