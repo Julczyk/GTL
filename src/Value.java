@@ -286,7 +286,8 @@ public class Value {
             return internalGetDouble() > right.internalGetDouble() ? TRUE : FALSE;
         } else if (isBoolean() && right.isBoolean()) {
             return internalGetBoolean() && !right.internalGetBoolean() ? TRUE : FALSE;
-        } else if (true) {
+        } else if (isDouble() || isBoolean() || isString() || isNumber()
+                || right.isDouble() || right.isBoolean() || right.isString() || right.isNumber()) {
             throw new TypeException("You cannot compare"+ getMemeType() +" with "+ right.getMemeType() +".", "Invalid operation 'comparison' on '"+ type +"' and '"+ right.type +"'");
         } else {
             throw new UnknownException("func: Value.gt()" + getInfo() + right.getInfo());
@@ -294,11 +295,11 @@ public class Value {
 
     }
 
-    public Value gte(Value right) {
+    public Value gte(Value right) throws TypeException {
         return gt(right).equals(TRUE) ? TRUE : eq(right);
     }
 
-    public Value lt(Value right) {
+    public Value lt(Value right) throws TypeException {
         if (isNull || right.isNull) {
             throw new TypeException("You cannot be not beat nothing.", "Invalid operation 'doesn't beat' on null value");
         } else if (isString() && right.isString()) {
@@ -310,7 +311,8 @@ public class Value {
             return internalGetDouble() < right.internalGetDouble() ? TRUE : FALSE;
         } else if (isBoolean() && right.isBoolean()) {
             return !internalGetBoolean() && right.internalGetBoolean() ? TRUE : FALSE;
-        } else if (true) {
+        } else if (isDouble() || isBoolean() || isString() || isNumber()
+                || right.isDouble() || right.isBoolean() || right.isString() || right.isNumber()) {
             throw new TypeException("You cannot compare "+ getMemeType() +" with "+ right.getMemeType() +".", "Invalid operation 'comparison' on '"+ type +"' and '"+ right.type +"'");
         } else {
             throw new UnknownException("func: Value.lt()" + getInfo() + right.getInfo());

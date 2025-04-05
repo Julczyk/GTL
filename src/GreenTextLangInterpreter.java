@@ -56,31 +56,67 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
 
     @Override
     public Value visitExpression(GreenTextLangParser.ExpressionContext ctx) {
-        Value value = visit(ctx.also(0));
-        return value;
+        if (ctx.also(1) == null) {
+            return visit(ctx.also(0));
+        }
+        Value result;
+        for (var node : ctx.also()) {
+            result = visit(node);
+            try {
+                if (result.isTrue()) {
+                    return Value.TRUE;
+                }
+            } catch (InterpreterException e) {
+                addLocation(e, ctx);
+                throw e;
+            }
+        }
+        return Value.FALSE;
     }
 
     @Override
     public Value visitAlso(GreenTextLangParser.AlsoContext ctx) {
-        Value value = visit(ctx.inversion(0));
-        return value;
+        if (ctx.inversion(1) == null) {
+            return visit(ctx.inversion(0));
+        }
+        Value result;
+        for (var node : ctx.inversion()) {
+            result = visit(node);
+            try {
+                if (result.isFalse()) {
+                    return Value.FALSE;
+                }
+            } catch (InterpreterException e) {
+                addLocation(e, ctx);
+                throw e;
+            }
+        }
+        return Value.TRUE;
     }
 
     @Override
-    public Value  visitInversion(GreenTextLangParser.InversionContext ctx) {
-        Value value = visit(ctx.comparison());
-        return value;
+    public Value visitInversion(GreenTextLangParser.InversionContext ctx) {
+        if (ctx.NOT() == null) {
+            return visit(ctx.comparison());
+        }
+        Value value = visit(ctx.inversion());
+        try {
+            return value.isTrue() ? Value.FALSE : Value.TRUE;
+        } catch (InterpreterException e) {
+            addLocation(e, ctx);
+            throw e;
+        }
     }
 
     @Override
-    public Value  visitComparison(GreenTextLangParser.ComparisonContext ctx) {
+    public Value visitComparison(GreenTextLangParser.ComparisonContext ctx) {
         if (ctx.sum(1) == null) {
             return visit(ctx.sum(0));
         }
         // context exists
+        Value val1 = visit(ctx.sum(0));
+        Value val2 = visit(ctx.sum(1));
         try {
-            Value val1 = visit(ctx.sum(0));
-            Value val2 = visit(ctx.sum(1));
             if (ctx.VIBE_WITH() != null) {
                 return val1.eq(val2);
             } else if (ctx.DOESNT_VIBE_WITH() != null) {
@@ -106,7 +142,12 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         if (ctx.JOINED_BY() != null) {
             Value val1 = visit(ctx.sum());
             Value val2 = visit(ctx.term());
-            return val1.add(val2);
+            try {
+                return val1.add(val2);
+            } catch (InterpreterException e) {
+                addLocation(e, ctx);
+                throw e;
+            }
         } else {
             return visit(ctx.term());
         }
@@ -117,11 +158,21 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         if (ctx.BREEDING_LIKE() != null) {
             Value val1 = visit(ctx.term());
             Value val2 = visit(ctx.expression());
-            return val1.mul(val2);
+            try {
+                return val1.mul(val2);
+            } catch (InterpreterException e) {
+                addLocation(e, ctx);
+                throw e;
+            }
         } else if (ctx.WHATEVER_LEFT_FROM() != null) {
             Value val1 = visit(ctx.term());
             Value val2 = visit(ctx.factor());
-            return val1.mod(val2);
+            try {
+                return val1.mod(val2);
+            } catch (InterpreterException e) {
+                addLocation(e, ctx);
+                throw e;
+            }
         } else if (ctx.factor() != null) {
             return visit(ctx.factor());
         }
@@ -172,17 +223,22 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     @Override
     public Value visitLiteral(GreenTextLangParser.LiteralContext ctx) {
         Value value;
-        if (ctx.BOOL_LITERAL() != null) {
-            value = Value.parseBoolean(ctx.getText());
-        } else if (ctx.STRING_LITERAL() != null) {
-            value = Value.parseString(ctx.getText());
-        } else if (ctx.DECIMAL_LITERAL() != null) {
-            value = Value.parseInt(ctx.getText());
-        } else if (ctx.FLOAT_LITERAL() != null) {
-            value = Value.parseDouble(ctx.getText());
-        } else {
-            value = Value.NULL;
+        try {
+            if (ctx.BOOL_LITERAL() != null) {
+                value = Value.parseBoolean(ctx.getText());
+            } else if (ctx.STRING_LITERAL() != null) {
+                value = Value.parseString(ctx.getText());
+            } else if (ctx.DECIMAL_LITERAL() != null) {
+                value = Value.parseInt(ctx.getText());
+            } else if (ctx.FLOAT_LITERAL() != null) {
+                value = Value.parseDouble(ctx.getText());
+            } else {
+                value = Value.NULL;
+            }
+            return value;
+        } catch (InterpreterException e) {
+            addLocation(e, ctx);
+            throw e;
         }
-        return value;
     }
 }

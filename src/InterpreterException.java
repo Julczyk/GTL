@@ -33,6 +33,6 @@ public abstract class InterpreterException extends RuntimeException {
         return msg + "\nWomp womp at [" + line + ", " + posInLine + "]: " + super.getMessage();
     }
 
-    @Override
-    public synchronized Throwable fillInStackTrace()  { return this; }
+//    @Override
+//    public synchronized Throwable fillInStackTrace()  { return this; }
 }
