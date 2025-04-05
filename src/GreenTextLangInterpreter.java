@@ -74,20 +74,42 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
 
     @Override
     public Value  visitComparison(GreenTextLangParser.ComparisonContext ctx) {
-        Value value = visit(ctx.sum());
-        return value;
-    }
-
-    @Override
-    public Value  visitCompare_sum(GreenTextLangParser.Compare_sumContext ctx) {
-        Value value = visit(ctx.sum());
-        return value;
+        if (ctx.sum(1) == null) {
+            return visit(ctx.sum(0));
+        }
+        // context exists
+        try {
+            Value val1 = visit(ctx.sum(0));
+            Value val2 = visit(ctx.sum(1));
+            if (ctx.VIBE_WITH() != null) {
+                return val1.eq(val2);
+            } else if (ctx.DOESNT_VIBE_WITH() != null) {
+                return val1.neq(val2);
+            } else if (ctx.BEATEN_BY() != null) {
+                return val1.lt(val2);
+            } else if (ctx.DOESNT_BEAT() != null) {
+                return val1.lte(val2);
+            } else if (ctx.BEATS() != null) {
+                return val1.gt(val2);
+            } else if (ctx.UNBEATEN_BY() != null) {
+                return val1.gte(val2);
+            }
+            throw new UnknownException("func: visitComparison()" + ctx.getText());
+        } catch (InterpreterException e) {
+            addLocation(e, ctx);
+            throw e;
+        }
     }
 
     @Override
     public Value  visitSum(GreenTextLangParser.SumContext ctx) {
-        Value value = visit(ctx.term());
-        return value;
+        if (ctx.JOINED_BY() != null) {
+            Value val1 = visit(ctx.sum());
+            Value val2 = visit(ctx.term());
+            return val1.add(val2);
+        } else {
+            return visit(ctx.term());
+        }
     }
 
     @Override

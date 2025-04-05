@@ -282,10 +282,12 @@ public class Value {
             return cmp > 0 ? TRUE : FALSE;
         } else if (isNumber() && right.isNumber()) {
             return internalGetNumber() > right.internalGetNumber() ? TRUE : FALSE;
-        } else if (isDouble() && right.isDouble()) {
-            return internalGetNumber() > right.internalGetNumber() ? TRUE : FALSE;
+        } else if ((isDouble() || isNumber()) && (right.isDouble() || right.isNumber())) {
+            return internalGetDouble() > right.internalGetDouble() ? TRUE : FALSE;
         } else if (isBoolean() && right.isBoolean()) {
             return internalGetBoolean() && !right.internalGetBoolean() ? TRUE : FALSE;
+        } else if (true) {
+            throw new TypeException("You cannot compare"+ getMemeType() +" with "+ right.getMemeType() +".", "Invalid operation 'comparison' on '"+ type +"' and '"+ right.type +"'");
         } else {
             throw new UnknownException("func: Value.gt()" + getInfo() + right.getInfo());
         }
@@ -304,10 +306,12 @@ public class Value {
             return cmp < 0 ? TRUE : FALSE;
         } else if (isNumber() && right.isNumber()) {
             return internalGetNumber() < right.internalGetNumber() ? TRUE : FALSE;
-        } else if (isDouble() && right.isDouble()) {
-            return internalGetNumber() < right.internalGetNumber() ? TRUE : FALSE;
+        } else if ((isDouble() || isNumber()) && (right.isDouble() || right.isNumber())) {
+            return internalGetDouble() < right.internalGetDouble() ? TRUE : FALSE;
         } else if (isBoolean() && right.isBoolean()) {
             return !internalGetBoolean() && right.internalGetBoolean() ? TRUE : FALSE;
+        } else if (true) {
+            throw new TypeException("You cannot compare "+ getMemeType() +" with "+ right.getMemeType() +".", "Invalid operation 'comparison' on '"+ type +"' and '"+ right.type +"'");
         } else {
             throw new UnknownException("func: Value.lt()" + getInfo() + right.getInfo());
         }
