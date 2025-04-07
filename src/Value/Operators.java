@@ -12,38 +12,44 @@ public class Operators {
         return val.getString();
     }
 
+    public static Value castValue(Value valTo, Value valFrom) {
+        if (valFrom.isNull) {
+            return new Value(null, valFrom.type, true);
+        }
+        return switch (valTo.type) {
+            case BOOLEAN -> Operators.castBoolean(valFrom);
+            case STRING -> Operators.castString(valFrom);
+            case INT -> Operators.castInt(valFrom);
+            case DOUBLE -> Operators.castDouble(valFrom);
+            default ->
+                    throw new TypeException("Unable to cast " + valFrom.getMemeType() + " to " + valTo.getMemeType(), "Unable to cast " + valFrom.type + " to " + valTo.type);
+        };
+    }
+
     public static Value castString(Value val) {
         if (val.isNull) {
-            val.value = null;
-            val.type = Value.Type.STRING;
-            return val;
+            return new Value(null, val.type, true);
         }
         return new StringValue(val.getString());
     }
 
     public static Value castInt(Value val) {
         if (val.isNull) {
-            val.value = null;
-            val.type = Value.Type.INT;
-            return val;
+            return new Value(null, val.type, true);
         }
         return new IntegerValue(val.getInt());
     }
 
     public static Value castDouble(Value val) {
         if (val.isNull) {
-            val.value = null;
-            val.type = Value.Type.DOUBLE;
-            return val;
+            return new Value(null, val.type, true);
         }
         return new DoubleValue(val.getDouble());
     }
 
     public static Value castBoolean(Value val) {
         if (val.isNull) {
-            val.value = null;
-            val.type = Value.Type.BOOLEAN;
-            return val;
+            return new Value(null, val.type, true);
         }
         return new BooleanValue(val.getBoolean());
     }

@@ -48,11 +48,42 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     }
 
     @Override
+    public Value visitVariable_declaration(GreenTextLangParser.Variable_declarationContext ctx) {
+        String name = ctx.NAME().getText();
+        Value value = null;
+        if (ctx.expressions() != null) {
+            value = visit(ctx.expressions());
+        }
+        try {
+            if (ctx.type().primitive_type().SEE() != null) {
+                memory.create(name, Value.Type.INT, value);
+            } else if (ctx.type().primitive_type().TASTE() != null) {
+                memory.create(name, Value.Type.DOUBLE, value);
+            } else if (ctx.type().primitive_type().HEAR() != null) {
+                memory.create(name, Value.Type.STRING, value);
+            } else if (ctx.type().primitive_type().SMELL() != null) {
+                memory.create(name, Value.Type.BOOLEAN, value);
+            } else {
+                throw new UnknownException("Unhandled case: " + ctx.getText());
+            }
+            return null;
+        } catch (InterpreterException e) {
+            addLocation(e, ctx);
+            throw e;
+        }
+    }
+
+    @Override
     public Value visitVariable_assignment(GreenTextLangParser.Variable_assignmentContext ctx) {
         String name = ctx.variable(0).getText();
         Value value = visit(ctx.expressions());
-        memory.assign(name, value);
-        return null;
+        try {
+            memory.assign(name, value);
+            return null;
+        } catch (InterpreterException e) {
+            addLocation(e, ctx);
+            throw e;
+        }
     }
 
     @Override

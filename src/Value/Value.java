@@ -97,11 +97,11 @@ public class Value {
 
 
     // STATIC FUNCTIONS
-    private String getInfo() {
+    String getInfo() {
         return ", Value.Value: " + value + ", isNull: " + isNull + ", type: " + type;
     }
 
-    private String getMemeType() {
+    String getMemeType() {
         return switch(type) {
             case STRING -> "hear";
             case INT -> "see";
