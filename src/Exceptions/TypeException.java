@@ -1,3 +1,5 @@
+package Exceptions;
+
 /**
  * Type mismatch error.
  */

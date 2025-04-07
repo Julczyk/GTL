@@ -1,3 +1,5 @@
+package Exceptions;
+
 /**
  * Variable has not been declared.
  */

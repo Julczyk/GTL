@@ -1,3 +1,11 @@
+import Exceptions.InterpreterException;
+import Exceptions.UnknownException;
+import Value.Value;
+import Value.IntegerValue;
+import Value.StringValue;
+import Value.BooleanValue;
+import Value.DoubleValue;
+import Value.Operators;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -35,7 +43,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     public Value visitSpit(GreenTextLangParser.SpitContext ctx) {
         // Extracts and prints the string from the spit statement
         Value value = visit(ctx.expressions());
-        System.out.println(value.getString());
+        System.out.println(Operators.getString(value));
         return null;
     }
 
@@ -63,7 +71,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         for (var node : ctx.also()) {
             result = visit(node);
             try {
-                if (result.isTrue()) {
+                if (Operators.isTrue(result)) {
                     return Value.TRUE;
                 }
             } catch (InterpreterException e) {
@@ -83,7 +91,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         for (var node : ctx.inversion()) {
             result = visit(node);
             try {
-                if (result.isFalse()) {
+                if (Operators.isTrue(result)) {
                     return Value.FALSE;
                 }
             } catch (InterpreterException e) {
@@ -101,7 +109,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         }
         Value value = visit(ctx.inversion());
         try {
-            return value.isTrue() ? Value.FALSE : Value.TRUE;
+            return Operators.isTrue(value) ? Value.FALSE : Value.TRUE;
         } catch (InterpreterException e) {
             addLocation(e, ctx);
             throw e;
@@ -118,17 +126,17 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         Value val2 = visit(ctx.sum(1));
         try {
             if (ctx.VIBE_WITH() != null) {
-                return val1.eq(val2);
+                return Operators.eq(val1, val2);
             } else if (ctx.DOESNT_VIBE_WITH() != null) {
-                return val1.neq(val2);
+                return Operators.neq(val1, val2);
             } else if (ctx.BEATEN_BY() != null) {
-                return val1.lt(val2);
+                return Operators.lt(val1, val2);
             } else if (ctx.DOESNT_BEAT() != null) {
-                return val1.lte(val2);
+                return Operators.lte(val1, val2);
             } else if (ctx.BEATS() != null) {
-                return val1.gt(val2);
+                return Operators.gt(val1, val2);
             } else if (ctx.UNBEATEN_BY() != null) {
-                return val1.gte(val2);
+                return Operators.gte(val1, val2);
             }
             throw new UnknownException("func: visitComparison()" + ctx.getText());
         } catch (InterpreterException e) {
@@ -143,7 +151,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             Value val1 = visit(ctx.sum());
             Value val2 = visit(ctx.term());
             try {
-                return val1.add(val2);
+                return Operators.add(val1, val2);
             } catch (InterpreterException e) {
                 addLocation(e, ctx);
                 throw e;
@@ -159,7 +167,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             Value val1 = visit(ctx.term());
             Value val2 = visit(ctx.expression());
             try {
-                return val1.mul(val2);
+                return Operators.mul(val1, val2);
             } catch (InterpreterException e) {
                 addLocation(e, ctx);
                 throw e;
@@ -168,7 +176,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             Value val1 = visit(ctx.term());
             Value val2 = visit(ctx.factor());
             try {
-                return val1.mod(val2);
+                return Operators.mod(val1, val2);
             } catch (InterpreterException e) {
                 addLocation(e, ctx);
                 throw e;
@@ -184,8 +192,8 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         if (ctx.factor() != null) {
             Value val = visit(ctx.factor());
             try {
-                if (ctx.THE_LITERAL_OPPOSITE_OF() != null) return val.opp();
-                else if (ctx.FLIPPED() != null) return val.flip();
+                if (ctx.THE_LITERAL_OPPOSITE_OF() != null) return Operators.opp(val);
+                else if (ctx.FLIPPED() != null) return Operators.flip(val);
             } catch (InterpreterException e) {
                 addLocation(e, ctx);
                 throw e;
@@ -225,15 +233,15 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         Value value;
         try {
             if (ctx.BOOL_LITERAL() != null) {
-                value = Value.parseBoolean(ctx.getText());
+                value = new BooleanValue(ctx.getText());
             } else if (ctx.STRING_LITERAL() != null) {
-                value = Value.parseString(ctx.getText());
+                value = new StringValue(ctx.getText());
             } else if (ctx.DECIMAL_LITERAL() != null) {
-                value = Value.parseInt(ctx.getText());
+                value = new IntegerValue(ctx.getText());
             } else if (ctx.FLOAT_LITERAL() != null) {
-                value = Value.parseDouble(ctx.getText());
+                value = new DoubleValue(ctx.getText());
             } else {
-                value = Value.NULL;
+                throw new UnknownException("func: visitLiteral()" + ctx.getText());
             }
             return value;
         } catch (InterpreterException e) {

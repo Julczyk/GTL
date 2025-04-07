@@ -1,3 +1,5 @@
+package Exceptions;
+
 /**
  * Base exception for interpreter runtime errors.
  */
@@ -30,7 +32,11 @@ public abstract class InterpreterException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return msg + "\nWomp womp at [" + line + ", " + posInLine + "]: " + super.getMessage();
+        String message = super.getMessage();
+        String meme = message.split("\n")[0];
+        String prog = message.split("\n")[1];
+        return msg + "\nWomp womp at [" + line + ", " + posInLine + "]: " + meme +
+                         "\nError at [" + line + ", " + posInLine + "]: " + prog;
     }
 
     @Override

@@ -1,3 +1,5 @@
+package Exceptions;
+
 /**
  * Something unknown has happened in the interpreter.
  */
