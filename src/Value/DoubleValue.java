@@ -27,7 +27,7 @@ public class DoubleValue extends Value {
 
     @Override
     int getInt() {
-        return (int) value;
+        return (int)(double) value;
     }
 
     @Override
