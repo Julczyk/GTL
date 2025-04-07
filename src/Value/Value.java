@@ -21,6 +21,7 @@ public class Value {
     Value(Object value, Type type) {
         this.value = value;
         this.type = type;
+        if (value == null) this.isNull = true;
     }
 
     public Value(Object value, Type type, boolean isNull) {

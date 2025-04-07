@@ -10,8 +10,9 @@ public class BooleanValue extends Value {
 
     public BooleanValue(String text) {
         super(null, Type.BOOLEAN);
-        if (text.equals("c:")) value = true;
-        else if (text.equals(":c")) value = false;
+        if (text == null) value = null;
+        else if (text.equals("c:")) {value = true; isNull = false;}
+        else if (text.equals(":c")) {value = false; isNull = false;}
         else throw new UnknownException("func: BooleanValue() " + text);
     }
 

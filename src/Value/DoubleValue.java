@@ -15,6 +15,7 @@ public class DoubleValue extends Value {
         super(null, Type.DOUBLE);
         try {
             value = Double.parseDouble(text);
+            isNull = false;
         } catch (Exception e) {
             throw new UnknownException("func: DoubleValue()" + text);
         }

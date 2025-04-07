@@ -13,6 +13,7 @@ public class IntegerValue extends Value {
         super(null, Type.INT);
         try {
             value = Integer.parseInt(text);
+            isNull = false;
         } catch (Exception e) {
             throw new UnknownException("func: Value.Value.parseInt()" + text);
         }

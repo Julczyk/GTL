@@ -13,9 +13,6 @@ public class Operators {
     }
 
     public static Value castValue(Value valTo, Value valFrom) {
-        if (valFrom.isNull) {
-            return new Value(null, valFrom.type, true);
-        }
         return switch (valTo.type) {
             case BOOLEAN -> Operators.castBoolean(valFrom);
             case STRING -> Operators.castString(valFrom);
@@ -28,28 +25,28 @@ public class Operators {
 
     public static Value castString(Value val) {
         if (val.isNull) {
-            return new Value(null, val.type, true);
+            return new StringValue(null);
         }
         return new StringValue(val.getString());
     }
 
     public static Value castInt(Value val) {
         if (val.isNull) {
-            return new Value(null, val.type, true);
+            return new IntegerValue(null);
         }
         return new IntegerValue(val.getInt());
     }
 
     public static Value castDouble(Value val) {
         if (val.isNull) {
-            return new Value(null, val.type, true);
+            return new DoubleValue(null);
         }
         return new DoubleValue(val.getDouble());
     }
 
     public static Value castBoolean(Value val) {
         if (val.isNull) {
-            return new Value(null, val.type, true);
+            return new BooleanValue(null);
         }
         return new BooleanValue(val.getBoolean());
     }
