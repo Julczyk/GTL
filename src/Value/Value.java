@@ -31,7 +31,7 @@ public class Value {
     }
     // TYPE CASTING
     String getString() {
-        return String.valueOf(value);
+        return String.valueOf(value);  // There is always string representation
     }
 
     int getInt() {
@@ -44,10 +44,6 @@ public class Value {
 
     double getDouble() {
         throw new TypeException("You cannot taste what you " + getMemeType() + ".", "Invalid type conversion between double and " + type.toString().toLowerCase());
-    }
-
-    boolean isTrue() {
-        return getBoolean();
     }
 
     // ARITHMETIC OPERATIONS

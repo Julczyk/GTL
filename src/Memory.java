@@ -11,14 +11,15 @@ import java.util.Map;
  */
 public class Memory {
 
-    private Map<String, Value> memory = new HashMap<>();
+    private Map<String, Value> locals = new HashMap<>();
+    private Map<String, Value> globals = new HashMap<>();
 
     public void create(String name, Type type) {
-        if (memory.containsKey(name)) {
+        if (locals.containsKey(name)) {
             throw new VariableNotFoundException("Double " + name + " and give it to the next person.",
                     "Variable '" + name + "' has already been declared.");
         }
-        memory.put(name, new Value(null, type, true));
+        locals.put(name, new Value(null, type, true));
     }
 
     public void create(String name, Type type, Value value) {
@@ -27,20 +28,20 @@ public class Memory {
     }
 
     public Value get(String name) {
-        if (!memory.containsKey(name)) {
+        if (!locals.containsKey(name)) {
             throw new VariableNotFoundException("Your " + name + " is missing, maybe he went to buy milk and hasn't returned yet.",
                     "Variable '" + name + "' has not been found in this scope");
         }
-        return memory.get(name);
+        return locals.get(name);
     }
 
     public void assign(String name, Value value) {
         Value curr_val = get(name);
         curr_val = Operators.castValue(curr_val, value);
-        memory.put(name, curr_val);
+        locals.put(name, curr_val);
     }
 
     public void free() {
-        memory.clear();
+        locals.clear();
     }
 }
