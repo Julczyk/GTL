@@ -25,6 +25,8 @@ public class StringValue extends Value {
     Value mul(Value right) {
         if (right.type == Type.BOOLEAN) {
             return new StringValue(right.getBoolean() ? getString() : "");
+        } else if (right.type == Type.INT) {
+            return new StringValue(getString().repeat(right.getInt()));
         }
         return super.mul(right);
     }
