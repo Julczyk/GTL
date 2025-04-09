@@ -266,7 +266,9 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             if (ctx.BOOL_LITERAL() != null) {
                 value = new BooleanValue(ctx.getText());
             } else if (ctx.STRING_LITERAL() != null) {
-                value = new StringValue(ctx.getText());
+                String text = ctx.getText();
+                text = text.substring(1, text.length()-1);
+                value = new StringValue(text);
             } else if (ctx.DECIMAL_LITERAL() != null) {
                 value = new IntegerValue(ctx.getText());
             } else if (ctx.FLOAT_LITERAL() != null) {
