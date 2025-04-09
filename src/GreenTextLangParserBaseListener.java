@@ -472,18 +472,6 @@ public class GreenTextLangParserBaseListener implements GreenTextLangParserListe
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCompare_sum(GreenTextLangParser.Compare_sumContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCompare_sum(GreenTextLangParser.Compare_sumContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterSum(GreenTextLangParser.SumContext ctx) { }
 	/**
 	 * {@inheritDoc}

@@ -387,16 +387,6 @@ public interface GreenTextLangParserListener extends ParseTreeListener {
 	 */
 	void exitComparison(GreenTextLangParser.ComparisonContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link GreenTextLangParser#compare_sum}.
-	 * @param ctx the parse tree
-	 */
-	void enterCompare_sum(GreenTextLangParser.Compare_sumContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link GreenTextLangParser#compare_sum}.
-	 * @param ctx the parse tree
-	 */
-	void exitCompare_sum(GreenTextLangParser.Compare_sumContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link GreenTextLangParser#sum}.
 	 * @param ctx the parse tree
 	 */

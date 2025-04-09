@@ -238,12 +238,6 @@ public interface GreenTextLangParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitComparison(GreenTextLangParser.ComparisonContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GreenTextLangParser#compare_sum}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCompare_sum(GreenTextLangParser.Compare_sumContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link GreenTextLangParser#sum}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

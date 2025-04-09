@@ -244,16 +244,13 @@ inversion
     ;
 
 comparison
-    : sum compare_sum?
-    ;
-
-compare_sum
-    : VIBE_WITH sum
-    | DOESNT_VIBE_WITH sum
-    | BEATEN_BY sum
-    | DOESNT_BEAT sum
-    | BEATS sum
-    | UNBEATEN_BY sum
+    : sum VIBE_WITH sum
+    | sum DOESNT_VIBE_WITH sum
+    | sum BEATEN_BY sum
+    | sum DOESNT_BEAT sum
+    | sum BEATS sum
+    | sum UNBEATEN_BY sum
+    | sum
     ;
 
 sum
