@@ -283,13 +283,6 @@ public class GreenTextLangParserBaseVisitor<T> extends AbstractParseTreeVisitor<
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitCompare_sum(GreenTextLangParser.Compare_sumContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitSum(GreenTextLangParser.SumContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
