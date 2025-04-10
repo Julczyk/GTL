@@ -15,11 +15,8 @@ import java.nio.file.Path;
 
 
 public class GreenTextLangInterpreter {
-    public static void main(String[] args) throws IOException {
-        String test = "test.gtl";
-        String world = "hello_world.gtl";
-        String fib = "fibonacci.gtl";
-        String input = Files.readString(Path.of(System.getProperty("user.dir") + "/examples/" + test));
+    public static void main(String[] args) {
+        String input = " > be me\n > spit \"Hello, World!\"\n > profit"; // Example program
 
         // Assuming ANTLR setup and parser generation is done
         GreenTextLangLexer lexer = new GreenTextLangLexer(CharStreams.fromString(input));
