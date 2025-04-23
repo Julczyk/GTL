@@ -32,7 +32,7 @@ After name instead of standard `=` keywords `giving` or `gives` and then value o
 - `multiple` - keyword when declaring dictionary
 
 ### array
-on declaration we specify array after datatype using `about` keyword followed by ammount of allocated memory.\
+on declaration we specify array after datatype using `about` keyword followed by amount of allocated memory.\
 For example: `>see about 500 pigeons` allocates array of 500 integers called "pigeons".
 
 #### Assigning values to the whole array

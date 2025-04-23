@@ -1,5 +1,4 @@
-import Exceptions.InterpreterException;
-import Exceptions.UnknownException;
+import Exceptions.*;
 import Value.Value;
 import Value.IntegerValue;
 import Value.StringValue;
@@ -8,6 +7,7 @@ import Value.DoubleValue;
 import Value.Operators;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.BailErrorStrategy;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,17 +15,39 @@ import java.nio.file.Path;
 
 
 public class GreenTextLangInterpreter {
-    public static void main(String[] args) {
-        String input = " > be me\n > spit \"Hello, World!\"\n > profit"; // Example program
+    public static void main(String[] args) throws IOException {
+        //String input = " > be me\n > spit \"Hello, World!\"\n > profit"; // Example program
+        String test = "test.gtl";
+        String world = "hello_world.gtl";
+        String fib = "fibonacci.gtl";
+        String input = Files.readString(Path.of(System.getProperty("user.dir") + "/examples/" + test));
+
+        try{
 
         // Assuming ANTLR setup and parser generation is done
         GreenTextLangLexer lexer = new GreenTextLangLexer(CharStreams.fromString(input));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         GreenTextLangParser parser = new GreenTextLangParser(tokens);
 
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(SyntaxErrorListener.INSTANCE);
+
+
+        parser.removeErrorListeners();
+        parser.setErrorHandler(new CustomErrorStrategy());
+        parser.addErrorListener(SyntaxErrorListener.INSTANCE);
+
         ParseTree tree = parser.program();
         GreenTextLangVisitorImpl visitor = new GreenTextLangVisitorImpl();
         visitor.visit(tree);
+
+    } catch (SyntaxException e) {
+        System.err.println("Syntax error:");
+        System.err.println(e.getMessage());
+    } catch (Exception e) {
+        System.err.println("Unexpected error:");
+        e.printStackTrace();
+    }
     }
 }
 
