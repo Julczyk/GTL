@@ -227,7 +227,7 @@ struct_type_ing
 // ===========
 
 expressions
-    : expression (separator expressions)?
+    : expression (separator expression)*
     ;
 
 expression
