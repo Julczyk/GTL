@@ -7,11 +7,11 @@ import Value.DoubleValue;
 import Value.Operators;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.BailErrorStrategy;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 public class GreenTextLangInterpreter {
@@ -20,7 +20,10 @@ public class GreenTextLangInterpreter {
         String test = "test.gtl";
         String world = "hello_world.gtl";
         String fib = "fibonacci.gtl";
-        String input = Files.readString(Path.of(System.getProperty("user.dir") + "/examples/" + test));
+        String syntaxTest = "invalid_missing_assignment.gtl";
+        Path filePath = Paths.get("examples/syntax/invalid_missing_assignment.gtl");
+        String input = Files.readString(Path.of(System.getProperty("user.dir") + "/examples/" + syntaxTest));
+        //String input = Files.readString(Path.of(System.getProperty("user.dir") + "/examples/" + syntaxTest));
 
         try{
 
@@ -31,23 +34,22 @@ public class GreenTextLangInterpreter {
 
         lexer.removeErrorListeners();
         lexer.addErrorListener(SyntaxErrorListener.INSTANCE);
-
-
+        
         parser.removeErrorListeners();
-        parser.setErrorHandler(new CustomErrorStrategy());
+        //parser.setErrorHandler(new CustomErrorStrategy());
         parser.addErrorListener(SyntaxErrorListener.INSTANCE);
 
         ParseTree tree = parser.program();
         GreenTextLangVisitorImpl visitor = new GreenTextLangVisitorImpl();
         visitor.visit(tree);
 
-    } catch (SyntaxException e) {
-        System.err.println("Syntax error:");
-        System.err.println(e.getMessage());
-    } catch (Exception e) {
-        System.err.println("Unexpected error:");
-        e.printStackTrace();
-    }
+        } catch (SyntaxException e) {
+            //System.err.println("Syntax error:");
+            System.err.println(e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Unexpected error:");
+            e.printStackTrace();
+        }
     }
 }
 
