@@ -32,12 +32,14 @@ public class GreenTextLangInterpreter {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         GreenTextLangParser parser = new GreenTextLangParser(tokens);
 
+        var error_listener = new SyntaxErrorListener(input);
+
         lexer.removeErrorListeners();
-        lexer.addErrorListener(SyntaxErrorListener.INSTANCE);
+        lexer.addErrorListener(error_listener);
         
         parser.removeErrorListeners();
         //parser.setErrorHandler(new CustomErrorStrategy());
-        parser.addErrorListener(SyntaxErrorListener.INSTANCE);
+        parser.addErrorListener(error_listener);
 
         ParseTree tree = parser.program();
         GreenTextLangVisitorImpl visitor = new GreenTextLangVisitorImpl();

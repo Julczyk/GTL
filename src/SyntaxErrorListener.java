@@ -1,11 +1,18 @@
 //package ../GreenTextLangParser.java;
 import Exceptions.SyntaxException;
-import org.antlr.runtime.MissingTokenException;
 import org.antlr.v4.runtime.misc.IntervalSet;
 import org.antlr.v4.runtime.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class SyntaxErrorListener extends BaseErrorListener {
-    public static final SyntaxErrorListener INSTANCE = new SyntaxErrorListener();
+    private final List<String> sourceLines;
+    //public static final SyntaxErrorListener INSTANCE = new SyntaxErrorListener();
+
+    public SyntaxErrorListener(String sourceLines) {
+        this.sourceLines = Arrays.stream(sourceLines.split("\\r?\\n")).toList();
+    }
 
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
@@ -20,9 +27,14 @@ public class SyntaxErrorListener extends BaseErrorListener {
 
             String message = tryToResolveError(parser, token, rulename, e);
             //throw new SyntaxException("fasfs");
-            System.out.println(ExpectedTokens(parser));
-            System.out.println(rulename + " " + token.getText() + " " + ctx.start.getText());
-            throw new SyntaxException(message==null ? msg : message, line, charPositionInLine);
+            //System.out.println(ExpectedTokens(parser));
+
+            String codeLine = sourceLines.get(line - 1) + "\n" +
+                    " ".repeat(charPositionInLine) +
+                    "^".repeat(token.getText().length());
+
+            //System.out.println(rulename + " " + token.getText() + " " + ctx.start.getText());
+            throw new SyntaxException(codeLine, message==null ? msg : message, line, charPositionInLine);
         } else {
 
             GreenTextLangLexer lexer = (GreenTextLangLexer) recognizer; // Cast recognizer to lexer, because it's lexer's stage
