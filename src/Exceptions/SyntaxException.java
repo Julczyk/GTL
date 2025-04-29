@@ -23,7 +23,7 @@ public class SyntaxException extends RuntimeException {
     }
 
     public SyntaxException(String path, String codeLine, String message, int line, int charPositionInLine) {
-        super(String.format("%s \n %s \n Syntax error at line %d:%d - %s", path, codeLine, line, charPositionInLine, message));
+        super(String.format("%s:%d:%d \n%s \nSyntax error at line %d:%d - %s", path, line, charPositionInLine, codeLine, line, charPositionInLine, message));
         this.line = line;
         this.charPositionInLine = charPositionInLine;
     }

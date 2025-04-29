@@ -21,8 +21,8 @@ public class GreenTextLangInterpreter {
         String world = "hello_world.gtl";
         String fib = "fibonacci.gtl";
         String syntaxTest = "invalid_missing_assignment.gtl";
-        Path filePath = Paths.get("examples/syntax/invalid_missing_assignment.gtl");
-        String input = Files.readString(Path.of(System.getProperty("user.dir") + "/examples/" + syntaxTest));
+        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + syntaxTest);
+        String input = Files.readString(filePath);
         //String input = Files.readString(Path.of(System.getProperty("user.dir") + "/examples/" + syntaxTest));
 
         try{
@@ -32,7 +32,7 @@ public class GreenTextLangInterpreter {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         GreenTextLangParser parser = new GreenTextLangParser(tokens);
 
-        var error_listener = new SyntaxErrorListener(Path.of(System.getProperty("user.dir") + "/examples/" + syntaxTest), input);
+        var error_listener = new SyntaxErrorListener(filePath, input);
 
         lexer.removeErrorListeners();
         lexer.addErrorListener(error_listener);

@@ -14,7 +14,7 @@ public class SyntaxErrorListener extends BaseErrorListener {
 
     public SyntaxErrorListener(Path path, String sourceLines) {
         this.sourceLines = Arrays.stream(sourceLines.split("\\r?\\n")).toList();
-        this.pathFile = String.format("\"%s\"", path.toAbsolutePath());
+        this.pathFile = String.format("%s", path.toAbsolutePath());
     }
 
     @Override
@@ -72,13 +72,12 @@ public class SyntaxErrorListener extends BaseErrorListener {
                 }
             }
         }
-        String tokens = tokenSet.toString(parser.getVocabulary());
-        return tokens;
+        return tokenSet.toString(parser.getVocabulary());
     }
 
     public String tryToResolveError(GreenTextLangParser parser, CommonToken faultyToken, String rulename, RecognitionException e) {
         ParserRuleContext ctx = parser.getRuleContext();
-        String tokenTypeName = getLexemName(faultyToken);
+        String tokenTypeName = getLexerName(faultyToken);
         //  added missing token exception
 
         if (e instanceof NoViableAltException noViable) {
@@ -124,16 +123,14 @@ public class SyntaxErrorListener extends BaseErrorListener {
             return "If statement cannot be unclosed";
         }
 
-        if(e.getCause() instanceof InputMismatchException) {
-            InputMismatchException inputMismatchException = (InputMismatchException) e.getCause();
-            String msg = inputMismatchException.getMessage();
-            return msg;
+        if(e.getCause() instanceof InputMismatchException inputMismatchException) {
+            return inputMismatchException.getMessage();
         }
 
         return "Unrecognized character: " + faultyToken.getText();
     }
 
-    private String getLexemName(CommonToken token) {
+    private String getLexerName(CommonToken token) {
         return GreenTextLangParser.VOCABULARY.getSymbolicName(token.getType());
     }
 }
