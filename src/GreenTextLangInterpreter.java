@@ -32,7 +32,7 @@ public class GreenTextLangInterpreter {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         GreenTextLangParser parser = new GreenTextLangParser(tokens);
 
-        var error_listener = new SyntaxErrorListener(input);
+        var error_listener = new SyntaxErrorListener(Path.of(System.getProperty("user.dir") + "/examples/" + syntaxTest), input);
 
         lexer.removeErrorListeners();
         lexer.addErrorListener(error_listener);
