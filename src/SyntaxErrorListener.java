@@ -1,10 +1,11 @@
 //package ../GreenTextLangParser.java;
 import Exceptions.SyntaxException;
+import org.antlr.v4.runtime.InputMismatchException;
+import org.antlr.v4.runtime.atn.Transition;
 import org.antlr.v4.runtime.misc.IntervalSet;
 import org.antlr.v4.runtime.*;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class SyntaxErrorListener extends BaseErrorListener {
     private final List<String> sourceLines;
@@ -49,35 +50,47 @@ public class SyntaxErrorListener extends BaseErrorListener {
         // throw new ParseCancellationException("line " + line + ":" + charPositionInLine + " " + msg);
     }
 
-    private String ExpectedTokens(Parser parser) {
+    private String ExpectedTokens(Parser parser, NoViableAltException e) {
+        IntervalSet tokenSet = new IntervalSet();
 
-//        ArrayList<String> expectedTokens = new ArrayList<>();
-//
-//        if (parser.getExpectedTokens() == null) {
-//            return null;
-//        }
-
-        IntervalSet tokens = parser.getExpectedTokens();
-
-//        for (int i = 0; i < tokens.size() - 1; i++) {
-//            expectedTokens.add(parser.getVocabulary().getDisplayName(tokens.get(i)));
-//        }
-        return tokens.toString(parser.getVocabulary());
-
+        for (var dead_end : e.getDeadEndConfigs().getStates())
+        {
+            var state_number = dead_end.stateNumber;
+            var state = parser.getATN().states.get(state_number);
+            for (Transition t : state.getTransitions())
+            {
+                switch (t.getSerializationType())
+                {
+                    case Transition.RULE: break;
+                    case Transition.PREDICATE: break;
+                    case Transition.WILDCARD: break;
+                    default:
+                        if (!t.isEpsilon())
+                        {
+                            IntervalSet x = t.label();
+                            tokenSet.addAll(x);
+                        }
+                        break;
+                }
+            }
+        }
+        String tokens = tokenSet.toString(parser.getVocabulary());
+        return tokens;
     }
 
     public String tryToResolveError(GreenTextLangParser parser, CommonToken faultyToken, String rulename, RecognitionException e) {
         ParserRuleContext ctx = parser.getRuleContext();
         String tokenTypeName = getLexemName(faultyToken);
-        String tokens = ExpectedTokens(parser);
+        //String tokens = ExpectedTokens(parser, e);
 
         //System.out.println(ctx.start.getText() + " " + ctx.getText() + " " + faultyToken.getText() + " " + rulename + " " + tokenTypeName);
+        // TODO add missing token exception
 
-
-        if (e instanceof NoViableAltException) {
+        if (e instanceof NoViableAltException noViable) {
             String text = faultyToken.getText();
-            String errorMsg = String.format("Unexpected token '%s'.", text);
-            return errorMsg;
+            String expectedTokens = ExpectedTokens(parser, noViable);
+            return "Unexpected token: " + text + "\n" +
+                    "Expecting one of: " + expectedTokens;
         }
 
 //        if (e instanceof MissingTokenException){

@@ -1,6 +1,7 @@
 package Exceptions;
 
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.atn.Transition;
 import org.antlr.v4.runtime.misc.IntervalSet;
 
 import java.util.stream.Collectors;
@@ -18,8 +19,34 @@ public class CustomErrorStrategy extends DefaultErrorStrategy {
                 offendingToken.getCharPositionInLine(),
                 expected);
 
+            System.out.print("Expecting: ");
+
+            for (var dead_end : e.getDeadEndConfigs().getStates())
+            {
+                var state_number = dead_end.stateNumber;
+                var state = recognizer.getATN().states.get(state_number);
+                for (Transition t : state.getTransitions())
+                {
+                    switch (t.getSerializationType())
+                    {
+                        case Transition.RULE: break;
+                        case Transition.PREDICATE: break;
+                        case Transition.WILDCARD: break;
+                        default:
+                            if (!t.isEpsilon())
+                            {
+                                IntervalSet x = t.label();
+                                System.out.println(" " + x.toString(recognizer.getVocabulary()));
+                            }
+                            break;
+                    }
+                }
+            }
+
         throw new SyntaxException(message, offendingToken.getLine(), offendingToken.getCharPositionInLine());
     }
+
+
 
     @Override
     public void reportInputMismatch(Parser recognizer, InputMismatchException e) {
