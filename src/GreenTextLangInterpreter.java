@@ -136,14 +136,44 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         for (int i = 0; i < values.size(); i++) {
             String name = ctx.function_arguments().variable_declaration_ing(i).NAME().getText();
             Value value = values.get(i);
-            memory.create(name, value.type, value);
+            try {
+                memory.create(name, value.type, value);
+            } catch (InterpreterException e) {
+                addLocation(e, ctx);
+                throw e;
+            }
+        }
+        String ret_name = null;
+        if (ctx.function_return() != null) {  // add return value
+            var ret_val = ctx.function_return().variable_declaration_ing_without_elses();
+            ret_name = ret_val.NAME().getText();
+            try {
+                if (ret_val.type_ing().primitive_type_ing().SEEING() != null) {
+                    memory.create(ret_name, Value.Type.INT);
+                } else if (ret_val.type_ing().primitive_type_ing().TASTING() != null) {
+                    memory.create(ret_name, Value.Type.DOUBLE);
+                } else if (ret_val.type_ing().primitive_type_ing().HEARING() != null) {
+                    memory.create(ret_name, Value.Type.STRUCT);
+                } else if (ret_val.type_ing().primitive_type_ing().SMELLING() != null) {
+                    memory.create(ret_name, Value.Type.BOOLEAN);
+                } else {
+                    throw new UnknownException("Unhandled case: " + ctx.getText());
+                }
+            } catch (InterpreterException e) {
+                addLocation(e, ctx);
+                throw e;
+            }
         }
         for (var stmt : ctx.statement_newline()) {
             visit(stmt);
         }
+        Value ret_value = new Value(null, Value.Type.INT, true);
+        if (ret_name != null) {
+            ret_value = memory.get(ret_name);
+        }
         memory = temp_memory;  // Memory transplant
         temp_memory.free();
-        return null;
+        return ret_value;
     }
 
     @Override
@@ -190,7 +220,9 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         if (ctx.expressions() != null) {
             value = visit(ctx.expressions());
         }
-        // TODO function call
+        if (ctx.function_call_ing() != null) {
+            value = visit(ctx.function_call_ing());
+        }
         try {
             if (ctx.type().primitive_type().SEE() != null) {
                 memory.create(name, Value.Type.INT, value);
@@ -213,8 +245,13 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     @Override
     public Value visitVariable_assignment(GreenTextLangParser.Variable_assignmentContext ctx) {
         String name = ctx.variable(0).getText();
-        Value value = visit(ctx.expressions());
-        // TODO function call
+        Value value = null;
+        if (ctx.expressions() != null) {
+            value = visit(ctx.expressions());
+        }
+        if (ctx.function_call_ing() != null) {
+            value = visit(ctx.function_call_ing());
+        }
         try {
             memory.assign(name, value);
             return null;
