@@ -1,5 +1,7 @@
 import Exceptions.*;
-import Value.Value;
+import Value.Value; // Keep for potential future use, though listener doesn't return Value directly
+// Remove other Value.* imports if listener doesn't directly create/use them for this task
+// For now, let's keep them as the original file had them.
 import Value.IntegerValue;
 import Value.StringValue;
 import Value.BooleanValue;
@@ -7,6 +9,7 @@ import Value.DoubleValue;
 import Value.Operators;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker; // Added for listener
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,32 +24,43 @@ public class GreenTextLangInterpreter {
         String world = "hello_world.gtl";
         String fib = "fibonacci.gtl";
         String syntaxTest = "invalid_missing_assignment.gtl";
-        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + syntaxTest);
+        // Example for redeclaration test
+        //TODO: To trzeba będzie jakoś przerobić na testy i przykłady później
+        String redeclarationTest = "redeclaration_test.gtl";
+
+        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + redeclarationTest); // Change to test redeclaration
         String input = Files.readString(filePath);
-        //String input = Files.readString(Path.of(System.getProperty("user.dir") + "/examples/" + syntaxTest));
+
 
         try{
 
-        // Assuming ANTLR setup and parser generation is done
-        GreenTextLangLexer lexer = new GreenTextLangLexer(CharStreams.fromString(input));
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        GreenTextLangParser parser = new GreenTextLangParser(tokens);
+            GreenTextLangLexer lexer = new GreenTextLangLexer(CharStreams.fromString(input));
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            GreenTextLangParser parser = new GreenTextLangParser(tokens);
 
-        var error_listener = new SyntaxErrorListener(filePath, input);
+            var error_listener = new SyntaxErrorListener(filePath, input);
 
-        lexer.removeErrorListeners();
-        lexer.addErrorListener(error_listener);
-        
-        parser.removeErrorListeners();
-        //parser.setErrorHandler(new CustomErrorStrategy());
-        parser.addErrorListener(error_listener);
+            lexer.removeErrorListeners();
+            lexer.addErrorListener(error_listener);
 
-        ParseTree tree = parser.program();
-        GreenTextLangVisitorImpl visitor = new GreenTextLangVisitorImpl();
-        visitor.visit(tree);
+            parser.removeErrorListeners();
+            //parser.setErrorHandler(new CustomErrorStrategy()); // Keep if used, but not in original snippet
+            parser.addErrorListener(error_listener);
+
+            ParseTree tree = parser.program();
+
+            // Using Listener instead of Visitor
+            GreenTextLangListenerImpl listener = new GreenTextLangListenerImpl(filePath, input);
+            ParseTreeWalker walker = new ParseTreeWalker();
+            walker.walk(listener, tree);
+
+            System.out.println("Program parsed and listener processed successfully (if no exceptions).");
 
         } catch (SyntaxException e) {
-            //System.err.println("Syntax error:");
+            System.err.println(e.getMessage());
+        } catch (RedeclarationException e) { // Catch specific semantic error
+            System.err.println(e.getMessage());
+        } catch (InterpreterException e) { // Catch other interpreter runtime errors
             System.err.println(e.getMessage());
         } catch (Exception e) {
             System.err.println("Unexpected error:");
