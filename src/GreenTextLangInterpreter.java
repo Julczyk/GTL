@@ -14,7 +14,8 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker; // Added for listener
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class GreenTextLangInterpreter {
@@ -27,8 +28,9 @@ public class GreenTextLangInterpreter {
         // Example for redeclaration test
         //TODO: To trzeba będzie jakoś przerobić na testy i przykłady później
         String redeclarationTest = "redeclaration_test.gtl";
+        String funcTest = "func.gtl";
 
-        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + redeclarationTest); // Change to test redeclaration
+        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + funcTest); // Change to test redeclaration
         String input = Files.readString(filePath);
 
 
@@ -85,6 +87,95 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     }
 
     @Override
+    public Value visitFunction_call_ing(GreenTextLangParser.Function_call_ingContext ctx) {
+        String name = ctx.variable().NAME().getText();
+        List<Value> values = new ArrayList<>();
+        if (ctx.expressions() != null) {
+            for (var exp : ctx.expressions().expression()) {
+                Value val = visit(exp);
+                values.add(val);
+            }
+        }
+        GreenTextLangParser.Function_declarationContext func_ctx;
+        try {
+            func_ctx = memory.get_function(name, values);
+        } catch (InterpreterException e) {
+            addLocation(e, ctx);
+            throw e;
+        }
+        return call_function(func_ctx, values);
+    }
+
+    @Override
+    public Value visitFunction_call(GreenTextLangParser.Function_callContext ctx) {
+        String name = ctx.variable().NAME().getText();
+        List<Value> values = new ArrayList<>();
+        if (ctx.expressions() != null) {
+            for (var exp : ctx.expressions().expression()) {
+                Value val = visit(exp);
+                values.add(val);
+            }
+        }
+        GreenTextLangParser.Function_declarationContext func_ctx;
+        try {
+            func_ctx = memory.get_function(name, values);
+        } catch (InterpreterException e) {
+            addLocation(e, ctx);
+            throw e;
+        }
+        return call_function(func_ctx, values);
+    }
+
+    private Value call_function(GreenTextLangParser.Function_declarationContext ctx, List<Value> values) {
+        Memory temp_memory = new Memory();
+        temp_memory = memory;  // Memory transplant
+        memory.free();
+        memory = new Memory();
+        memory.globals = temp_memory.globals;  // keep globals
+        memory.functions = temp_memory.functions;  // keep functions
+        for (int i = 0; i < values.size(); i++) {
+            String name = ctx.function_arguments().variable_declaration_ing(i).NAME().getText();
+            Value value = values.get(i);
+            memory.create(name, value.type, value);
+        }
+        for (var stmt : ctx.statement_newline()) {
+            visit(stmt);
+        }
+        memory = temp_memory;  // Memory transplant
+        temp_memory.free();
+        return null;
+    }
+
+    @Override
+    public Value visitFunction_declaration(GreenTextLangParser.Function_declarationContext ctx) {
+        String name = ctx.NAME().getText();
+        List<Value.Type> types = new ArrayList<>();
+
+        if (ctx.function_arguments() != null) {
+            for (var decl : ctx.function_arguments().variable_declaration_ing()) {
+                if (decl.type_ing().primitive_type_ing().SEEING() != null) {
+                    types.add(Value.Type.INT);
+                } else if (decl.type_ing().primitive_type_ing().TASTING() != null) {
+                    types.add(Value.Type.DOUBLE);
+                } else if (decl.type_ing().primitive_type_ing().HEARING() != null) {
+                    types.add(Value.Type.STRING);
+                } else if (decl.type_ing().primitive_type_ing().SMELLING() != null) {
+                    types.add(Value.Type.BOOLEAN);
+                } else {
+                    throw new UnknownException("Unhandled case: " + ctx.getText());
+                }
+            }
+        }
+        try {
+            memory.create_function(name, types, ctx);
+        } catch (InterpreterException e) {
+            addLocation(e, ctx);
+            throw e;
+        }
+        return null;
+    }
+
+    @Override
     public Value visitSpit(GreenTextLangParser.SpitContext ctx) {
         // Extracts and prints the string from the spit statement
         Value value = visit(ctx.expressions());
@@ -99,6 +190,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         if (ctx.expressions() != null) {
             value = visit(ctx.expressions());
         }
+        // TODO function call
         try {
             if (ctx.type().primitive_type().SEE() != null) {
                 memory.create(name, Value.Type.INT, value);
@@ -122,6 +214,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     public Value visitVariable_assignment(GreenTextLangParser.Variable_assignmentContext ctx) {
         String name = ctx.variable(0).getText();
         Value value = visit(ctx.expressions());
+        // TODO function call
         try {
             memory.assign(name, value);
             return null;
