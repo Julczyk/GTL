@@ -54,7 +54,7 @@ public abstract class InterpreterException extends RuntimeException {
                             " ".repeat(posInLine) + "^";
         return msg + "\n" +
                 filePath + ":" + line + ":" + posInLine + "\n" +
-                codeLine + "\n" +
+                codeLine +
                 "\nWomp womp at [" + line + ", " + posInLine + "]: " + meme +
                          "\nError at [" + line + ", " + posInLine + "]: " + prog;
     }
