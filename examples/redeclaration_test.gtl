@@ -1,14 +1,3 @@
-       // Create redeclaration_test.gtl in examples/ with:
-        // > be main
-        // > see x is 10
-        // > spit x
-        // >
-        // > see x is 20 // Should cause RedeclarationException after empty line reset
-        // > implying x vibe with 10
-        // >   see y is 30
-        // >   see y is 40 // Should cause RedeclarationException in inner scope
-        // > or sth
-        // > profit
 > be me
 > see x is 10
 > spit x
