@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -127,12 +128,10 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     }
 
     private Value call_function(GreenTextLangParser.Function_declarationContext ctx, List<Value> values) {
-        Memory temp_memory = new Memory();
-        temp_memory = memory;  // Memory transplant
-        memory.free();
-        memory = new Memory();
-        memory.globals = temp_memory.globals;  // keep globals
-        memory.functions = temp_memory.functions;  // keep functions
+        memory.local_stack.push(new HashMap<>(memory.locals));
+        memory.func_stack.push(new HashMap<>(memory.functions));
+        memory.locals.clear();
+
         for (int i = 0; i < values.size(); i++) {
             String name = ctx.function_arguments().variable_declaration_ing(i).NAME().getText();
             Value value = values.get(i);
@@ -171,8 +170,8 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         if (ret_name != null) {
             ret_value = memory.get(ret_name);
         }
-        memory = temp_memory;  // Memory transplant
-        temp_memory.free();
+        memory.locals = memory.local_stack.pop();
+        memory.functions = memory.func_stack.pop();
         return ret_value;
     }
 

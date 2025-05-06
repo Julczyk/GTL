@@ -4,10 +4,7 @@ import Value.Value.Type;
 import Value.Operators;
 import org.antlr.v4.runtime.misc.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Memory for main program
@@ -15,8 +12,18 @@ import java.util.Map;
 public class Memory {
 
     public Map<String, Value> locals = new HashMap<>();
+    public Stack<Map<String, Value>> local_stack = new Stack<>();
+    public Stack<Map<Pair<String, List<Type>>, GreenTextLangParser.Function_declarationContext>> func_stack = new Stack<>();
     public Map<String, Value> globals = new HashMap<>();
     public Map<Pair<String, List<Type>>, GreenTextLangParser.Function_declarationContext> functions = new HashMap<>();
+
+    public Memory() {}
+
+    public Memory(Memory memory) {
+        this.locals = memory.locals;
+        this.globals = memory.globals;
+        this.functions = memory.functions;
+    }
 
     public void create(String name, Type type) {
         if (locals.containsKey(name)) {
@@ -70,5 +77,7 @@ public class Memory {
 
     public void free() {
         locals.clear();
+        functions.clear();
+        globals.clear();
     }
 }
