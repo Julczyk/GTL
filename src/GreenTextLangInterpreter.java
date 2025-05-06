@@ -53,8 +53,11 @@ public class GreenTextLangInterpreter {
             GreenTextLangListenerImpl listener = new GreenTextLangListenerImpl(filePath, input);
             ParseTreeWalker walker = new ParseTreeWalker();
             walker.walk(listener, tree);
-
             System.out.println("Program parsed and listener processed successfully (if no exceptions).");
+
+            GreenTextLangVisitorImpl visitor = new GreenTextLangVisitorImpl(filePath);
+            visitor.visit(tree);
+
 
         } catch (SyntaxException e) {
             System.err.println(e.getMessage());
@@ -71,9 +74,14 @@ public class GreenTextLangInterpreter {
 
 class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     public Memory memory = new Memory();
+    private final Path filePath;
+
+    public GreenTextLangVisitorImpl(Path filePath) {
+        this.filePath = filePath;
+    }
 
     private void addLocation(InterpreterException ex, ParserRuleContext ctx) {
-        ex.setLocation(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        ex.setLocation(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine(), filePath);
     }
 
     @Override
@@ -126,7 +134,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     @Override
     public Value visitExpressions(GreenTextLangParser.ExpressionsContext ctx) {
         // TODO add separator context
-        Value value = visit(ctx.expression());
+        Value value = visit(ctx.expression(0));
         return value;
     }
 
