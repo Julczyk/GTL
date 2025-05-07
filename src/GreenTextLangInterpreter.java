@@ -27,8 +27,9 @@ public class GreenTextLangInterpreter {
         // Example for redeclaration test
         //TODO: To trzeba będzie jakoś przerobić na testy i przykłady później
         String redeclarationTest = "redeclaration_test.gtl";
+        String loopTest = "loop_test.gtl";
 
-        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + redeclarationTest); // Change to test redeclaration
+        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + loopTest); // Change to test redeclaration
         String input = Files.readString(filePath);
 
 
@@ -133,7 +134,15 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
 
     @Override
     public Value visitLoop_declaration(GreenTextLangParser.Loop_declarationContext ctx) {
-        while (Operators.isTrue(visit(ctx.expression()))) {
+        while (true) {
+            Value cond = visit(ctx.expression());
+            try {
+                boolean loop = Operators.isTrue(cond);
+                if (!loop) break;
+            } catch (InterpreterException e) {
+                addLocation(e, ctx);
+                throw e;
+            }
             for (var stmt : ctx.statement_newline()){
                 visit(stmt);
             }
