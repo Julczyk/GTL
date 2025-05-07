@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -105,11 +104,11 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             throw e;
         }
         try {
-            memory.push();
+            memory.begin_func();
             Value ret = call_function(func_ctx, values);
-            memory.pop();
+            memory.end_func();
             return ret;
-        } catch (InterpreterException e) {
+        } catch (StackOverflowException e) {
             addLocation(e, ctx);
             throw e;
         }
@@ -133,19 +132,17 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             throw e;
         }
         try {
-            memory.push();
+            memory.begin_func();
             Value ret = call_function(func_ctx, values);
-            memory.pop();
+            memory.end_func();
             return ret;
-        } catch (InterpreterException e) {
+        } catch (StackOverflowException e) {
             addLocation(e, ctx);
             throw e;
         }
     }
 
     private Value call_function(GreenTextLangParser.Function_declarationContext ctx, List<Value> values) {
-
-
         for (int i = 0; i < values.size(); i++) {
             String name = ctx.function_arguments().variable_declaration_ing(i).NAME().getText();
             Value value = values.get(i);
