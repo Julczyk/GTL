@@ -89,7 +89,7 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
         } else {
             // This case should ideally not be reached if enterProgram initializes the stack.
             // It's a safeguard or indicates a logic error elsewhere.
-            System.err.println("CRITICAL ERROR: funcionScopes stack was empty during declaration of '" + funcName + "'. Re-initializing global scope.");
+            System.err.println("CRITICAL ERROR: functionScopes stack was empty during declaration of '" + funcName + "'. Re-initializing global scope.");
             functionScopes.push(new HashSet<>());
             functionScopes.peek().add(func);
         }
