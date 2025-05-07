@@ -50,9 +50,22 @@ public class Memory {
     }
 
     public void assign(String name, Value value) {
-        Value curr_val = get(name);
-        curr_val = Operators.castValue(curr_val, value);
-        locals.put(name, curr_val);
+        if (locals.containsKey(name)) {
+            Value curr_val = locals.get(name);
+            curr_val = Operators.castValue(curr_val, value);
+            locals.put(name, curr_val);
+            return;
+        }
+        for (var loc : local_stack) {
+            if (loc.containsKey(name)) {
+                Value curr_val = loc.get(name);
+                curr_val = Operators.castValue(curr_val, value);
+                loc.put(name, curr_val);
+                return;
+            }
+        }
+        throw new VariableNotFoundException("Your " + name + " is missing, maybe he went to buy milk and hasn't returned yet.",
+                "Variable '" + name + "' has not been found in this scope");
     }
 
 
