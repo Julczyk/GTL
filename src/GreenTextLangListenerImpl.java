@@ -27,6 +27,24 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
         }
     }
 
+    private void begin_scope() {
+        localScopes.push(new HashSet<>());
+        functionScopes.push(new HashSet<>());
+    }
+
+    private void end_scope() {
+        if (localScopes.isEmpty()) {
+            System.err.println("CRITICAL ERROR: variableScopes stack was empty when exiting scope.");
+        } else {
+            localScopes.pop();
+        }
+        if (functionScopes.isEmpty()) {
+            System.err.println("CRITICAL ERROR: functionScopes stack was empty when exiting scope.");
+        } else {
+            functionScopes.pop();
+        }
+    }
+
     // Helper method to check for redeclaration and add variable
     private void checkAndAddVariable(String varName, ParserRuleContext ctx) {
         // Check only top scope in the stack for prior declaration
@@ -120,65 +138,51 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
             }
         }
         checkAndAddFunction(name, types, ctx);
-        localScopes.push(new HashSet<>());
-        functionScopes.push(new HashSet<>());
+        begin_scope();
         // Function parameters defined in function_arguments will be added to this new scope
         // when their respective enterVariable_declaration_ing methods are called.
     }
 
     @Override
     public void exitFunction_declaration(GreenTextLangParser.Function_declarationContext ctx) {
-        if (!localScopes.isEmpty()) {
-            localScopes.pop();
-        }
-        if (!functionScopes.isEmpty()) {
-            functionScopes.pop();
-        }
+        end_scope();
     }
 
     @Override
     public void enterStruct_declaration(GreenTextLangParser.Struct_declarationContext ctx) {
-        localScopes.push(new HashSet<>());
+        begin_scope();
         // Struct member declarations would be handled within their rules, adding to this new scope.
     }
 
     @Override
     public void exitStruct_declaration(GreenTextLangParser.Struct_declarationContext ctx) {
-        if (!localScopes.isEmpty()) {
-            localScopes.pop();
-        }
+        end_scope();
     }
 
     @Override
     public void enterLoop_declaration(GreenTextLangParser.Loop_declarationContext ctx) {
-        localScopes.push(new HashSet<>());
+        begin_scope();
     }
 
     @Override
     public void exitLoop_declaration(GreenTextLangParser.Loop_declarationContext ctx) {
-        if (!localScopes.isEmpty()) {
-            localScopes.pop();
-        }
+        end_scope();
     }
 
     @Override
     public void enterIf_declaration(GreenTextLangParser.If_declarationContext ctx) {
-        localScopes.push(new HashSet<>());
+        begin_scope();
     }
 
     @Override
     public void exitIf_declaration(GreenTextLangParser.If_declarationContext ctx) {
-        if (!localScopes.isEmpty()) {
-            localScopes.pop();
-        }
+        end_scope();
     }
 
     @Override
     public void enterOr_statement(GreenTextLangParser.Or_statementContext ctx) {
-        if (!localScopes.isEmpty()) {
-            localScopes.pop();
-        }
-        localScopes.push(new HashSet<>()); // Each 'or' branch creates a new scope
+        end_scope();
+        begin_scope(); // Each 'or' branch creates a new scope
     }
 
     @Override
@@ -188,10 +192,8 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
 
     @Override
     public void enterOr_not_statement(GreenTextLangParser.Or_not_statementContext ctx) {
-        if (!localScopes.isEmpty()) {
-            localScopes.pop();
-        }
-        localScopes.push(new HashSet<>()); // The 'or not' branch creates a new scope
+        end_scope();
+        begin_scope(); // The 'or not' branch creates a new scope
     }
 
     @Override
