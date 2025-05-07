@@ -29,17 +29,17 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
 
     // Helper method to check for redeclaration and add variable
     private void checkAndAddVariable(String varName, ParserRuleContext ctx) {
-        // Check all scopes in the stack for prior declaration
-        for (Set<String> scope : localScopes) {
-            if (scope.contains(varName)) {
-                RedeclarationException ex = new RedeclarationException(
-                        "Bro, you already saw '" + varName + "'. You can't tell me that over and over. ",
-                        "Variable '" + varName + "' has already been declared in this or an enclosing scope."
-                );
-                addLocationToException(ex, ctx);
-                throw ex;
-            }
+        // Check only top scope in the stack for prior declaration
+        var scope = localScopes.peek();
+        if (scope.contains(varName)) {
+            RedeclarationException ex = new RedeclarationException(
+                    "Bro, you already saw '" + varName + "'. You can't tell me that over and over. ",
+                    "Variable '" + varName + "' has already been declared in this or an enclosing scope."
+            );
+            addLocationToException(ex, ctx);
+            throw ex;
         }
+
         // Add to the current (top-most) scope
         if (!localScopes.isEmpty()) {
             localScopes.peek().add(varName);
@@ -53,18 +53,18 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
     }
 
     private void checkAndAddFunction(String funcName, List<Value.Type> types, ParserRuleContext ctx) {
-        // Check all scopes in the stack for prior declaration
+        // Check only top scope in the stack for prior declaration
         var func = new Pair<>(funcName, types);
-        for (var scope : functionScopes) {
-            if (scope.contains(func)) {
-                RedeclarationException ex = new RedeclarationException(
-                        "Bro, you already saw '" + funcName + "'. You can't tell me that over and over. ",
-                        "Function '" + funcName + "' with types: "+ types.toString() +" has already been declared in this or an enclosing scope."
-                );
-                addLocationToException(ex, ctx);
-                throw ex;
-            }
+        var scope = functionScopes.peek();
+        if (scope.contains(func)) {
+            RedeclarationException ex = new RedeclarationException(
+                    "Bro, you already saw '" + funcName + "'. You can't tell me that over and over. ",
+                    "Function '" + funcName + "' with types: "+ types.toString() +" has already been declared in this or an enclosing scope."
+            );
+            addLocationToException(ex, ctx);
+            throw ex;
         }
+
         // Add to the current (top-most) scope
         if (!functionScopes.isEmpty()) {
             functionScopes.peek().add(func);
