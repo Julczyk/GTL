@@ -68,7 +68,7 @@ public class IntegerValue extends Value {
             if (right.getInt() == 0) {
                 throw new ArithmeticException("You don't know what is left from zero? An idiot, who doesn't know how modulo operation works.", "Modulo by 0");
             }
-            return new IntegerValue(getInt() % getInt());
+            return new IntegerValue(getInt() % right.getInt());
         }
         return super.mod(right);
     }
