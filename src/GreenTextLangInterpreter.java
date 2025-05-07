@@ -32,8 +32,9 @@ public class GreenTextLangInterpreter {
         String funcTest = "func.gtl";
         String loopTest = "loop_test.gtl";
         String ifTest = "if_test.gtl";
+        String typeTest = "type_test.gtl";
 
-        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + fib_rec); // Change to test redeclaration
+        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + typeTest); // Change to test redeclaration
         String input = Files.readString(filePath);
 
 
