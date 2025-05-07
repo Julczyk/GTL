@@ -133,17 +133,12 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
 
     @Override
     public Value visitLoop_declaration(GreenTextLangParser.Loop_declarationContext ctx) {
-        try{
-            while (Operators.isTrue(visit(ctx.expression()))) {
-                for (var stmt : ctx.statement_newline()){
-                    visit(stmt);
-                }
+        while (Operators.isTrue(visit(ctx.expression()))) {
+            for (var stmt : ctx.statement_newline()){
+                visit(stmt);
             }
-            return null;
-        }catch (InterpreterException e) {
-            addLocation(e, ctx);
-            throw e;
         }
+        return null;
     }
 
     @Override
