@@ -1,5 +1,7 @@
 import Exceptions.*;
+import Value.Value;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.misc.Pair;
 
 import java.nio.file.Path;
 import java.util.*; // For Stack and Set
@@ -7,6 +9,7 @@ import java.util.*; // For Stack and Set
 public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
     //This is the main structure checking for variable redeclaration
     //private Set<String> globalScope = new HashSet<>();
+    private Stack<Set<Pair<String, List<Value.Type>>>> functionScopes = new Stack<>();
     private Stack<Set<String>> localScopes = new Stack<>();
 
     // For error reporting location (optional if not throwing new SyntaxExceptions from listener)
@@ -49,6 +52,41 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
         }
     }
 
+    private void checkAndAddFunction(String funcName, List<Value.Type> types, ParserRuleContext ctx) {
+        // Check all scopes in the stack for prior declaration
+        var func = new Pair<>(funcName, types);
+        for (var scope : functionScopes) {
+            if (scope.contains(func)) {
+                RedeclarationException ex = new RedeclarationException(
+                        "Bro, you already saw '" + funcName + "'. You can't tell me that over and over. ",
+                        "Function '" + funcName + "' with types: "+ types.toString() +" has already been declared in this or an enclosing scope."
+                );
+                addLocationToException(ex, ctx);
+                throw ex;
+            }
+        }
+        // Add to the current (top-most) scope
+        if (!functionScopes.isEmpty()) {
+            functionScopes.peek().add(func);
+        } else {
+            // This case should ideally not be reached if enterProgram initializes the stack.
+            // It's a safeguard or indicates a logic error elsewhere.
+            System.err.println("CRITICAL ERROR: funcionScopes stack was empty during declaration of '" + funcName + "'. Re-initializing global scope.");
+            functionScopes.push(new HashSet<>());
+            functionScopes.peek().add(func);
+        }
+    }
+
+    @Override
+    public void enterProgram(GreenTextLangParser.ProgramContext ctx) {
+        functionScopes.push(new HashSet<>());
+    }
+
+    @Override
+    public void exitProgram(GreenTextLangParser.ProgramContext ctx) {
+        functionScopes.pop();
+    }
+
     @Override
     public void enterCode_block(GreenTextLangParser.Code_blockContext ctx) {
         localScopes.push(new HashSet<>());
@@ -63,7 +101,27 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
     public void enterFunction_declaration(GreenTextLangParser.Function_declarationContext ctx) {
         // Note: Function names themselves might be checked for redeclaration in a global function registry,
         // this listener focuses on variable scopes *within* constructs.
+        String name = ctx.NAME().getText();
+        List<Value.Type> types = new ArrayList<>();
+
+        if (ctx.function_arguments() != null) {
+            for (var decl : ctx.function_arguments().variable_declaration_ing()) {
+                if (decl.type_ing().primitive_type_ing().SEEING() != null) {
+                    types.add(Value.Type.INT);
+                } else if (decl.type_ing().primitive_type_ing().TASTING() != null) {
+                    types.add(Value.Type.DOUBLE);
+                } else if (decl.type_ing().primitive_type_ing().HEARING() != null) {
+                    types.add(Value.Type.STRING);
+                } else if (decl.type_ing().primitive_type_ing().SMELLING() != null) {
+                    types.add(Value.Type.BOOLEAN);
+                } else {
+                    throw new UnknownException("Unhandled case: " + ctx.getText());
+                }
+            }
+        }
+        checkAndAddFunction(name, types, ctx);
         localScopes.push(new HashSet<>());
+        functionScopes.push(new HashSet<>());
         // Function parameters defined in function_arguments will be added to this new scope
         // when their respective enterVariable_declaration_ing methods are called.
     }
@@ -72,6 +130,9 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
     public void exitFunction_declaration(GreenTextLangParser.Function_declarationContext ctx) {
         if (!localScopes.isEmpty()) {
             localScopes.pop();
+        }
+        if (!functionScopes.isEmpty()) {
+            functionScopes.pop();
         }
     }
 

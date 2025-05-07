@@ -15,8 +15,8 @@ public class Value {
     // Fields
     Object value;
     boolean isNull = false;
-    Type type;
-    public enum Type {STRING, INT, DOUBLE, BOOLEAN, FUNCTION, STRUCT, ARRAY}
+    public Type type;
+    public enum Type {STRING, INT, DOUBLE, BOOLEAN, STRUCT, ARRAY}
     // Constructors
     Value(Object value, Type type) {
         this.value = value;
