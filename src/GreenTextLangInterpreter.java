@@ -24,14 +24,17 @@ public class GreenTextLangInterpreter {
         String test = "test.gtl";
         String world = "hello_world.gtl";
         String fib = "fibonacci.gtl";
+        String fib_rec = "fibonacci_rec.gtl";
         String syntaxTest = "invalid_missing_assignment.gtl";
         // Example for redeclaration test
         //TODO: To trzeba będzie jakoś przerobić na testy i przykłady później
         String redeclarationTest = "redeclaration_test.gtl";
         String funcTest = "func.gtl";
         String loopTest = "loop_test.gtl";
+        String ifTest = "if_test.gtl";
+        String typeTest = "type_test.gtl";
 
-        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + loopTest); // Change to test redeclaration
+        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + typeTest); // Change to test redeclaration
         String input = Files.readString(filePath);
 
 
@@ -287,6 +290,70 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             }
             memory.end_local();
         }
+        return null;
+    }
+
+    @Override
+    public Value visitIf_declaration(GreenTextLangParser.If_declarationContext ctx) {
+        memory.begin_local();
+        Value cond = visit(ctx.expression());
+        boolean isTrue;
+        try {
+            isTrue = Operators.isTrue(cond);
+        } catch (InterpreterException e) {
+            addLocation(e, ctx);
+            throw e;
+        }
+        if (isTrue) {
+            for (var stmt : ctx.statement_newline()) {
+                visit(stmt);
+            }
+            memory.end_local();
+        } else {
+            memory.end_local();
+            if (ctx.or_statement() != null) {
+                visit(ctx.or_statement());
+            } else if (ctx.or_not_statement() != null) {
+                visit(ctx.or_not_statement());
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Value visitOr_statement(GreenTextLangParser.Or_statementContext ctx) {
+        memory.begin_local();
+        Value cond = visit(ctx.expression());
+        boolean isTrue;
+        try {
+            isTrue = Operators.isTrue(cond);
+        } catch (InterpreterException e) {
+            addLocation(e, ctx);
+            throw e;
+        }
+        if (isTrue) {
+            for (var stmt : ctx.statement_newline()) {
+                visit(stmt);
+            }
+            memory.end_local();
+        } else {
+            memory.end_local();
+            if (ctx.or_statement() != null) {
+                visit(ctx.or_statement());
+            } else if (ctx.or_not_statement() != null) {
+                visit(ctx.or_not_statement());
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Value visitOr_not_statement(GreenTextLangParser.Or_not_statementContext ctx) {
+        memory.begin_local();
+        for (var stmt : ctx.statement_newline()) {
+            visit(stmt);
+        }
+        memory.end_local();
         return null;
     }
 

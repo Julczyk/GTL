@@ -1,0 +1,7 @@
+ #> see anon1 is "text" # error
+ > hear anon2 is "text" joined by 2 # ok
+ > spit anon2
+ > smell anon3 is "text" # ok
+ > spit anon3
+ > taste anon4 is 2 joined by 3 breeding like flipped 5 times # ok
+ > spit anon4
