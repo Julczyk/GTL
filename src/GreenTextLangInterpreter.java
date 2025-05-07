@@ -273,6 +273,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     @Override
     public Value visitLoop_declaration(GreenTextLangParser.Loop_declarationContext ctx) {
         while (true) {
+            memory.begin_local();
             Value cond = visit(ctx.expression());
             try {
                 boolean loop = Operators.isTrue(cond);
@@ -284,6 +285,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             for (var stmt : ctx.statement_newline()){
                 visit(stmt);
             }
+            memory.end_local();
         }
         return null;
     }
