@@ -1,3 +1,4 @@
+import Exceptions.StackOverflowException;
 import Exceptions.VariableNotFoundException;
 import Value.Value;
 import Value.Value.Type;
@@ -16,6 +17,8 @@ public class Memory {
     public Stack<Map<Pair<String, List<Type>>, GreenTextLangParser.Function_declarationContext>> func_stack = new Stack<>();
     public Map<String, Value> globals = new HashMap<>();
     public Map<Pair<String, List<Type>>, GreenTextLangParser.Function_declarationContext> functions = new HashMap<>();
+
+    private final int STACK_LIMIT = 200;
 
     public Memory() {}
 
@@ -73,6 +76,21 @@ public class Memory {
                     "Function '" + name + "' with types: "+ types.toString() +" has not been found in this scope");
         }
         return functions.get(name_type);
+    }
+
+    public void push() {
+        if (local_stack.size() >= STACK_LIMIT) {
+            throw new StackOverflowException("Don't repeat yourself. Don't repeat yourself. Don't repeat your... Error",
+                    "Max recursion limit reached.");
+        }
+        local_stack.push(new HashMap<>(locals));
+        func_stack.push(new HashMap<>(functions));
+        locals.clear();
+    }
+
+    public void pop() {
+        locals = local_stack.pop();
+        functions = func_stack.pop();
     }
 
     public void free() {
