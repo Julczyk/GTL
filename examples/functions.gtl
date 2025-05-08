@@ -1,0 +1,28 @@
+Functions:
+ > be me
+ > see x
+ > smell y
+ > taste z
+ > hear xxx
+subfunction:
+ > be someone
+ > see a is 2
+ > smell b is :c
+ > taste c is 2.0
+ > hear d is "AaAaAa"
+ > x is 1
+ > y is c:
+ > z is the literal opposite of 2.0
+ > xxx is "QWERTY"
+ > profit
+ > be someoneelse
+ > see a is 2
+ > smell b is :c
+ > taste c is 2.0
+ > hear d is "AaAaAa"
+ >profit
+main function:
+ > see a is 2
+ > smell b is :c
+ > taste c is 2.0
+ > hear d is "AaAaAa"

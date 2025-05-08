@@ -1,0 +1,85 @@
+INTEGERS:
+ > see x
+ > see y is 1
+ > x is 2
+ > y is 2
+ > y is the literal opposite of x
+ >
+ > smell comp1 is x vibe with y
+ > smell comp2 is x beats y
+ >
+ > spit "Integers:"
+ > spit "x: " joined by x joined by ", y: " joined by y
+ > spit "are equal: " joined by comp1
+ > spit "is x > y: " joined by comp2
+ > spit ""
+
+BOOLEANS:
+ > smell mike is c:
+ > smell abi
+ > abi is :c
+ > mike is the literal opposite of c:
+ >
+ > smell comp3 is abi vibe with mike
+ >
+ > spit "Booleans:"
+ > spit "abi: " joined by abi joined by ", mike: " joined by mike
+ > spit "are equal: " joined by comp3
+ > spit ""
+
+FLOATS:
+ > taste banana
+ > taste apple is 2.0
+ > apple is the literal opposite of 2.1
+ > banana is 0.05
+ >
+ > smell comp4 is banana doesn't beat apple
+ >
+ > spit "Floats:"
+ > spit "banana: " joined by banana joined by ", apple: " joined by apple
+ > spit "is banana <= apple: " joined by comp4
+ > spit ""
+
+STRINGS:
+ > hear yeet
+ > hear yote is "The quick brown fox jumps over the lazy dog"
+ > yeet is "____"
+ >
+ > spit "Strings:"
+ > spit yote joined by yeet
+ > spit ""
+
+Scopes:
+ > spit "Scopes:"
+ > see a is 1
+    > see a  # redeclaration
+ > spit "before if: " joined by a
+ > implying c:
+ > see a is 5  # inside if is different scope
+    > see a  # redeclaration in same scope
+ > spit "inside if: " joined by a
+ > or sth
+    > see a  # redeclaration after ending different scope
+ > spit "after if: " joined by a
+ > spit ""
+
+CONDITIONALS:
+ > see k
+ > implying 3 vibe with 2
+ > k is 1
+ > or "a" vibe with "a"
+ > k is 2
+ > or not
+ > k is 3
+ > or sth
+ >
+ > spit "Conditionals: " joined by k
+ > spit ""
+
+LOOPS:
+ > spit "Loops:"
+ > see i is 0
+ > think that i beaten by 5
+ > i is i joined by 1
+ > spit i
+ > reconsider

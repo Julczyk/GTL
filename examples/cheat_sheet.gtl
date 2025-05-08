@@ -1,0 +1,34 @@
+int     → see
+double  → taste
+string  → hear
+boolean → smell
+
+== → vibe with
+!= → doesn’t vibe with
+<  → beaten by
+<= → doesn’t beat
+>  → beats
+=> → unbeaten by
+&& → also
+|| → alternatively
+!  → not
+
+X+Y  → > X joined by Y
+X+=Y → > X is joined by Y
+X++  → > X evolves
+X*Y  → > X breeding like Y times
+X*=Y → > X is breeding like Y times
+-Y   →    > the literal opposite of Y
+X–1  → > X devolves
+1/Y  → > flipped Y
+X%Y  → > X whatever left from Y
+X%=Y → > X is whatever left from Y
+
+while { → think that
+}       → reconsider
+
+if     → implying
+elif   → or
+else   → or not
+end if → or sth
+

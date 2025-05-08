@@ -27,14 +27,15 @@ public class GreenTextLangInterpreter {
         String fib_rec = "fibonacci_rec.gtl";
         String syntaxTest = "invalid_missing_assignment.gtl";
         // Example for redeclaration test
-        //TODO: To trzeba będzie jakoś przerobić na testy i przykłady później
         String redeclarationTest = "redeclaration_test.gtl";
         String funcTest = "func.gtl";
         String loopTest = "loop_test.gtl";
         String ifTest = "if_test.gtl";
         String typeTest = "type_test.gtl";
+        String presentation = "presentation.gtl";
+        String presentation_cd = "presentation_cd.gtl";
 
-        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + typeTest); // Change to test redeclaration
+        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + presentation_cd); // Change to test redeclaration
         String input = Files.readString(filePath);
 
 
@@ -393,7 +394,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         for (var node : ctx.inversion()) {
             result = visit(node);
             try {
-                if (Operators.isTrue(result)) {
+                if (!Operators.isTrue(result)) {
                     return Value.FALSE;
                 }
             } catch (InterpreterException e) {
