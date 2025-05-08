@@ -227,13 +227,13 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
         // 1. (compound_statement | simple_statement) NEWLINE
         // 2. NEWLINE (this is the "empty line statement")
         // If simple_statement and compound_statement are null, it means the second alternative was matched.
-        if (ctx.simple_statement() == null && ctx.compound_statement() == null && ctx.NEWLINE() != null) {
-            System.err.println("DEBUG: Empty line statement encountered at line " +
-                    ctx.NEWLINE().getSymbol().getLine() +
-                    ". Clearing all variable scopes.");
-            localScopes.clear();
-            localScopes.push(new HashSet<>()); // Re-initialize with a new global scope
-        }
+//        if (ctx.simple_statement() == null && ctx.compound_statement() == null && ctx.NEWLINE() != null) {
+//            System.err.println("DEBUG: Empty line statement encountered at line " +
+//                    ctx.NEWLINE().getSymbol().getLine() +
+//                    ". Clearing all variable scopes.");
+//            localScopes.clear();
+//            localScopes.push(new HashSet<>()); // Re-initialize with a new global scope
+//        }
     }
 
     // Other listener methods (e.g., for expression evaluation, spit, etc.) would be added here

@@ -43,7 +43,7 @@ public class StringValue extends Value {
     Value gt(Value right) {
         if (right.type == Type.STRING) {
             int cmp = getString().compareTo(right.getString());
-            return cmp > 0 ? TRUE : FALSE;
+            return cmp < 0 ? TRUE : FALSE;
         }
         return super.gt(right);
     }
@@ -52,7 +52,7 @@ public class StringValue extends Value {
     Value lt(Value right) {
         if (right.type == Type.STRING) {
             int cmp = getString().compareTo(right.getString());
-            return cmp == 0 ? TRUE : FALSE;
+            return cmp > 0 ? TRUE : FALSE;
         }
         return super.lt(right);
     }
@@ -61,7 +61,7 @@ public class StringValue extends Value {
     Value eq(Value right) {
         if (right.type == Type.STRING) {
             int cmp = getString().compareTo(right.getString());
-            return cmp < 0 ? TRUE : FALSE;
+            return cmp == 0 ? TRUE : FALSE;
         }
         return super.eq(right);
     }

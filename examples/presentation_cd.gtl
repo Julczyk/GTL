@@ -1,0 +1,62 @@
+COMPARISONS
+ > spit "Comparisons:"
+ > spit 2 vibe with 2
+ > spit "a" beats "b"
+ > spit not :c
+ > spit 2.4 beats 2
+     > spit "a" beats 3
+     > spit :c vibe with 1.5
+     > spit c: doesn't vibe with 2
+
+BOOL OPERATIONS
+ > spit ""
+ > spit "Bool operations:"
+ > spit c: also c:
+ > spit 2 vibe with 2 also c:
+ > spit 2 vibe with 3 alternatively c:
+ > spit c: and :c alternatively not :c
+ > spit 2 also 5
+ > spit "" also c:
+
+OPERATIONS
+ > spit ""
+ > spit "Operations:"
+ > spit 1 joined by 2
+ > spit 1 joined by 2 breeding like 3 times
+ > spit 1 joined by flipped 2
+ > spit 1 whatever left from 2
+ > spit 1 joined by the literal opposite of 2
+ > spit 2.5 joined by 3
+ >
+ > spit :c breeding like 3 times
+ > spit c: breeding like 2 times
+ > spit c: breeding like c: times
+ > spit :c joined by c:
+ >
+ > spit 3 breeding like "_" times
+ > spit "2: " joined by 2
+ >
+     > spit "a" breeding like "b" times
+     > spit "a" breeding like 2.5 times
+     > spit flipped 0
+     > spit 2 whatever left from 0
+    > spit c: joined by 2
+
+TYPE CASTING
+ > spit ""
+ > spit "Type casting:"
+ > see int is 1
+ > taste double is 2.2
+ > hear string is "yes"
+ > smell bool is c:
+ >
+ > taste int_to_double is int
+ > spit int_to_double
+ > see double_to_int is double
+ > spit double_to_int
+ > smell int_to_bool is int
+ > spit int_to_bool
+ > hear bool_to_string is bool
+ > spit bool_to_string
+     > taste string_to_double is double
+     > see bool_to_int is bool
