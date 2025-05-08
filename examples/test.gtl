@@ -1,6 +1,48 @@
- > taste mom is 2 breeding like flipped 5 times
- > spit spit
- > hear dad is mom
- > spit 3 breeding like dad joined by " " times
- > spit not mom beaten by 0.2 also c: also 5 beaten by 2 alternatively c:
- > see brother is dad #invalid type casting
+
+ > see y1 is 2 joined by 2 breeding like 3 times
+ > spit y1
+
+ > see y2 is begin 2 joined by 2 end breeding like 3 times
+ > spit y2
+
+ > smell bool is c: alternatively :c also :c
+ > spit bool
+ > bool is begin c: alternatively :c end also :c
+ > spit bool
+
+ > see x is 3 breeding like flipped begin 3 joined by the literal opposite of 3 end times
+ > spit x
+
+
+     > see x is 5
+     > spit "text"
+     > see x
+     > spit "x = 5: " joined by x
+
+     > see a is 1 breeding like 2 joined by 2 times breeding like 3 times
+     > spit "a = 2 + 2 * 3: " joined by a
+
+     > smell b is c: alternatively :c also :c
+     > spit "b = true or false and false: " joined by b
+
+     > taste c is 3 breeding like flipped 2 times
+     > see whole is c
+     > spit whole
+     > spit "c = 3/2: " joined by c
+
+     > see i is 3
+     > see j is c: breeding like 3 joined by 5 times breeding like 3 times
+     > see k is 4 breeding like flipped 3 times joined by the literal opposite of 4
+     > spit "i = 3: " joined by i
+     > spit "j = (3 + 5) * 3: " joined by j
+     > spit "k = 4/3 - 4: " joined by k
+
+     > smell y is 5 unbeaten by 5
+     > spit "5 == 5: " joined by y
+
+     > see int is 7 breeding like flipped 3 times
+
+     #> see zero is 0
+     #> taste l is 7 breeding like flipped 0 times
+     #> taste l is 7 breeding like flipped zero times
+     #> see t is 7 joined by joined by 7

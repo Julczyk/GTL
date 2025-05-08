@@ -35,7 +35,7 @@ public class GreenTextLangInterpreter {
         String presentation = "presentation.gtl";
         String presentation_cd = "presentation_cd.gtl";
 
-        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + presentation_cd); // Change to test redeclaration
+        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + test); // Change to test redeclaration
         String input = Files.readString(filePath);
 
 
@@ -514,6 +514,8 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             value = visit(ctx.variable());
         } else if (ctx.literal() != null) {
             value = visit(ctx.literal());
+        } else if (ctx.expression() != null) {
+            value = visit(ctx.expression());
         } else {
             throw new UnknownException("func: visitAtom()" + ctx.getText());
         }

@@ -18,7 +18,7 @@ X+=Y → > X is joined by Y
 X++  → > X evolves
 X*Y  → > X breeding like Y times
 X*=Y → > X is breeding like Y times
--Y   →    > the literal opposite of Y
+-Y   → > the literal opposite of Y
 X–1  → > X devolves
 1/Y  → > flipped Y
 X%Y  → > X whatever left from Y

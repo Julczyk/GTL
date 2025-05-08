@@ -58,5 +58,5 @@ TYPE CASTING
  > spit int_to_bool
  > hear bool_to_string is bool
  > spit bool_to_string
-     > taste string_to_double is double
+     > taste string_to_double is string
      > see bool_to_int is bool

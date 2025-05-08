@@ -273,6 +273,7 @@ factor
 atom
     : variable
     | literal
+    | BEGIN NEWLINE? expression END
     ;
 
 literal
