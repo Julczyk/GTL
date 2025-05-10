@@ -2,6 +2,7 @@ package Memory;
 
 import Exceptions.NotImplementedException;
 import Exceptions.StackOverflowException;
+import Exceptions.UnknownException;
 import Exceptions.VariableNotFoundException;
 import GreenTextLangBase.GreenTextLangParser;
 import Values.Value;
@@ -16,12 +17,6 @@ import java.util.*;
  */
 public class Memory {
 
-//    public Map<String, Value> locals_old = new HashMap<>();  // working memory, current scope
-//    public Stack<Map<String, Value>> local_stack_old = new Stack<>();  // parent scopes
-//    public Stack<Map<Pair<String, List<Value.Type>>, GreenTextLangParser.Function_declarationContext>> func_stack = new Stack<>();  // parent functions
-//    public Stack<Stack<Map<String, Value>>> local_stack_stack = new Stack<>();  // safe whole stack when starting a function
-//    public Map<Pair<String, List<Value.Type>>, GreenTextLangParser.Function_declarationContext> functions = new HashMap<>();
-
     public Stack<Map<Identifier, Value>> locals = new Stack<>(); // working memory, available scopes
     public Stack<Stack<Map<Identifier, Value>>> locals_stack = new Stack<>();  // drop off memory
     public Map<Identifier, Value> globals = new HashMap<>();  // global statements
@@ -31,7 +26,7 @@ public class Memory {
     public Memory() {}
 
     private boolean isGlobal() {
-        return locals.size() == 1;
+        return locals_stack.size() == 0 ? locals.size() == 1 : false;
     }
 
     private void assertNotExists(Identifier memoryName) {
@@ -100,11 +95,11 @@ public class Memory {
     }
 
     public void assign(GreenTextLangParser.Parent_variableContext parentCtx, Value value) {
-        assign(parentCtx.variable().NAME().getText(), value);
         // TODO implement
+        assign(parentCtx.variable().NAME().getText(), value);
     }
 
-    public Value getVariable(String name) throws VariableNotFoundException { // TODO deprecated
+    public Value getVariable(String name) {
         var memoryName = new Identifier(name);
         for (var loc : locals) {
             if (loc.containsKey(memoryName)) {
@@ -116,12 +111,10 @@ public class Memory {
     }
 
     public Value getVariable(GreenTextLangParser.Parent_variableContext parentCtx) throws VariableNotFoundException {
-        return getVariable(parentCtx.variable().NAME().getText());
         // TODO implement
-    }
-
-    public Value getFunction(String name, GreenTextLangParser.Function_argumentsContext funcArgCtx) throws VariableNotFoundException { // TODO add parent
-        var memoryName = new Identifier(name, funcArgCtx);
+        int upScopes = parentCtx.PARENT().size();
+        String name = parentCtx.variable().NAME().getText();
+        var memoryName = new Identifier(name);
         for (var loc : locals) {
             if (loc.containsKey(memoryName)) {
                 return loc.get(memoryName);
@@ -134,6 +127,30 @@ public class Memory {
                 "Variable '" + memoryName + "' has not been found in this scope");
     }
 
+    public FunctionValue getFunction(GreenTextLangParser.Parent_variableContext parentCtx, List<Type> funcArgs) throws VariableNotFoundException {
+        // TODO add parent
+        String name = parentCtx.variable().NAME().getText();
+        var memoryName = new Identifier(name, funcArgs);
+        Value function = null;
+        for (var loc : locals) {
+            if (loc.containsKey(memoryName)) {
+                function =  loc.get(memoryName);
+            }
+        }
+        if (globals.containsKey(memoryName)) {
+            function = globals.get(memoryName);
+        }
+        if (function == null) {
+            throw new VariableNotFoundException("Your " + memoryName + " is missing, maybe he went to buy milk and hasn't returned yet.",
+                    "Variable '" + memoryName + "' has not been found in this scope");
+        }
+        if (function instanceof FunctionValue) {
+            return (FunctionValue) function;
+        } else {
+            throw new UnknownException("Memory.getFunction");
+        }
+    }
+
     public void beginScope() {
         locals.push(new HashMap<>());
     }
@@ -142,17 +159,19 @@ public class Memory {
         locals.pop();
     }
 
-    public void beginFunction() throws StackOverflowException { // TODO add itself to memory
+    public void beginFunction(FunctionValue func) throws StackOverflowException {
         if (locals_stack.size() >= STACK_LIMIT) {
             throw new StackOverflowException("Don't repeat yourself. Don't repeat yourself. Don't repeat your... Error",
                     "Max recursion limit reached.");
         }
         locals_stack.push(locals);
-        locals= new Stack<>();
+        locals = new Stack<>();
+        beginScope();
+        createFunction(func.getFunction()); // for recursion
     }
 
     public void endFunction() {
-        locals.clear();
+        endScope();
         locals = locals_stack.pop();
     }
 

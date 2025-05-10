@@ -176,4 +176,14 @@ public class Type {
             default -> throw new UnknownException("func: Value.Type.getMemeType()" + baseType); // this won't happen
         };
     }
+
+    @Override
+    public int hashCode() {
+        return baseType.hashCode() + (subType != null ? subType.hashCode() : 0);
+    }
+
+    @Override
+    public String toString() {
+        return baseType.toString() + (subType != null ? (" " + subType.toString()) : "");
+    }
 }

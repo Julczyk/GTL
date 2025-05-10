@@ -7,13 +7,7 @@ import Exceptions.UnknownException;
 import GreenTextLangBase.GreenTextLangParser;
 import GreenTextLangBase.GreenTextLangParserBaseVisitor;
 import Memory.Memory;
-import Values.Value;
-import Values.Type;
-import Values.Operators;
-import Values.BooleanValue;
-import Values.IntegerValue;
-import Values.StringValue;
-import Values.DoubleValue;
+import Values.*;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.nio.file.Path;
@@ -32,61 +26,160 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         ex.setLocation(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine(), filePath);
     }
 
-//    @Override
-//    public Value visitFunction_call_ing(GreenTextLangParser.Function_call_ingContext ctx) {
-//        String name = ctx.variable().NAME().getText();
-//        List<Value> values = new ArrayList<>();
-//        if (ctx.expressions() != null) {
-//            for (var exp : ctx.expressions().expression()) {
-//                Value val = visit(exp);
-//                values.add(val);
-//            }
-//        }
-//        GreenTextLangParser.Function_declarationContext func_ctx;
-//        try {
-//            func_ctx = memory.get_function(name, values);
-//        } catch (InterpreterException e) {
-//            addLocation(e, ctx);
-//            throw e;
-//        }
-//        try {
-//            memory.begin_func();
-//            Value ret = call_function(func_ctx, values);
-//            memory.end_func();
-//            return ret;
-//        } catch (StackOverflowException e) {
-//            addLocation(e, ctx);
-//            throw e;
-//        }
-//    }
-//
-//    @Override
-//    public Value visitFunction_call(GreenTextLangParser.Function_callContext ctx) {
-//        String name = ctx.variable().NAME().getText();
-//        List<Value> values = new ArrayList<>();
-//        if (ctx.expressions() != null) {
-//            for (var exp : ctx.expressions().expression()) {
-//                Value val = visit(exp);
-//                values.add(val);
-//            }
-//        }
-//        GreenTextLangParser.Function_declarationContext func_ctx;
-//        try {
-//            func_ctx = memory.get_function(name, values);
-//        } catch (InterpreterException e) {
-//            addLocation(e, ctx);
-//            throw e;
-//        }
-//        try {
-//            memory.begin_func();
-//            Value ret = call_function(func_ctx, values);
-//            memory.end_func();
-//            return ret;
-//        } catch (StackOverflowException e) {
-//            addLocation(e, ctx);
-//            throw e;
-//        }
-//    }
+    @Override
+    public Value visitFunction_call_ing(GreenTextLangParser.Function_call_ingContext ctx) {
+        List<Values.Value> values = new ArrayList<>();
+        if (ctx.expressions() != null) {
+            for (var exp : ctx.expressions().expression()) {
+                Value val = visit(exp);
+                values.add(val);
+            }
+        }
+        List<Values.Type> types = new ArrayList<>();
+        for (var val : values) {
+            types.add(val.type);
+        }
+        FunctionValue function;
+        try {
+            function = memory.getFunction(ctx.parent_variable(), types);
+        } catch (InterpreterException e) {
+            addLocation(e, ctx);
+            throw e;
+        }
+        try {
+            memory.beginFunction(function);
+            GreenTextLangParser.Function_declarationContext funcCtx = function.getFunction();
+            String retValueName = null;
+            if (funcCtx.function_return() != null) {
+                var decl = funcCtx.function_return().variable_declaration_ing_without_elses();
+                retValueName = decl.NAME().getText();
+                Value value = null;
+                if (decl.expressions() != null) {
+                    value = visit(decl.expressions());
+                } else if (decl.function_call_ing() != null) {
+                    value = visit(decl.function_call_ing());
+                }
+                try {
+                    memory.createVariable(retValueName, decl.type_ing(), value);
+                } catch (InterpreterException e) {
+                    addLocation(e, ctx);
+                    throw e;
+                }
+            }
+            if (funcCtx.function_arguments() != null) {
+                for (int i = 0; i < funcCtx.function_arguments().variable_declaration_ing().size(); i++) {
+                    var decl = funcCtx.function_arguments().variable_declaration_ing(i);
+                    String name = decl.NAME().getText();
+                    Value value = null; // TODO default values
+                    if (decl.SOMEONE_ELSES() != null) {
+                        var e = new NotImplementedException("SOMEONE ELSES in function arguments");
+                        addLocation(e, ctx);
+                        throw e;
+                    } else if (decl.expressions() != null) {
+                        value = visit(decl.expressions());
+                    } else if (decl.function_call_ing() != null) {
+                        value = visit(decl.function_call_ing());
+                    }
+                    try {
+                        memory.createVariable(name, decl.type_ing(), values.get(i));
+                    } catch (InterpreterException e) {
+                        addLocation(e, ctx);
+                        throw e;
+                    }
+                }
+            }
+            for (var stmt : function.getFunctionBody()) {
+                visit(stmt);
+            }
+            Value retValue = null;
+            if (retValueName != null) {
+                retValue = memory.getVariable(retValueName);
+            }
+            memory.endFunction();
+            return retValue;
+        } catch (StackOverflowException e) {
+            addLocation(e, ctx);
+            throw e;
+        }
+    }
+
+    @Override
+    public Value visitFunction_call(GreenTextLangParser.Function_callContext ctx) {
+        List<Values.Value> values = new ArrayList<>();
+        if (ctx.expressions() != null) {
+            for (var exp : ctx.expressions().expression()) {
+                Value val = visit(exp);
+                values.add(val);
+            }
+        }
+        List<Values.Type> types = new ArrayList<>();
+        for (var val : values) {
+            types.add(val.type);
+        }
+        FunctionValue function;
+        try {
+            function = memory.getFunction(ctx.parent_variable(), types);
+        } catch (InterpreterException e) {
+            addLocation(e, ctx);
+            throw e;
+        }
+        try {
+            memory.beginFunction(function);
+            GreenTextLangParser.Function_declarationContext funcCtx = function.getFunction();
+            String retValueName = null;
+            if (funcCtx.function_return() != null) {
+                var decl = funcCtx.function_return().variable_declaration_ing_without_elses();
+                retValueName = decl.NAME().getText();
+                Value value = null;
+                if (decl.expressions() != null) {
+                    value = visit(decl.expressions());
+                } else if (decl.function_call_ing() != null) {
+                    value = visit(decl.function_call_ing());
+                }
+                try {
+                    memory.createVariable(retValueName, decl.type_ing(), value);
+                    return null;
+                } catch (InterpreterException e) {
+                    addLocation(e, ctx);
+                    throw e;
+                }
+            }
+            if (funcCtx.function_arguments() != null) {
+                for (int i = 0; i < funcCtx.function_arguments().variable_declaration_ing().size(); i++) {
+                    var decl = funcCtx.function_arguments().variable_declaration_ing(i);
+                    String name = decl.NAME().getText();
+                    Value value = null; // TODO default values
+                    if (decl.SOMEONE_ELSES() != null) {
+                        var e = new NotImplementedException("SOMEONE ELSES in function arguments");
+                        addLocation(e, ctx);
+                        throw e;
+                    } else if (decl.expressions() != null) {
+                        value = visit(decl.expressions());
+                    } else if (decl.function_call_ing() != null) {
+                        value = visit(decl.function_call_ing());
+                    }
+                    try {
+                        memory.createVariable(name, decl.type_ing(), values.get(i));
+                    } catch (InterpreterException e) {
+                        addLocation(e, ctx);
+                        throw e;
+                    }
+                }
+            }
+            for (var stmt : function.getFunctionBody()) {
+                visit(stmt);
+            }
+            Value retValue = null;
+            if (retValueName != null) {
+                retValue = memory.getVariable(retValueName);
+            }
+            memory.endFunction();
+            return retValue;
+        } catch (StackOverflowException e) {
+            addLocation(e, ctx);
+            throw e;
+        }
+    }
 //
 //    private Value call_function(GreenTextLangParser.Function_declarationContext ctx, List<Value> values) {
 //        for (int i = 0; i < values.size(); i++) {
@@ -130,34 +223,16 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
 //        return ret_value;
 //    }
 //
-//    @Override
-//    public Value visitFunction_declaration(GreenTextLangParser.Function_declarationContext ctx) {
-//        String name = ctx.NAME().getText();
-//        List<Value.Type> types = new ArrayList<>();
-//
-//        if (ctx.function_arguments() != null) {
-//            for (var decl : ctx.function_arguments().variable_declaration_ing()) {
-//                if (decl.type_ing().primitive_type_ing().SEEING() != null) {
-//                    types.add(Value.Type.INT);
-//                } else if (decl.type_ing().primitive_type_ing().TASTING() != null) {
-//                    types.add(Value.Type.DOUBLE);
-//                } else if (decl.type_ing().primitive_type_ing().HEARING() != null) {
-//                    types.add(Value.Type.STRING);
-//                } else if (decl.type_ing().primitive_type_ing().SMELLING() != null) {
-//                    types.add(Value.Type.BOOLEAN);
-//                } else {
-//                    throw new UnknownException("Unhandled case: " + ctx.getText());
-//                }
-//            }
-//        }
-//        try {
-//            memory.create_function(name, types, ctx);
-//        } catch (InterpreterException e) {
-//            addLocation(e, ctx);
-//            throw e;
-//        }
-//        return null;
-//    }
+    @Override
+    public Value visitFunction_declaration(GreenTextLangParser.Function_declarationContext ctx) {
+        try {
+            memory.createFunction(ctx);
+        } catch (InterpreterException e) {
+            addLocation(e, ctx);
+            throw e;
+        }
+        return null;
+    }
 
     @Override
     public Value visitCode_block(GreenTextLangParser.Code_blockContext ctx) {
@@ -494,7 +569,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     public Value visitAtom(GreenTextLangParser.AtomContext ctx) {
         Value value;
         if (ctx.parent_variable() != null) {
-            value = visit(ctx.parent_variable());
+            value = memory.getVariable(ctx.parent_variable());
         } else if (ctx.literal() != null) {
             value = visit(ctx.literal());
         } else if (ctx.expressions() != null) {
@@ -503,17 +578,6 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             throw new UnknownException("func: visitAtom()" + ctx.getText());
         }
         return value;
-    }
-
-    @Override
-    public Value visitParent_variable(GreenTextLangParser.Parent_variableContext ctx) {
-        String name = ctx.variable().NAME().getText(); // TODO get from memory
-        try {
-            return memory.getVariable(name);
-        } catch (InterpreterException e) {
-            addLocation(e, ctx);
-            throw e;
-        }
     }
 
     @Override

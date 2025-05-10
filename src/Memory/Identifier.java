@@ -25,6 +25,10 @@ public class Identifier {
         id = new Pair<String, List<Type>>(name, types);
     }
 
+    public Identifier(String name, List<Type> types) {
+        id = new Pair<String, List<Type>>(name, types);
+    }
+
     public Identifier(String name, GreenTextLangParser.Function_argumentsContext funcArgCtx) {
         List<Type> types = new ArrayList<>();
         for (var arg : funcArgCtx.variable_declaration_ing()) {
@@ -38,7 +42,7 @@ public class Identifier {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Identifier that = (Identifier) o;
-        return id.equals(that.id);
+        return id.toString().equals(that.id.toString()); // TODO idk, better ==
     }
 
     @Override
@@ -48,6 +52,6 @@ public class Identifier {
 
     @Override
     public String toString() {
-        return super.toString(); // TODO return function or name
+        return id.toString(); // TODO return function or name
     }
 }

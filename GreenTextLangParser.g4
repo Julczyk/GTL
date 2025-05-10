@@ -82,8 +82,7 @@ variable_assignment
     ;
 
 parent_variable:
-    | PARENT parent_variable
-    | variable
+    | PARENT* variable
     ;
 
 variable
