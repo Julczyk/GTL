@@ -10,9 +10,11 @@ import Memory.Memory;
 import Values.*;
 import org.antlr.v4.runtime.ParserRuleContext;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     public Memory memory = new Memory();
@@ -28,14 +30,14 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
 
     @Override
     public Value visitFunction_call_ing(GreenTextLangParser.Function_call_ingContext ctx) {
-        List<Values.Value> values = new ArrayList<>();
+        List<Value> values = new ArrayList<>();
         if (ctx.expressions() != null) {
             for (var exp : ctx.expressions().expression()) {
                 Value val = visit(exp);
                 values.add(val);
             }
         }
-        List<Values.Type> types = new ArrayList<>();
+        List<Type> types = new ArrayList<>();
         for (var val : values) {
             types.add(val.type);
         }
@@ -105,14 +107,14 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
 
     @Override
     public Value visitFunction_call(GreenTextLangParser.Function_callContext ctx) {
-        List<Values.Value> values = new ArrayList<>();
+        List<Value> values = new ArrayList<>();
         if (ctx.expressions() != null) {
             for (var exp : ctx.expressions().expression()) {
                 Value val = visit(exp);
                 values.add(val);
             }
         }
-        List<Values.Type> types = new ArrayList<>();
+        List<Type> types = new ArrayList<>();
         for (var val : values) {
             types.add(val.type);
         }
@@ -202,16 +204,44 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     @Override
     public Value visitSpit(GreenTextLangParser.SpitContext ctx) {
         // Extracts and prints the string from the spit statement
-        Value value = visit(ctx.expressions());
-        System.out.println(Operators.getString(value));
+        List<String> strings = new ArrayList<>();
+        for (var exp : ctx.expressions().expression()) {
+            Value val = visit(exp);
+            strings.add(Operators.getString(val));
+        }
+        System.out.println(String.join(", ", strings));
         return null;
     }
 
     @Override
     public Value visitSwallow(GreenTextLangParser.SwallowContext ctx) {
         Value value = memory.getVariable(ctx.parent_variable());
-        // TODO try parse
-        return null;
+        Value newValue;
+        Scanner terminalInput = new Scanner(System.in);
+        String input = terminalInput.nextLine(); // TODO add parsing error
+        try {
+            switch (value.type.baseType) {
+                case BOOLEAN:
+                    newValue = new BooleanValue(input);
+                    break;
+                case DOUBLE:
+                    newValue = new DoubleValue(input);
+                    break;
+                case STRING:
+                    newValue = new StringValue(input);
+                    break;
+                case INT:
+                    newValue = new IntegerValue(input);
+                    break;
+                default:
+                    throw new NotImplementedException("Add convert exception");
+            }
+            memory.assign(ctx.parent_variable(), newValue);
+            return null;
+        } catch (InterpreterException e) {
+            addLocation(e, ctx);
+            throw e;
+        }
     }
 
     @Override

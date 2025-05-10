@@ -4,8 +4,8 @@ import Exceptions.UnknownException;
 import GreenTextLangBase.GreenTextLangParser;
 
 public class Type {
-    BaseType baseType;  // base type
-    Object subType;  // string for structs and functions, Type for types
+    public BaseType baseType;  // base type
+    public Object subType;  // string for structs and functions, Type for types
 
     public enum BaseType {STRING, INT, DOUBLE, BOOLEAN, STRUCT, ARRAY, FUNCTION}
 

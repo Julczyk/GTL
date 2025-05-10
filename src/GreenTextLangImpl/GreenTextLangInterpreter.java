@@ -31,7 +31,7 @@ public class GreenTextLangInterpreter {
         String presentation = "presentation.gtl";
         String presentation_cd = "presentation_cd.gtl";
 
-        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + test); // Change to test redeclaration
+        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + fib); // Change to test redeclaration
         String input = Files.readString(filePath);
 
 
