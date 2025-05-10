@@ -138,7 +138,6 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
                 }
                 try {
                     memory.createVariable(retValueName, decl.type_ing(), value);
-                    return null;
                 } catch (InterpreterException e) {
                     addLocation(e, ctx);
                     throw e;
@@ -180,49 +179,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             throw e;
         }
     }
-//
-//    private Value call_function(GreenTextLangParser.Function_declarationContext ctx, List<Value> values) {
-//        for (int i = 0; i < values.size(); i++) {
-//            String name = ctx.function_arguments().variable_declaration_ing(i).NAME().getText();
-//            Value value = values.get(i);
-//            try {
-//                memory.createVariable(name, value.type, value);
-//            } catch (InterpreterException e) {
-//                addLocation(e, ctx);
-//                throw e;
-//            }
-//        }
-//        String ret_name = null;
-//        if (ctx.function_return() != null) {  // add return value
-//            var ret_val = ctx.function_return().variable_declaration_ing_without_elses();
-//            ret_name = ret_val.NAME().getText();
-//            try {
-//                if (ret_val.type_ing().primitive_type_ing().SEEING() != null) {
-//                    memory.createVariable(ret_name, Value.Type.INT);
-//                } else if (ret_val.type_ing().primitive_type_ing().TASTING() != null) {
-//                    memory.createVariable(ret_name, Value.Type.DOUBLE);
-//                } else if (ret_val.type_ing().primitive_type_ing().HEARING() != null) {
-//                    memory.createVariable(ret_name, Value.Type.STRUCT);
-//                } else if (ret_val.type_ing().primitive_type_ing().SMELLING() != null) {
-//                    memory.createVariable(ret_name, Value.Type.BOOLEAN);
-//                } else {
-//                    throw new UnknownException("Unhandled case: " + ctx.getText());
-//                }
-//            } catch (InterpreterException e) {
-//                addLocation(e, ctx);
-//                throw e;
-//            }
-//        }
-//        for (var stmt : ctx.statement_newline()) {
-//            visit(stmt);
-//        }
-//        Value ret_value = new Value(null, Value.Type.INT, true);
-//        if (ret_name != null) {
-//            ret_value = memory.get(ret_name);
-//        }
-//        return ret_value;
-//    }
-//
+
     @Override
     public Value visitFunction_declaration(GreenTextLangParser.Function_declarationContext ctx) {
         try {

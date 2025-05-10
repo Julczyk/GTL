@@ -101,7 +101,7 @@ public class Memory {
 
     public Value getVariable(String name) {
         var memoryName = new Identifier(name);
-        for (var loc : locals) {
+        for (var loc : locals.reversed()) {
             if (loc.containsKey(memoryName)) {
                 return loc.get(memoryName);
             }
@@ -115,7 +115,7 @@ public class Memory {
         int upScopes = parentCtx.PARENT().size();
         String name = parentCtx.variable().NAME().getText();
         var memoryName = new Identifier(name);
-        for (var loc : locals) {
+        for (var loc : locals.reversed()) {
             if (loc.containsKey(memoryName)) {
                 return loc.get(memoryName);
             }
@@ -132,12 +132,12 @@ public class Memory {
         String name = parentCtx.variable().NAME().getText();
         var memoryName = new Identifier(name, funcArgs);
         Value function = null;
-        for (var loc : locals) {
+        for (var loc : locals.reversed()) {
             if (loc.containsKey(memoryName)) {
-                function =  loc.get(memoryName);
+                function = loc.get(memoryName);
             }
         }
-        if (globals.containsKey(memoryName)) {
+        if (function == null && globals.containsKey(memoryName)) {
             function = globals.get(memoryName);
         }
         if (function == null) {
