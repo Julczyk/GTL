@@ -38,6 +38,10 @@ public abstract class InterpreterException extends RuntimeException {
         this.filePath = filePath;
     }
 
+    public String getLocation() {
+        return line + ":" + posInLine;
+    }
+
     @Override
     public String getMessage() {
         String message = super.getMessage();

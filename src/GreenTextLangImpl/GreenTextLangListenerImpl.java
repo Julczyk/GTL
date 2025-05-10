@@ -1,5 +1,9 @@
+package GreenTextLangImpl;
+
 import Exceptions.*;
-import Value.Value;
+import GreenTextLangBase.GreenTextLangParser;
+import GreenTextLangBase.GreenTextLangParserBaseListener;
+import Values.Value;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Pair;
 
@@ -9,7 +13,7 @@ import java.util.*; // For Stack and Set
 public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
     //This is the main structure checking for variable redeclaration
     //private Set<String> globalScope = new HashSet<>();
-    private Stack<Set<Pair<String, List<Value.Type>>>> functionScopes = new Stack<>();
+    private Stack<Set<Pair<String, List<Values.Type>>>> functionScopes = new Stack<>();
     private Stack<Set<String>> localScopes = new Stack<>();
 
     // For error reporting location (optional if not throwing new SyntaxExceptions from listener)
@@ -70,7 +74,7 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
         }
     }
 
-    private void checkAndAddFunction(String funcName, List<Value.Type> types, ParserRuleContext ctx) {
+    private void checkAndAddFunction(String funcName, List<Values.Type> types, ParserRuleContext ctx) {
         // Check only top scope in the stack for prior declaration
         var func = new Pair<>(funcName, types);
         var scope = functionScopes.peek();
@@ -119,25 +123,25 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
     public void enterFunction_declaration(GreenTextLangParser.Function_declarationContext ctx) {
         // Note: Function names themselves might be checked for redeclaration in a global function registry,
         // this listener focuses on variable scopes *within* constructs.
-        String name = ctx.NAME().getText();
-        List<Value.Type> types = new ArrayList<>();
-
-        if (ctx.function_arguments() != null) {
-            for (var decl : ctx.function_arguments().variable_declaration_ing()) {
-                if (decl.type_ing().primitive_type_ing().SEEING() != null) {
-                    types.add(Value.Type.INT);
-                } else if (decl.type_ing().primitive_type_ing().TASTING() != null) {
-                    types.add(Value.Type.DOUBLE);
-                } else if (decl.type_ing().primitive_type_ing().HEARING() != null) {
-                    types.add(Value.Type.STRING);
-                } else if (decl.type_ing().primitive_type_ing().SMELLING() != null) {
-                    types.add(Value.Type.BOOLEAN);
-                } else {
-                    throw new UnknownException("Unhandled case: " + ctx.getText());
-                }
-            }
-        }
-        checkAndAddFunction(name, types, ctx);
+//        String name = ctx.NAME().getText();
+//        List<Values.Type> types = new ArrayList<>();
+//
+//        if (ctx.function_arguments() != null) {
+//            for (var decl : ctx.function_arguments().variable_declaration_ing()) {
+//                if (decl.type_ing().primitive_type_ing().SEEING() != null) {
+//                    types.add(Values.Type.INT);
+//                } else if (decl.type_ing().primitive_type_ing().TASTING() != null) {
+//                    types.add(Values.Type.DOUBLE);
+//                } else if (decl.type_ing().primitive_type_ing().HEARING() != null) {
+//                    types.add(Values.Type.STRING);
+//                } else if (decl.type_ing().primitive_type_ing().SMELLING() != null) {
+//                    types.add(Values.Type.BOOLEAN);
+//                } else {
+//                    throw new UnknownException("Unhandled case: " + ctx.getText());
+//                }
+//            }
+//        }
+//        checkAndAddFunction(name, types, ctx);
         begin_scope();
         // Function parameters defined in function_arguments will be added to this new scope
         // when their respective enterVariable_declaration_ing methods are called.

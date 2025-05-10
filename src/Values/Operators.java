@@ -1,4 +1,4 @@
-package Value;
+package Values;
 
 import Exceptions.InterpreterException;
 import Exceptions.TypeException;
@@ -13,7 +13,7 @@ public class Operators {
     }
 
     public static Value castValue(Value valTo, Value valFrom) {
-        return switch (valTo.type) {
+        return switch (valTo.type.baseType) {
             case BOOLEAN -> Operators.castBoolean(valFrom);
             case STRING -> Operators.castString(valFrom);
             case INT -> Operators.castInt(valFrom);

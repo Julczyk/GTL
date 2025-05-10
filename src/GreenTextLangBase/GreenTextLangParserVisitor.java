@@ -1,4 +1,6 @@
 // Generated from D:/mateusz/studia/4_semestr/Kompilatory/GTL/GreenTextLangParser.g4 by ANTLR 4.13.2
+package GreenTextLangBase;
+
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -75,6 +77,12 @@ public interface GreenTextLangParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitVariable_assignment(GreenTextLangParser.Variable_assignmentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link GreenTextLangParser#parent_variable}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParent_variable(GreenTextLangParser.Parent_variableContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GreenTextLangParser#variable}.
 	 * @param ctx the parse tree

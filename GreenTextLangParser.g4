@@ -58,27 +58,32 @@ spit
     ;
 
 swallow
-    : SWALLOW variable
+    : SWALLOW parent_variable
     ;
 
 variable_declaration
-    : type NAME IS SOMEONE_ELSES variable
+    : type NAME IS SOMEONE_ELSES parent_variable
     | type NAME IS expressions
     | type NAME IS function_call_ing
     | type NAME
     ;
 
 variable_assignment
-    : variable IS expressions
-    | variable IS function_call_ing
-    | variable IS SOMEONE_ELSES variable
-    | variable IS JOINED_BY expression
-    | variable EVOLVES
-    | variable DEVOLVES
-    | variable IS BREEDING_LIKE NEWLINE? expression NEWLINE? TIMES
-    | variable IS FLIPPED expression
-    | variable IS THE_LITERAL_OPPOSITE_OF expression
-    | variable IS WHATEVER_LEFT_FROM expression
+    : parent_variable IS expressions
+    | parent_variable IS function_call_ing
+    | parent_variable IS SOMEONE_ELSES parent_variable
+    | parent_variable IS JOINED_BY expressions
+    | parent_variable EVOLVES
+    | parent_variable DEVOLVES
+    | parent_variable IS BREEDING_LIKE NEWLINE? expressions NEWLINE? TIMES
+    | parent_variable IS FLIPPED expressions
+    | parent_variable IS THE_LITERAL_OPPOSITE_OF expressions
+    | parent_variable IS WHATEVER_LEFT_FROM expressions
+    ;
+
+parent_variable:
+    | PARENT parent_variable
+    | variable
     ;
 
 variable
@@ -88,11 +93,11 @@ variable
     ;
 
 function_call_ing
-    : CALLING variable (REGARDING expressions)?
+    : CALLING parent_variable (REGARDING expressions)?
     ;
 
 function_call
-    : CALL variable (REGARDING expressions)?
+    : CALL parent_variable (REGARDING expressions)?
     ;
 
 invite
@@ -259,7 +264,7 @@ sum
     ;
 
 term
-    : term BREEDING_LIKE NEWLINE? expression NEWLINE? TIMES
+    : term BREEDING_LIKE NEWLINE? expressions NEWLINE? TIMES
     | term WHATEVER_LEFT_FROM factor
     | factor
     ;
@@ -271,9 +276,10 @@ factor
     ;
 
 atom
-    : variable
+    : parent_variable
     | literal
-    | BEGIN NEWLINE? expression END
+    | BEGIN NEWLINE? expressions END
+    | LETME type atom
     ;
 
 literal

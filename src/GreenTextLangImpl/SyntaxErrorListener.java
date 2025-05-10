@@ -1,5 +1,7 @@
-//package ../GreenTextLangParser.java;
+package GreenTextLangImpl;//package ../GreenTextLangParser.java;
 import Exceptions.SyntaxException;
+import GreenTextLangBase.GreenTextLangLexer;
+import GreenTextLangBase.GreenTextLangParser;
 import org.antlr.v4.runtime.InputMismatchException;
 import org.antlr.v4.runtime.atn.Transition;
 import org.antlr.v4.runtime.misc.IntervalSet;

@@ -1,7 +1,6 @@
-package Value;
+package Values;
 
 import Exceptions.TypeException;
-import Exceptions.UnknownException;
 
 /**
  * Value.Value class that encapsulates numeric and string values.
@@ -16,7 +15,6 @@ public class Value {
     Object value;
     boolean isNull = false;
     public Type type;
-    public enum Type {STRING, INT, DOUBLE, BOOLEAN, STRUCT, ARRAY}
     // Constructors
     Value(Object value, Type type) {
         this.value = value;
@@ -99,13 +97,7 @@ public class Value {
     }
 
     String getMemeType() {
-        return switch(type) {
-            case STRING -> "hear";
-            case INT -> "see";
-            case BOOLEAN -> "smell";
-            case DOUBLE -> "taste";
-            default -> throw new UnknownException("func: Value.Value.getMemeType()" + getInfo()); // this won't happen
-        };
+        return type.getMemeType();
     }
 
     @Override

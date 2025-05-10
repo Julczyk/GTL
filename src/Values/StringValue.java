@@ -1,9 +1,9 @@
-package Value;
+package Values;
 
 public class StringValue extends Value {
 
     public StringValue(String value) {
-        super(value, Type.STRING);
+        super(value, new Type(Type.BaseType.STRING));
     }
 
     @Override
@@ -23,9 +23,9 @@ public class StringValue extends Value {
 
     @Override
     Value mul(Value right) {
-        if (right.type == Type.BOOLEAN) {
+        if (right.type.isBoolean()) {
             return new StringValue(right.getBoolean() ? getString() : "");
-        } else if (right.type == Type.INT) {
+        } else if (right.type.isInt()) {
             return new StringValue(getString().repeat(right.getInt()));
         }
         return super.mul(right);
@@ -33,7 +33,7 @@ public class StringValue extends Value {
 
     @Override
     Value add(Value right) {
-        if (right.type == Type.BOOLEAN || right.type == Type.STRING || right.type == Type.INT || right.type == Type.DOUBLE) {
+        if (right.type.isBoolean() || right.type.isString() || right.type.isInt() || right.type.isDouble()) {
             return new StringValue(getString() + right.getString());
         }
         return super.add(right);
@@ -41,7 +41,7 @@ public class StringValue extends Value {
 
     @Override
     Value gt(Value right) {
-        if (right.type == Type.STRING) {
+        if (right.type.isString()) {
             int cmp = getString().compareTo(right.getString());
             return cmp < 0 ? TRUE : FALSE;
         }
@@ -50,7 +50,7 @@ public class StringValue extends Value {
 
     @Override
     Value lt(Value right) {
-        if (right.type == Type.STRING) {
+        if (right.type.isString()) {
             int cmp = getString().compareTo(right.getString());
             return cmp > 0 ? TRUE : FALSE;
         }
@@ -59,7 +59,7 @@ public class StringValue extends Value {
 
     @Override
     Value eq(Value right) {
-        if (right.type == Type.STRING) {
+        if (right.type.isString()) {
             int cmp = getString().compareTo(right.getString());
             return cmp == 0 ? TRUE : FALSE;
         }

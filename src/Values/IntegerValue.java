@@ -1,4 +1,4 @@
-package Value;
+package Values;
 
 import Exceptions.ArithmeticException;
 import Exceptions.UnknownException;
@@ -6,16 +6,18 @@ import Exceptions.UnknownException;
 public class IntegerValue extends Value {
 
     public IntegerValue(int value) {
-        super(value, Type.INT);
+        super(value, new Type(Type.BaseType.INT));
     }
 
     public IntegerValue(String text) {
-        super(null, Type.INT);
-        try {
-            value = Integer.parseInt(text);
-            isNull = false;
-        } catch (Exception e) {
-            throw new UnknownException("func: Value.Value.parseInt()" + text);
+        super(null, new Type(Type.BaseType.INT));
+        if (text != null) {
+            try {
+                value = Integer.parseInt(text);
+                isNull = false;
+            } catch (Exception e) {
+                throw new UnknownException("func: Value.Value.parseInt()" + text);
+            }
         }
     }
 
@@ -54,9 +56,9 @@ public class IntegerValue extends Value {
 
     @Override
     Value mul(Value right) {
-        if (right.type == Type.INT) {
+        if (right.type.isInt()) {
             return new IntegerValue(getInt() * right.getInt());
-        } else if (right.type == Type.BOOLEAN) {
+        } else if (right.type.isBoolean()) {
             return new IntegerValue(right.getBoolean() ? getInt() : 0);
         }
         return super.mul(right);
@@ -64,7 +66,7 @@ public class IntegerValue extends Value {
 
     @Override
     Value mod(Value right) {
-        if (right.type == Type.INT) {
+        if (right.type.isInt()) {
             if (right.getInt() == 0) {
                 throw new ArithmeticException("You don't know what is left from zero? An idiot, who doesn't know how modulo operation works.", "Modulo by 0");
             }
@@ -75,7 +77,7 @@ public class IntegerValue extends Value {
 
     @Override
     Value add(Value right) {
-        if (right.type == Type.INT) {
+        if (right.type.isInt()) {
             return new IntegerValue(getInt() + right.getInt());
         }
         return super.add(right);
@@ -83,7 +85,7 @@ public class IntegerValue extends Value {
 
     @Override
     Value gt(Value right) {
-        if (right.type == Type.INT) {
+        if (right.type.isInt()) {
             return getInt() > right.getInt() ? TRUE : FALSE;
         }
         return super.gt(right);
@@ -91,7 +93,7 @@ public class IntegerValue extends Value {
 
     @Override
     Value lt(Value right) {
-        if (right.type == Type.INT) {
+        if (right.type.isInt()) {
             return getInt() < right.getInt() ? TRUE : FALSE;
         }
         return super.lt(right);
@@ -99,7 +101,7 @@ public class IntegerValue extends Value {
 
     @Override
     Value eq(Value right) {
-        if (right.type == Type.INT) {
+        if (right.type.isInt()) {
             return getInt() == right.getInt() ? TRUE : FALSE;
         }
         return super.eq(right);

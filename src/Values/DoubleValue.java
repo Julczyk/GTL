@@ -1,23 +1,25 @@
-package Value;
+package Values;
 
 import Exceptions.UnknownException;
 
 public class DoubleValue extends Value {
 
     public DoubleValue(double value) {
-        super(value, Type.DOUBLE);
+        super(value, new Type(Type.BaseType.DOUBLE));
         if (Double.isNaN(value) || Double.isInfinite(value)) {
             isNull = true;
         }
     }
 
     public DoubleValue(String text) {
-        super(null, Type.DOUBLE);
-        try {
-            value = Double.parseDouble(text);
-            isNull = false;
-        } catch (Exception e) {
-            throw new UnknownException("func: DoubleValue()" + text);
+        super(null, new Type(Type.BaseType.DOUBLE));
+        if (text != null) {
+            try {
+                value = Double.parseDouble(text);
+                isNull = false;
+            } catch (Exception e) {
+                throw new UnknownException("func: DoubleValue()" + text);
+            }
         }
     }
 
@@ -56,9 +58,9 @@ public class DoubleValue extends Value {
 
     @Override
     Value mul(Value right) {
-        if (right.type == Type.DOUBLE || right.type == Type.INT) {
+        if (right.type.isDouble() || right.type.isInt()) {
             return new DoubleValue(getDouble() * right.getDouble());
-        } else if (right.type == Type.BOOLEAN) {
+        } else if (right.type.isBoolean()) {
             return new DoubleValue(right.getBoolean() ? getDouble() : 0);
         }
         return super.mul(right);
@@ -66,7 +68,7 @@ public class DoubleValue extends Value {
 
     @Override
     Value add(Value right) {
-        if (right.type == Type.DOUBLE || right.type == Type.INT) {
+        if (right.type.isDouble() || right.type.isInt()) {
             return new DoubleValue(getDouble() + right.getDouble());
         }
         return super.mul(right);
@@ -74,7 +76,7 @@ public class DoubleValue extends Value {
 
     @Override
     Value gt(Value right) {
-        if (right.type == Type.DOUBLE || right.type == Type.INT) {
+        if (right.type.isDouble() || right.type.isInt()) {
             return getDouble() > right.getDouble() ? TRUE : FALSE;
         }
         return super.gt(right);
@@ -82,7 +84,7 @@ public class DoubleValue extends Value {
 
     @Override
     Value lt(Value right) {
-        if (right.type == Type.DOUBLE || right.type == Type.INT) {
+        if (right.type.isDouble() || right.type.isInt()) {
             return getDouble() < right.getDouble() ? TRUE : FALSE;
         }
         return super.lt(right);
@@ -90,7 +92,7 @@ public class DoubleValue extends Value {
 
     @Override
     Value eq(Value right) {
-        if (right.type == Type.DOUBLE || right.type == Type.INT) {
+        if (right.type.isDouble() || right.type.isInt()) {
             return getDouble() == right.getDouble() ? TRUE : FALSE;
         }
         return super.eq(right);

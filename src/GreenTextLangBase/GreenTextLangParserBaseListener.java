@@ -1,4 +1,5 @@
 // Generated from D:/mateusz/studia/4_semestr/Kompilatory/GTL/GreenTextLangParser.g4 by ANTLR 4.13.2
+package GreenTextLangBase;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -143,6 +144,18 @@ public class GreenTextLangParserBaseListener implements GreenTextLangParserListe
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitVariable_assignment(GreenTextLangParser.Variable_assignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterParent_variable(GreenTextLangParser.Parent_variableContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParent_variable(GreenTextLangParser.Parent_variableContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
