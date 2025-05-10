@@ -10,7 +10,6 @@ import Memory.Memory;
 import Values.*;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -556,11 +555,24 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     public Value visitAtom(GreenTextLangParser.AtomContext ctx) {
         Value value;
         if (ctx.parent_variable() != null) {
-            value = memory.getVariable(ctx.parent_variable());
+            try {
+                value = memory.getVariable(ctx.parent_variable());
+            } catch (InterpreterException e) {
+                addLocation(e, ctx);
+                throw e;
+            }
         } else if (ctx.literal() != null) {
             value = visit(ctx.literal());
         } else if (ctx.expressions() != null) {
             value = visit(ctx.expressions());
+        } else if (ctx.atom() != null) { // let me, type casting
+            value = visit(ctx.atom());
+            try {
+                value = Operators.castValue(value, Type.inferType(ctx.type()));
+            } catch (InterpreterException e) {
+                addLocation(e, ctx);
+                throw e;
+            }
         } else {
             throw new UnknownException("func: visitAtom()" + ctx.getText());
         }

@@ -82,10 +82,10 @@ public class Memory {
 
     private void assign(String name, Value value) {
         var memoryName = new Identifier(name);
-        for (var loc : locals) {
+        for (var loc : locals.reversed()) {
             if (loc.containsKey(memoryName)) {
                 Value curr_val = loc.get(memoryName);
-                curr_val = Operators.castValue(curr_val, value);
+                curr_val = Operators.automaticCastValue(curr_val, value);
                 loc.put(memoryName, curr_val);
                 return;
             }
@@ -95,8 +95,32 @@ public class Memory {
     }
 
     public void assign(GreenTextLangParser.Parent_variableContext parentCtx, Value value) {
-        // TODO implement
-        assign(parentCtx.variable().NAME().getText(), value);
+        int scope = parentCtx.PARENT().size();
+        if (scope >= locals.size()) {
+            throw new VariableNotFoundException("Too many scopes.", "Too many scopes.");
+        }
+        var varCtx = parentCtx.variable();
+        String name;
+        if (varCtx.S() != null) {
+            name = varCtx.NAME().getText();
+        } else if (varCtx.TH() != null) {
+            throw new NotImplementedException("Array");
+        } else {
+            name = varCtx.NAME().getText();
+        }
+        var memoryName = new Identifier(name);
+        for (int i = 0; i < locals.size(); i++) {
+            if (scope > i) continue;
+            var loc = locals.get(locals.size() - i - 1); // reversed
+            if (loc.containsKey(memoryName)) {
+                Value curr_val = loc.get(memoryName);
+                curr_val = Operators.automaticCastValue(curr_val, value);
+                loc.put(memoryName, curr_val);
+                return;
+            }
+        }
+        throw new VariableNotFoundException("Your " + memoryName + " is missing, maybe he went to buy milk and hasn't returned yet.",
+                "Variable '" + memoryName + "' has not been found in this scope");
     }
 
     public Value getVariable(String name) {
@@ -111,11 +135,23 @@ public class Memory {
     }
 
     public Value getVariable(GreenTextLangParser.Parent_variableContext parentCtx) throws VariableNotFoundException {
-        // TODO implement
-        int upScopes = parentCtx.PARENT().size();
-        String name = parentCtx.variable().NAME().getText();
+        int scope = parentCtx.PARENT().size();
+        if (scope >= locals.size()) {
+            throw new VariableNotFoundException("Too many scopes.", "Too many scopes.");
+        }
+        var varCtx = parentCtx.variable();
+        String name;
+        if (varCtx.S() != null) {
+            name = varCtx.NAME().getText();
+        } else if (varCtx.TH() != null) {
+            throw new NotImplementedException("Array");
+        } else {
+            name = varCtx.NAME().getText();
+        }
         var memoryName = new Identifier(name);
-        for (var loc : locals.reversed()) {
+        for (int i = 0; i < locals.size(); i++) {
+            if (scope > i) continue;
+            var loc = locals.get(locals.size() - i - 1); // reversed
             if (loc.containsKey(memoryName)) {
                 return loc.get(memoryName);
             }
@@ -128,11 +164,24 @@ public class Memory {
     }
 
     public FunctionValue getFunction(GreenTextLangParser.Parent_variableContext parentCtx, List<Type> funcArgs) throws VariableNotFoundException {
-        // TODO add parent
-        String name = parentCtx.variable().NAME().getText();
+        int scope = parentCtx.PARENT().size();
+        if (scope >= locals.size()) {
+            throw new VariableNotFoundException("Too many scopes.", "Too many scopes.");
+        }
+        var varCtx = parentCtx.variable();
+        String name;
+        if (varCtx.S() != null) {
+            throw new NotImplementedException("Function from struct");
+        } else if (varCtx.TH() != null) {
+            throw new NotImplementedException("Array");
+        } else {
+            name = varCtx.NAME().getText();
+        }
         var memoryName = new Identifier(name, funcArgs);
         Value function = null;
-        for (var loc : locals.reversed()) {
+        for (int i = 0; i < locals.size(); i++) {
+            if (scope > i) continue;
+            var loc = locals.get(locals.size() - i - 1); // reversed
             if (loc.containsKey(memoryName)) {
                 function = loc.get(memoryName);
             }
@@ -174,106 +223,6 @@ public class Memory {
         endScope();
         locals = locals_stack.pop();
     }
-
-//    public void create(String name, Type type) {
-//        if (locals_old.containsKey(name)) {
-//            throw new VariableNotFoundException("Double " + name + " and give it to the next person.",
-//                    "Variable '" + name + "' has already been declared.");
-//        }
-//        locals_old.put(name, new Value(null, type, true));
-//    }
-
-//    public void create(String name, Type type, Value value) {
-//        create(name, type);
-//        if (value != null) assign(name, value);
-//    }
-
-//    public Value get(String name) {
-//        if (locals_old.containsKey(name)) {
-//            return locals_old.get(name);
-//        }
-//        for (var loc : local_stack_old) {
-//            if (loc.containsKey(name)) {
-//                return loc.get(name);
-//            }
-//        }
-//        throw new VariableNotFoundException("Your " + name + " is missing, maybe he went to buy milk and hasn't returned yet.",
-//                "Variable '" + name + "' has not been found in this scope");
-//    }
-//
-//    public void assign(String name, Value value) {
-//        if (locals_old.containsKey(name)) {
-//            Value curr_val = locals_old.get(name);
-//            curr_val = Operators.castValue(curr_val, value);
-//            locals_old.put(name, curr_val);
-//            return;
-//        }
-//        for (var loc : local_stack_old) {
-//            if (loc.containsKey(name)) {
-//                Value curr_val = loc.get(name);
-//                curr_val = Operators.castValue(curr_val, value);
-//                loc.put(name, curr_val);
-//                return;
-//            }
-//        }
-//        throw new VariableNotFoundException("Your " + name + " is missing, maybe he went to buy milk and hasn't returned yet.",
-//                "Variable '" + name + "' has not been found in this scope");
-//    }
-//
-//
-//    public void create_function(String name, List<Type> types, GreenTextLangParser.Function_declarationContext ctx) {
-//        var name_type = new Pair<String, List<Type>>(name, new ArrayList<>(types));
-//        if (functions.containsKey(name_type)) {
-//            throw new VariableNotFoundException("Double " + name + " and give it to the next person.",
-//                    "Function '" + name + "' with types: "+ types.toString() + " has already been declared.");
-//        }
-//        functions.put(name_type, ctx);
-//    }
-//
-//    public GreenTextLangParser.Function_declarationContext get_function(String name, List<Value> arguments) {
-//        List<Type> types = new ArrayList<>();
-//        for (var arg : arguments) {
-//            types.add(arg.type);
-//        }
-//        var name_type = new Pair<String, List<Type>>(name, new ArrayList<>(types));
-//        if (functions.containsKey(name_type)) {
-//            return functions.get(name_type);
-//        }
-//        for (var func : func_stack) {
-//            if (func.containsKey(name_type)) {
-//                return func.get(name_type);
-//            }
-//        }
-//        throw new VariableNotFoundException("Your " + name + " is missing, maybe types " + types.toString() + " are very incorrect.",
-//                "Function '" + name + "' with types: "+ types.toString() +" has not been found in this scope");
-//    }
-//
-//    public void begin_local() {
-//        local_stack_old.push(new HashMap<>(locals_old));
-//        func_stack.push(new HashMap<>(functions));
-//        locals_old.clear();
-//        functions.clear();
-//    }
-//
-//    public void end_local() {
-//        locals_old = local_stack_old.pop();
-//        functions = func_stack.pop();
-//    }
-//
-//    public void begin_func() {
-//        if (local_stack_stack.size() >= STACK_LIMIT) {
-//            throw new StackOverflowException("Don't repeat yourself. Don't repeat yourself. Don't repeat your... Error",
-//                    "Max recursion limit reached.");
-//        }
-//        begin_local();
-//        local_stack_stack.push(local_stack_old);
-//        local_stack_old = new Stack<>();
-//    }
-//
-//    public void end_func() {
-//        local_stack_old = local_stack_stack.pop();
-//        end_local();
-//    }
 
     public void free() {
         locals.clear();
