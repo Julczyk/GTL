@@ -20,7 +20,8 @@ subfunction:
  > smell b is :c
  > taste c is 2.0
  > hear d is "AaAaAa"
- >profit
+ > profit
+ > profit
 main function:
  > see a is 2
  > smell b is :c
