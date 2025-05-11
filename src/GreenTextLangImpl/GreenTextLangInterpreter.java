@@ -55,7 +55,7 @@ public class GreenTextLangInterpreter {
             // Using Listener instead of Visitor
             GreenTextLangListenerImpl listener = new GreenTextLangListenerImpl(filePath, input);
             ParseTreeWalker walker = new ParseTreeWalker();
-            walker.walk(listener, tree);
+            //walker.walk(listener, tree); TODO uncomment
             System.out.println("Program parsed and listener processed successfully (if no exceptions).");
 
             GreenTextLangVisitorImpl visitor = new GreenTextLangVisitorImpl(filePath);
