@@ -14,7 +14,7 @@ BOOL OPERATIONS
  > spit c: also c:
  > spit 2 vibe with 2 also c:
  > spit 2 vibe with 3 alternatively c:
- > spit c: and :c alternatively not :c
+ > spit c: also :c alternatively not :c
  > spit 2 also 5
  > spit "" also c:
 

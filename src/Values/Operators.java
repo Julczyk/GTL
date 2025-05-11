@@ -1,4 +1,4 @@
-package Value;
+package Values;
 
 import Exceptions.InterpreterException;
 import Exceptions.TypeException;
@@ -12,14 +12,25 @@ public class Operators {
         return val.getString();
     }
 
-    public static Value castValue(Value valTo, Value valFrom) {
-        return switch (valTo.type) {
+    public static Value automaticCastValue(Value valTo, Value valFrom) {
+        return switch (valTo.type.baseType) {
             case BOOLEAN -> Operators.castBoolean(valFrom);
             case STRING -> Operators.castString(valFrom);
             case INT -> Operators.castInt(valFrom);
             case DOUBLE -> Operators.castDouble(valFrom);
             default ->
                     throw new TypeException("Unable to cast " + valFrom.getMemeType() + " to " + valTo.getMemeType(), "Unable to cast " + valFrom.type + " to " + valTo.type);
+        };
+    }
+
+    public static Value castValue(Value valFrom, Type type) { // TODO add every type cast
+        return switch (type.baseType) {
+            case BOOLEAN -> Operators.castBoolean(valFrom);
+            case STRING -> Operators.castString(valFrom);
+            case INT -> Operators.castInt(valFrom);
+            case DOUBLE -> Operators.castDouble(valFrom);
+            default ->
+                    throw new TypeException("Unable to cast " + valFrom.getMemeType() + " to " + type, "Unable to cast " + valFrom.type + " to " + type);
         };
     }
 

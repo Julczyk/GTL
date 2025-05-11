@@ -1,15 +1,15 @@
-package Value;
+package Values;
 
 import Exceptions.UnknownException;
 
 public class BooleanValue extends Value {
 
     public BooleanValue(boolean value) {
-        super(value, Type.BOOLEAN);
+        super(value, new Type(Type.BaseType.BOOLEAN));
     }
 
     public BooleanValue(String text) {
-        super(null, Type.BOOLEAN);
+        super(null, new Type(Type.BaseType.BOOLEAN));
         if (text == null) value = null;
         else if (text.equals("c:")) {value = true; isNull = false;}
         else if (text.equals(":c")) {value = false; isNull = false;}
@@ -38,7 +38,7 @@ public class BooleanValue extends Value {
 
     @Override
     Value mul(Value right) {
-        if (right.type == Type.BOOLEAN) {
+        if (right.type.isBoolean()) {
             return getBoolean() && right.getBoolean() ? TRUE : FALSE;
         }
         return super.mul(right);
@@ -46,7 +46,7 @@ public class BooleanValue extends Value {
 
     @Override
     Value add(Value right) {
-        if (right.type == Type.BOOLEAN) {
+        if (right.type.isBoolean()) {
             return getBoolean() || right.getBoolean() ? TRUE : FALSE;
         }
         return super.add(right);
@@ -54,7 +54,7 @@ public class BooleanValue extends Value {
 
     @Override
     Value gt(Value right) {
-        if (right.type == Type.BOOLEAN) {
+        if (right.type.isBoolean()) {
             return getBoolean() && !right.getBoolean() ? TRUE : FALSE;
         }
         return super.gt(right);
@@ -62,7 +62,7 @@ public class BooleanValue extends Value {
 
     @Override
     Value lt(Value right) {
-        if (right.type == Type.BOOLEAN) {
+        if (right.type.isBoolean()) {
             return !getBoolean() && right.getBoolean() ? TRUE : FALSE;
         }
         return super.lt(right);
@@ -70,7 +70,7 @@ public class BooleanValue extends Value {
 
     @Override
     Value eq(Value right) {
-        if (right.type == Type.BOOLEAN) {
+        if (right.type.isBoolean()) {
             return getBoolean() == right.getBoolean() ? TRUE : FALSE;
         }
         return super.eq(right);

@@ -50,8 +50,10 @@ IMPLYING     : 'implying';
 OR_STH       : 'or sth';
 OR           : 'or';
 OR_NOT       : 'or not';
-BEGIN        : 'begin';
-END          : 'end';
+BEGIN        : 'begin'; // open brackets
+END          : 'end';   // close brackets
+LETME        : 'let me';// type casting
+PARENT       : 'parent';// higher scope
 
 // LITERALS
 
