@@ -126,7 +126,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
 
     @Override
     public Value visitCode_block(GreenTextLangParser.Code_blockContext ctx) {
-        memory.beginScope(); // TODO scopes
+        memory.beginScope();
         visitChildren(ctx);
         memory.endScope();
         return null;

@@ -42,7 +42,7 @@ public class Identifier {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Identifier that = (Identifier) o;
-        return id.toString().equals(that.id.toString()); // TODO idk, better ==
+        return id.toString().equals(that.id.toString());
     }
 
     @Override
@@ -52,6 +52,13 @@ public class Identifier {
 
     @Override
     public String toString() {
-        return id.toString(); // TODO return function or name
+        if (id instanceof Pair) {
+            var pair = (Pair<String, List<Type>>) id;
+            var name = pair.a;
+            var types = pair.b;
+            return "function: " + name + " " + types;
+        } else {
+            return id.toString();
+        }
     }
 }
