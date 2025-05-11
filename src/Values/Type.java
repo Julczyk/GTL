@@ -100,7 +100,7 @@ public class Type {
     }
 
     private static Type inferStruct(GreenTextLangParser.Nested_nameContext nestedName) {
-        return new Type(BaseType.STRUCT, nestedName.getText()); // TODO is it correct
+        return new Type(BaseType.STRUCT, nestedName.getText()); // TODO it is not correct
     }
 
     public static Type inferType_ing(GreenTextLangParser.Type_ingContext type_ingCtx) {

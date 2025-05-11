@@ -89,15 +89,10 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             for (int i = 0; i < funcCtx.function_arguments().variable_declaration_ing().size(); i++) {
                 var decl = funcCtx.function_arguments().variable_declaration_ing(i);
                 String name = decl.NAME().getText();
-                Value value = null; // TODO default values
                 if (decl.SOMEONE_ELSES() != null) {
                     var e = new NotImplementedException("SOMEONE ELSES in function arguments");
                     addLocation(e, varCtx);
                     throw e;
-                } else if (decl.expressions() != null) {
-                    value = visit(decl.expressions());
-                } else if (decl.function_call_ing() != null) {
-                    value = visit(decl.function_call_ing());
                 }
                 try {
                     memory.createVariable(name, decl.type_ing(), values.get(i));
@@ -240,7 +235,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             } else if (ctx.WHATEVER_LEFT_FROM() != null) {
                 currentValue = Operators.mod(currentValue, temp);
             }
-            memory.assign(currentVariable, currentValue); // TODO is it necessary
+            memory.assign(currentVariable, currentValue);
             return null;
         } catch (InterpreterException e) {
             addLocation(e, ctx);

@@ -198,8 +198,6 @@ variable_declaration_ing_without_elses
 
 variable_declaration_ing
     : type_ing SOMEONE_ELSES NAME
-    | type_ing NAME IS expressions
-    | type_ing NAME IS function_call_ing
     | type_ing NAME
     ;
 
