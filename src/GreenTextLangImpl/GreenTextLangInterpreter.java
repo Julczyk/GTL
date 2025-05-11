@@ -77,7 +77,7 @@ public class GreenTextLangInterpreter {
         if (args.length == 0) {
             Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + test); // Change to test redeclaration
             run(filePath, true, false);
-        } else {
+        } else { // TODO windows always runs this main
             Path inputPath = Paths.get(args[0]).toAbsolutePath();
             File inputFile = inputPath.toFile();
             if (!inputFile.exists() || !inputFile.isFile()) {
