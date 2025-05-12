@@ -203,12 +203,10 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         var currentVariable = ctx.parent_variable(0);
         Value currentValue = null;
         currentValue = memory.getVariable(currentVariable);
-
         Value temp = null;
         if (ctx.expressions() != null) {
             temp = visit(ctx.expressions());
         }
-
         if (ctx.function_call_ing() != null) {
             currentValue = visit(ctx.function_call_ing());
         } else if (ctx.SOMEONE_ELSES() != null) {
