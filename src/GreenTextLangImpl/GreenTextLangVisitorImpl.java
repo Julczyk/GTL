@@ -188,7 +188,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
                     newValue = new DoubleValue(input);
                     break;
                 case STRING:
-                    newValue = new StringValue(input);
+                    newValue = new StringValue(input, true);
                     break;
                 case INT:
                     newValue = new IntegerValue(input);
@@ -551,7 +551,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             } else if (ctx.STRING_LITERAL() != null) {
                 String text = ctx.getText();
                 text = text.substring(1, text.length() - 1);
-                value = new StringValue(text);
+                value = new StringValue(text, true);
             } else if (ctx.DECIMAL_LITERAL() != null) {
                 value = new IntegerValue(ctx.getText());
             } else if (ctx.FLOAT_LITERAL() != null) {

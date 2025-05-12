@@ -6,6 +6,20 @@ public class StringValue extends Value {
         super(value, new Type(Type.BaseType.STRING));
     }
 
+    public StringValue(String value, boolean parseEscape) {
+        super(value, new Type(Type.BaseType.STRING));
+        if (parseEscape) { // escape btnfr"\\
+            value = value.replace("\\b", "\b");
+            value = value.replace("\\t", "\t");
+            value = value.replace("\\n", "\n");
+            value = value.replace("\\f", "\f");
+            value = value.replace("\\r", "\r");
+            value = value.replace("\\\"", "\"");
+            value = value.replace("\\\\", "\\");
+            this.value = value;
+        }
+    }
+
     @Override
     String getString() {
         return (String) value;
