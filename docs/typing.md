@@ -10,7 +10,9 @@
 - other (structs, etc) - `spot`
 
 ### Assigning value:
-After name instead of standard `=` keywords `giving` or `gives` and then value or [expression](expressions.md).
+**LEGACY:** After name instead of standard `=` keywords `giving` or `gives` and then value or [expression](expressions_and_math.md).\
+**CURRENT:** After name instead of standard `=` keyword `is` and then value or [expression](expressions_and_math.md).
+
 
 ### Declaring variables:
 \>{variable type} {variable name} (assigning value)
@@ -18,9 +20,9 @@ After name instead of standard `=` keywords `giving` or `gives` and then value o
 ### examples
 ```GTL
 (String mada = "elo")
->hear mada giving "elo"
+>hear mada is "elo"
 (String madb = mada)
->hear madb giving mada
+>hear madb is mada
 (double value)
 >taste value
 ```
