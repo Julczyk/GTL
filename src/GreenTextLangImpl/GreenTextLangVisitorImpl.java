@@ -9,6 +9,7 @@ import GreenTextLangBase.GreenTextLangParserBaseVisitor;
 import Memory.Memory;
 import Values.*;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.misc.Pair;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -48,16 +49,28 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     }
 
     private Value callFunction(GreenTextLangParser.Parent_variableContext varCtx, GreenTextLangParser.ExpressionsContext expCtx) {
-        List<Value> values = new ArrayList<>();
+        List<Pair<GreenTextLangParser.Parent_variableContext, Value>> valuePairs = new ArrayList<>();
         if (expCtx != null) {
             for (var exp : expCtx.expression()) {
                 Value val = visit(exp);
-                values.add(val);
+                // pass by reference check if it is only parent variable context
+                GreenTextLangParser.Parent_variableContext parentCtx = null;
+                if (exp.also(1) == null &&
+                    exp.also(0).inversion(1) == null &&
+                    exp.also(0).inversion(0).inversion() == null &&
+                    exp.also(0).inversion(0).comparison().sum(1) == null &&
+                    exp.also(0).inversion(0).comparison().sum(0).sum() == null &&
+                    exp.also(0).inversion(0).comparison().sum(0).term().term() == null &&
+                    exp.also(0).inversion(0).comparison().sum(0).term().factor().factor() == null &&
+                    exp.also(0).inversion(0).comparison().sum(0).term().factor().atom().parent_variable() != null ) {
+                    parentCtx = exp.also(0).inversion(0).comparison().sum(0).term().factor().atom().parent_variable();
+                }
+                valuePairs.add(new Pair<>(parentCtx, val));
             }
         }
         List<Type> types = new ArrayList<>();
-        for (var val : values) {
-            types.add(val.type);
+        for (var pair : valuePairs) {
+            types.add(pair.b.type);
         }
         FunctionValue function;
         try {
@@ -85,17 +98,19 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
                 throw e;
             }
         }
+        List<Pair<String, GreenTextLangParser.Parent_variableContext>> translations = new ArrayList<>();
         if (funcCtx.function_arguments() != null) {
             for (int i = 0; i < funcCtx.function_arguments().variable_declaration_ing().size(); i++) {
                 var decl = funcCtx.function_arguments().variable_declaration_ing(i);
                 String name = decl.NAME().getText();
+                var valuePair = valuePairs.get(i);
                 if (decl.SOMEONE_ELSES() != null) {
-                    var e = new NotImplementedException("SOMEONE ELSES in function arguments");
-                    addLocation(e, varCtx);
-                    throw e;
+                    if (valuePair.a != null) { // context exists so translate
+                        translations.add(new Pair<>(name, valuePair.a));
+                    }
                 }
                 try {
-                    memory.createVariable(name, decl.type_ing(), values.get(i));
+                    memory.createVariable(name, decl.type_ing(), valuePair.b);
                 } catch (InterpreterException e) {
                     addLocation(e, varCtx);
                     throw e;
@@ -109,7 +124,21 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         if (retValueName != null) {
             retValue = memory.getVariable(retValueName);
         }
+        // save to temp mem when someone elses
+        List<Pair<GreenTextLangParser.Parent_variableContext, Value>> retValuePairs = new ArrayList<>();
+        for (var pair : translations) {
+            retValuePairs.add(new Pair<>(pair.b, memory.getVariable(pair.a)));
+        }
         memory.endFunction();
+        // copy from temp mem to memory
+        for (var pair : retValuePairs) {
+            try {
+                memory.assign(pair.a, pair.b);
+            } catch (InterpreterException e) {
+                addLocation(e, varCtx);
+                throw e;
+            }
+        }
         return retValue;
     }
 
@@ -180,7 +209,9 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         String name = ctx.NAME().getText();
         Value value = null;
         if (ctx.SOMEONE_ELSES() != null) {
-            throw new NotImplementedException("SOMEONE ELSES in variable declaration");
+            var e = new NotImplementedException("SOMEONE ELSES in variable declaration");
+            addLocation(e, ctx);
+            throw e;
         } else if (ctx.expressions() != null) {
             value = visit(ctx.expressions());
         } else if (ctx.function_call_ing() != null) {
