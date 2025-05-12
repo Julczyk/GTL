@@ -1,5 +1,6 @@
 package Values;
 
+import Exceptions.TypeException;
 import Exceptions.UnknownException;
 
 public class DoubleValue extends Value {
@@ -18,7 +19,7 @@ public class DoubleValue extends Value {
                 value = Double.parseDouble(text);
                 isNull = false;
             } catch (Exception e) {
-                throw new UnknownException("func: DoubleValue()" + text);
+                throw new TypeException("You cannot taste " + text, "Unable to cast string " + text + " to double.");
             }
         }
     }

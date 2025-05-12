@@ -233,7 +233,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         try {
             currentValue = memory.getVariable(currentVariable);
         } catch (InterpreterException e) {
-            addLocation(e, ctx); // TODO add location in memory
+            addLocation(e, ctx);
             throw e;
         }
 

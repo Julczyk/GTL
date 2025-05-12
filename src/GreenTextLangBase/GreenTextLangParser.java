@@ -1,6 +1,5 @@
 // Generated from D:/mateusz/studia/4_semestr/Kompilatory/GTL/GreenTextLangParser.g4 by ANTLR 4.13.2
 package GreenTextLangBase;
-
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -68,7 +67,7 @@ public class GreenTextLangParser extends Parser {
 			"'spot'", "'spotting'", "'someone elses'", "'about'", "'multiple'", "''th'", 
 			"'look around'", "'lose interest'", "''s'", "'spit'", "'swallow'", "'profit'", 
 			"'call'", "'calling'", "'regarding'", "'likes'", "'think that'", "'reconsider'", 
-			"'implying'", "'or sth'", "'or'", "'or not'", "'begin'", "'end'", "'let me'", 
+			"'implying'", "'or sth'", "'or'", "'or not'", "'('", "')'", "'let me'", 
 			"'parent'", null, null, null, null, "'and'", "','", "'is'", "'vibe with'", 
 			"'doesn't vibe with'", "'beaten by'", "'doesn't beat'", "'beats'", "'unbeaten by'", 
 			"'also'", "'alternatively'", "'not'", "'joined by'", "'evolves'", "'devolves'", 

@@ -1,6 +1,5 @@
 // Generated from D:/mateusz/studia/4_semestr/Kompilatory/GTL/GreenTextLangParser.g4 by ANTLR 4.13.2
 package GreenTextLangBase;
-
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**

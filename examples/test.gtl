@@ -1,5 +1,12 @@
- > hear x is "yes\nno"
- > spit x
+     > see x is 5
+     > spit parent x
+
+     > hear x is "c:"
+     > see y is let me see let me smell x
+     > spit y
+
+     > hear x is "yes\nno"
+     > spit x
 
      > be me
      > likes smelling someone elses x, seeing someone elses y
@@ -60,15 +67,15 @@
      > see y1 is 2 joined by 2 breeding like 3 times
      > spit y1
 
-     > see y2 is begin 2 joined by 2 end breeding like 3 times
+     > see y2 is (2 joined by 2) breeding like 3 times
      > spit y2
 
      > smell bool is c: alternatively :c also :c
      > spit bool
-     > bool is begin c: alternatively :c end also :c
+     > bool is (c: alternatively :c) also :c
      > spit bool
 
-     > see x is 3 breeding like flipped begin 3 joined by the literal opposite of 3 end times
+     > see x is 3 breeding like flipped (3 joined by the literal opposite of 3) times
      > spit x
 
 

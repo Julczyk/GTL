@@ -94,7 +94,7 @@ public class Memory {
     public void assign(GreenTextLangParser.Parent_variableContext parentCtx, Value value) {
         int scope = parentCtx.PARENT().size();
         if (scope >= locals.size()) {
-            throw new VariableNotFoundException("Too many scopes.", "Too many scopes.");
+            throw new VariableNotFoundException("Bro you high, cause you went too high.", "Not enough scopes to escape.");
         }
         var varCtx = parentCtx.variable();
         String name;
@@ -134,7 +134,7 @@ public class Memory {
     public Value getVariable(GreenTextLangParser.Parent_variableContext parentCtx) throws VariableNotFoundException {
         int scope = parentCtx.PARENT().size();
         if (scope >= locals.size()) {
-            throw new VariableNotFoundException("Too many scopes.", "Too many scopes.");
+            throw new VariableNotFoundException("Bro you high, cause you went too high.", "Not enough scopes to escape.");
         }
         var varCtx = parentCtx.variable();
         String name;
@@ -163,7 +163,7 @@ public class Memory {
     public FunctionValue getFunction(GreenTextLangParser.Parent_variableContext parentCtx, List<Type> funcArgs) throws VariableNotFoundException {
         int scope = parentCtx.PARENT().size();
         if (scope >= locals.size()) {
-            throw new VariableNotFoundException("Too many scopes.", "Too many scopes.");
+            throw new VariableNotFoundException("Bro you high, cause you went too high.", "Not enough scopes to escape.");
         }
         var varCtx = parentCtx.variable();
         String name;

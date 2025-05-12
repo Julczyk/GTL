@@ -50,8 +50,8 @@ IMPLYING     : 'implying';
 OR_STH       : 'or sth';
 OR           : 'or';
 OR_NOT       : 'or not';
-BEGIN        : 'begin'; // open brackets
-END          : 'end';   // close brackets
+BEGIN        : '('; // open brackets
+END          : ')';   // close brackets
 LETME        : 'let me';// type casting
 PARENT       : 'parent';// higher scope
 
@@ -117,7 +117,7 @@ fragment LetterOrDigit: Letter | [0-9];
 
 fragment Letter:
     [a-zA-Z_]                         // standard letters
-    | [!$&()*+.\\/:;<=>?@[\]^`{|}~-]  // non-standard ASCII letters
+    | [!$&*+.\\/:;<=>?@[\]^`{|}~-]    // non-standard ASCII letters
     | ~[\u0000-\u007F\uD800-\uDBFF]   // not letters from above and not invalid unicode 16-bit characters
     | [\uD800-\uDBFF] [\uDC00-\uDFFF] // unicode 32-bit charaters
 ;

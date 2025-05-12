@@ -1,5 +1,6 @@
 package Values;
 
+import Exceptions.TypeException;
 import Exceptions.UnknownException;
 
 public class BooleanValue extends Value {
@@ -13,7 +14,7 @@ public class BooleanValue extends Value {
         if (text == null) value = null;
         else if (text.equals("c:")) {value = true; isNull = false;}
         else if (text.equals(":c")) {value = false; isNull = false;}
-        else throw new UnknownException("func: BooleanValue() " + text);
+        else throw new TypeException("You cannot smell " + text, "Unable to cast string " + text + " to boolean.");
     }
 
     @Override

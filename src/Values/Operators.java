@@ -23,15 +23,32 @@ public class Operators {
         };
     }
 
-    public static Value castValue(Value valFrom, Type type) { // TODO add every type cast
-        return switch (type.baseType) {
-            case BOOLEAN -> Operators.castBoolean(valFrom);
-            case STRING -> Operators.castString(valFrom);
-            case INT -> Operators.castInt(valFrom);
-            case DOUBLE -> Operators.castDouble(valFrom);
-            default ->
-                    throw new TypeException("Unable to cast " + valFrom.getMemeType() + " to " + type, "Unable to cast " + valFrom.type + " to " + type);
-        };
+    public static Value castValue(Value valFrom, Type type) {
+        if (valFrom.type.baseType == Type.BaseType.STRING) {
+            if (type.baseType == Type.BaseType.INT) {      // parse string
+                return new IntegerValue(valFrom.getString());
+            }
+            if (type.baseType == Type.BaseType.DOUBLE) {
+                return new DoubleValue(valFrom.getString());
+            }
+            if (type.baseType == Type.BaseType.BOOLEAN) {
+                return new BooleanValue(valFrom.getString());
+            }
+        }
+        if (valFrom.type.baseType == Type.BaseType.BOOLEAN) {
+            if (type.baseType == Type.BaseType.INT) {       // bool to int
+                if (valFrom.getBoolean()) valFrom = new IntegerValue(1);
+                else valFrom = new IntegerValue(0);
+                return valFrom;
+            }
+            if (type.baseType == Type.BaseType.DOUBLE) {    // bool to double
+                if (valFrom.getBoolean()) valFrom = new DoubleValue(1);
+                else valFrom = new DoubleValue(0);
+                return valFrom;
+            }
+        }
+        // at last automatic
+        return automaticCastValue(new Value(null, type), valFrom);
     }
 
     public static Value castString(Value val) {
