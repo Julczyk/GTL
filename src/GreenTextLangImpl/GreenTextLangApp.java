@@ -19,7 +19,8 @@ public class GreenTextLangApp {
                 .description("Interpreter of Green Text Lang.");
         parser.addArgument("filepath")
                 .dest("filepath")
-                .required(true)
+                .nargs("?")
+                .action(Arguments.store())
                 .help("input file");
         parser.addArgument("-p", "--program")
                 .dest("program")
@@ -30,18 +31,29 @@ public class GreenTextLangApp {
                 .action(Arguments.storeTrue())
                 .help("run with debug");
         parser.addArgument("-v", "--version")
+                .dest("version")
                 .action(Arguments.storeTrue())
                 .help("Green Text Lang version");
         try {
             Namespace res = parser.parseArgs(args);
-            String inputPathArg = res.getString("filepath");
-            Path inputPath = Paths.get(inputPathArg).toAbsolutePath();
-            File inputFile = inputPath.toFile();
-            if (!inputFile.exists() || !inputFile.isFile()) {
-                System.err.println("Error: File does not exist: " + inputPath);
-                System.exit(1);
+            if (res.get("version")) {
+                System.out.println("Green Text Lang version: 0.1");
+            } else if (res.get("filepath") != null) {
+                String inputPathArg = res.getString("filepath");
+                Path inputPath = Paths.get(inputPathArg).toAbsolutePath();
+                File inputFile = inputPath.toFile();
+                if (!inputFile.exists() || !inputFile.isFile()) {
+                    System.err.println("Error: File does not exist: " + inputPath);
+                    System.exit(1);
+                }
+                GreenTextLangInterpreter.run(inputPath, res.getBoolean("debug"), res.getBoolean("program"));
+            } else if (res.get("program")) {
+                System.err.println("You need to specify a program to run");
+            } else if (res.get("debug")) {
+                System.err.println("You need to specify a program to run");
+            } else {
+                parser.printHelp();
             }
-            GreenTextLangInterpreter.run(inputPath, res.getBoolean("debug"), res.getBoolean("program"));
         } catch (ArgumentParserException e) {
             parser.handleError(e);
         } catch (IOException e) {
