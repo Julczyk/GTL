@@ -6,7 +6,10 @@ import Values.Value;
 import Values.FunctionValue;
 import Values.Operators;
 import Values.Type;
+import org.antlr.v4.runtime.ParserRuleContext;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -19,21 +22,28 @@ public class Memory {
     public Map<Identifier, Value> globals = new HashMap<>();  // global statements
 
     private final int STACK_LIMIT = 200;
+    private final Path filePath;
 
-    public Memory() {}
+    public Memory(Path filePath) {
+        this.filePath = filePath;
+    }
+
+    private void addLocation(InterpreterException ex, ParserRuleContext ctx) {
+        ex.setLocation(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine(), filePath);
+    }
 
     private boolean isGlobal() {
         return locals_stack.size() == 0 ? locals.size() == 1 : false;
     }
 
-    private void assertNotExists(Identifier memoryName) {
+    private void assertNotExists(Identifier memoryName) throws VariableNotFoundException {
         if (locals.peek().containsKey(memoryName)) {
             throw new VariableNotFoundException("Double " + memoryName + " and give it to the next person.",
                     "Variable '" + memoryName + "' has already been declared.");
         }
     }
 
-    private void assertNotExistsGlobal(Identifier memoryName) {
+    private void assertNotExistsGlobal(Identifier memoryName) throws VariableNotFoundException {
         if (globals.containsKey(memoryName)) {
             throw new VariableNotFoundException("Double " + memoryName + " and give it to the next person.",
                     "Variable '" + memoryName + "' has already been declared.");
@@ -43,41 +53,68 @@ public class Memory {
     public void createVariable(String name, GreenTextLangParser.TypeContext typeCtx) {
         // check if exists
         var memoryName = new Identifier(name);
-        assertNotExists(memoryName);
-        Type type = Type.inferType(typeCtx);
-        locals.peek().put(memoryName, new Value(null, type, true));
+        try {
+            assertNotExists(memoryName);
+            Type type = Type.inferType(typeCtx);
+            locals.peek().put(memoryName, new Value(null, type, true));
+        } catch (InterpreterException e) {
+            addLocation(e, typeCtx);
+            throw e;
+        }
     }
 
     public void createVariable(String name, GreenTextLangParser.Type_ingContext typeCtx) {
         // check if exists
         var memoryName = new Identifier(name);
-        assertNotExists(memoryName);
-        Type type = Type.inferType_ing(typeCtx);
-        locals.peek().put(memoryName, new Value(null, type, true));
+        try {
+            assertNotExists(memoryName);
+            Type type = Type.inferType_ing(typeCtx);
+            locals.peek().put(memoryName, new Value(null, type, true));
+        } catch (InterpreterException e) {
+            addLocation(e, typeCtx);
+            throw e;
+        }
     }
 
     public void createVariable(String name, GreenTextLangParser.TypeContext type, Value value) {
         createVariable(name, type);
-        if (value != null) assign(name, value);
+        if (value != null) {
+            try {
+                assign(name, value);
+            } catch (InterpreterException e) {
+                addLocation(e, type); throw e;
+            }
+        }
     }
 
     public void createVariable(String name, GreenTextLangParser.Type_ingContext type, Value value) {
         createVariable(name, type);
-        if (value != null) assign(name, value);
+        if (value != null) {
+            try {
+                assign(name, value);
+            } catch (InterpreterException e) {
+                addLocation(e, type); throw e;
+            }
+        }
     }
 
     public void createFunction(GreenTextLangParser.Function_declarationContext funcCtx) {
         var memoryName = new Identifier(funcCtx);
-        assertNotExists(memoryName);
-        if (isGlobal()) {
-            assertNotExistsGlobal(memoryName);
-            globals.put(memoryName, new FunctionValue(funcCtx));
-        } else {
-            locals.peek().put(memoryName, new FunctionValue(funcCtx));
+        try {
+            assertNotExists(memoryName);
+            if (isGlobal()) {
+                assertNotExistsGlobal(memoryName);
+                globals.put(memoryName, new FunctionValue(funcCtx));
+            } else {
+                locals.peek().put(memoryName, new FunctionValue(funcCtx));
+            }
+        }  catch (InterpreterException e) {
+            addLocation(e, funcCtx);
+            throw e;
         }
     }
 
-    private void assign(String name, Value value) {
+    private void assign(String name, Value value) throws InterpreterException {
         var memoryName = new Identifier(name);
         for (var loc : locals.reversed()) {
             if (loc.containsKey(memoryName)) {
@@ -94,14 +131,18 @@ public class Memory {
     public void assign(GreenTextLangParser.Parent_variableContext parentCtx, Value value) {
         int scope = parentCtx.PARENT().size();
         if (scope >= locals.size()) {
-            throw new VariableNotFoundException("Too many scopes.", "Too many scopes.");
+            var e = new VariableNotFoundException("Bro you high, cause you went too high.", "Not enough scopes to escape.");
+            addLocation(e, parentCtx);
+            throw e;
         }
         var varCtx = parentCtx.variable();
         String name;
         if (varCtx.S() != null) {
             name = varCtx.NAME().getText();
         } else if (varCtx.TH() != null) {
-            throw new NotImplementedException("Array");
+            var e = new NotImplementedException("Array");
+            addLocation(e, parentCtx);
+            throw e;
         } else {
             name = varCtx.NAME().getText();
         }
@@ -110,17 +151,24 @@ public class Memory {
             if (scope > i) continue;
             var loc = locals.get(locals.size() - i - 1); // reversed
             if (loc.containsKey(memoryName)) {
-                Value curr_val = loc.get(memoryName);
-                curr_val = Operators.automaticCastValue(curr_val, value);
-                loc.put(memoryName, curr_val);
-                return;
+                try {
+                    Value curr_val = loc.get(memoryName);
+                    curr_val = Operators.automaticCastValue(curr_val, value);
+                    loc.put(memoryName, curr_val);
+                    return;
+                } catch (InterpreterException e) {
+                    addLocation(e, parentCtx);
+                    throw e;
+                }
             }
         }
-        throw new VariableNotFoundException("Your " + memoryName + " is missing, maybe he went to buy milk and hasn't returned yet.",
+        var e = new VariableNotFoundException("Your " + memoryName + " is missing, maybe he went to buy milk and hasn't returned yet.",
                 "Variable '" + memoryName + "' has not been found in this scope");
+        addLocation(e, parentCtx);
+        throw e;
     }
 
-    public Value getVariable(String name) {
+    public Value getVariable(String name) throws InterpreterException {
         var memoryName = new Identifier(name);
         for (var loc : locals.reversed()) {
             if (loc.containsKey(memoryName)) {
@@ -131,17 +179,21 @@ public class Memory {
                 "Variable '" + memoryName + "' has not been found in this scope");
     }
 
-    public Value getVariable(GreenTextLangParser.Parent_variableContext parentCtx) throws VariableNotFoundException {
+    public Value getVariable(GreenTextLangParser.Parent_variableContext parentCtx) {
         int scope = parentCtx.PARENT().size();
         if (scope >= locals.size()) {
-            throw new VariableNotFoundException("Too many scopes.", "Too many scopes.");
+            var e = new VariableNotFoundException("Bro you high, cause you went too high.", "Not enough scopes to escape.");
+            addLocation(e, parentCtx);
+            throw e;
         }
         var varCtx = parentCtx.variable();
         String name;
         if (varCtx.S() != null) {
             name = varCtx.NAME().getText();
         } else if (varCtx.TH() != null) {
-            throw new NotImplementedException("Array");
+            var e = new NotImplementedException("Array");
+            addLocation(e, parentCtx);
+            throw e;
         } else {
             name = varCtx.NAME().getText();
         }
@@ -156,21 +208,29 @@ public class Memory {
         if (globals.containsKey(memoryName)) {
             return globals.get(memoryName);
         }
-        throw new VariableNotFoundException("Your " + memoryName + " is missing, maybe he went to buy milk and hasn't returned yet.",
+        var e = new VariableNotFoundException("Your " + memoryName + " is missing, maybe he went to buy milk and hasn't returned yet.",
                 "Variable '" + memoryName + "' has not been found in this scope");
+        addLocation(e, parentCtx);
+        throw e;
     }
 
-    public FunctionValue getFunction(GreenTextLangParser.Parent_variableContext parentCtx, List<Type> funcArgs) throws VariableNotFoundException {
+    public FunctionValue getFunction(GreenTextLangParser.Parent_variableContext parentCtx, List<Type> funcArgs) {
         int scope = parentCtx.PARENT().size();
         if (scope >= locals.size()) {
-            throw new VariableNotFoundException("Too many scopes.", "Too many scopes.");
+            var e = new VariableNotFoundException("Bro you high, cause you went too high.", "Not enough scopes to escape.");
+            addLocation(e, parentCtx);
+            throw e;
         }
         var varCtx = parentCtx.variable();
         String name;
         if (varCtx.S() != null) {
-            throw new NotImplementedException("Function from struct");
+            var e = new NotImplementedException("Function from struct");
+            addLocation(e, parentCtx);
+            throw e;
         } else if (varCtx.TH() != null) {
-            throw new NotImplementedException("Array");
+            var e = new NotImplementedException("Array");
+            addLocation(e, parentCtx);
+            throw e;
         } else {
             name = varCtx.NAME().getText();
         }
@@ -187,13 +247,17 @@ public class Memory {
             function = globals.get(memoryName);
         }
         if (function == null) {
-            throw new VariableNotFoundException("Your " + memoryName.toMemeString() + " is missing, maybe he went to buy milk and hasn't returned yet.",
+            var e = new VariableNotFoundException("Your " + memoryName.toMemeString() + " is missing, maybe he went to buy milk and hasn't returned yet.",
                     "Variable '" + memoryName + "' has not been found in this scope");
+            addLocation(e, parentCtx);
+            throw e;
         }
         if (function instanceof FunctionValue) {
             return (FunctionValue) function;
         } else {
-            throw new UnknownException("Memory.getFunction");
+            var e = new UnknownException("Memory.getFunction");
+            addLocation(e, parentCtx);
+            throw e;
         }
     }
 

@@ -1,6 +1,5 @@
 // Generated from D:/mateusz/studia/4_semestr/Kompilatory/GTL/GreenTextLangParser.g4 by ANTLR 4.13.2
 package GreenTextLangBase;
-
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -68,7 +67,7 @@ public class GreenTextLangParser extends Parser {
 			"'spot'", "'spotting'", "'someone elses'", "'about'", "'multiple'", "''th'", 
 			"'look around'", "'lose interest'", "''s'", "'spit'", "'swallow'", "'profit'", 
 			"'call'", "'calling'", "'regarding'", "'likes'", "'think that'", "'reconsider'", 
-			"'implying'", "'or sth'", "'or'", "'or not'", "'begin'", "'end'", "'let me'", 
+			"'implying'", "'or sth'", "'or'", "'or not'", "'('", "')'", "'let me'", 
 			"'parent'", null, null, null, null, "'and'", "','", "'is'", "'vibe with'", 
 			"'doesn't vibe with'", "'beaten by'", "'doesn't beat'", "'beats'", "'unbeaten by'", 
 			"'also'", "'alternatively'", "'not'", "'joined by'", "'evolves'", "'devolves'", 
@@ -1006,14 +1005,14 @@ public class GreenTextLangParser extends Parser {
 			return getRuleContext(Parent_variableContext.class,i);
 		}
 		public TerminalNode IS() { return getToken(GreenTextLangParser.IS, 0); }
-		public ExpressionsContext expressions() {
-			return getRuleContext(ExpressionsContext.class,0);
-		}
 		public Function_call_ingContext function_call_ing() {
 			return getRuleContext(Function_call_ingContext.class,0);
 		}
 		public TerminalNode SOMEONE_ELSES() { return getToken(GreenTextLangParser.SOMEONE_ELSES, 0); }
 		public TerminalNode JOINED_BY() { return getToken(GreenTextLangParser.JOINED_BY, 0); }
+		public ExpressionsContext expressions() {
+			return getRuleContext(ExpressionsContext.class,0);
+		}
 		public TerminalNode EVOLVES() { return getToken(GreenTextLangParser.EVOLVES, 0); }
 		public TerminalNode DEVOLVES() { return getToken(GreenTextLangParser.DEVOLVES, 0); }
 		public TerminalNode BREEDING_LIKE() { return getToken(GreenTextLangParser.BREEDING_LIKE, 0); }
@@ -1060,7 +1059,7 @@ public class GreenTextLangParser extends Parser {
 				setState(189);
 				match(IS);
 				setState(190);
-				expressions();
+				function_call_ing();
 				}
 				break;
 			case 2:
@@ -1071,123 +1070,123 @@ public class GreenTextLangParser extends Parser {
 				setState(193);
 				match(IS);
 				setState(194);
-				function_call_ing();
+				match(SOMEONE_ELSES);
+				setState(195);
+				parent_variable();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(196);
-				parent_variable();
 				setState(197);
-				match(IS);
-				setState(198);
-				match(SOMEONE_ELSES);
-				setState(199);
 				parent_variable();
+				setState(198);
+				match(IS);
+				setState(199);
+				match(JOINED_BY);
+				setState(200);
+				expressions();
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(201);
-				parent_variable();
 				setState(202);
-				match(IS);
+				parent_variable();
 				setState(203);
-				match(JOINED_BY);
-				setState(204);
-				expressions();
+				match(EVOLVES);
 				}
 				break;
 			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(206);
+				setState(205);
 				parent_variable();
-				setState(207);
-				match(EVOLVES);
+				setState(206);
+				match(DEVOLVES);
 				}
 				break;
 			case 6:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(209);
+				setState(208);
 				parent_variable();
+				setState(209);
+				match(IS);
 				setState(210);
-				match(DEVOLVES);
+				match(BREEDING_LIKE);
+				setState(212);
+				_errHandler.sync(this);
+				switch ( getInterpreter().adaptivePredict(_input,12,_ctx) ) {
+				case 1:
+					{
+					setState(211);
+					match(NEWLINE);
+					}
+					break;
+				}
+				setState(214);
+				expressions();
+				setState(216);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (_la==NEWLINE) {
+					{
+					setState(215);
+					match(NEWLINE);
+					}
+				}
+
+				setState(218);
+				match(TIMES);
 				}
 				break;
 			case 7:
 				enterOuterAlt(_localctx, 7);
 				{
-				setState(212);
-				parent_variable();
-				setState(213);
-				match(IS);
-				setState(214);
-				match(BREEDING_LIKE);
-				setState(216);
-				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,12,_ctx) ) {
-				case 1:
-					{
-					setState(215);
-					match(NEWLINE);
-					}
-					break;
-				}
-				setState(218);
-				expressions();
 				setState(220);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				if (_la==NEWLINE) {
-					{
-					setState(219);
-					match(NEWLINE);
-					}
-				}
-
+				parent_variable();
+				setState(221);
+				match(IS);
 				setState(222);
-				match(TIMES);
+				match(FLIPPED);
+				setState(223);
+				expressions();
 				}
 				break;
 			case 8:
 				enterOuterAlt(_localctx, 8);
 				{
-				setState(224);
-				parent_variable();
 				setState(225);
-				match(IS);
+				parent_variable();
 				setState(226);
-				match(FLIPPED);
+				match(IS);
 				setState(227);
+				match(THE_LITERAL_OPPOSITE_OF);
+				setState(228);
 				expressions();
 				}
 				break;
 			case 9:
 				enterOuterAlt(_localctx, 9);
 				{
-				setState(229);
-				parent_variable();
 				setState(230);
-				match(IS);
+				parent_variable();
 				setState(231);
-				match(THE_LITERAL_OPPOSITE_OF);
+				match(IS);
 				setState(232);
+				match(WHATEVER_LEFT_FROM);
+				setState(233);
 				expressions();
 				}
 				break;
 			case 10:
 				enterOuterAlt(_localctx, 10);
 				{
-				setState(234);
-				parent_variable();
 				setState(235);
-				match(IS);
+				parent_variable();
 				setState(236);
-				match(WHATEVER_LEFT_FROM);
+				match(IS);
 				setState(237);
 				expressions();
 				}
@@ -3987,8 +3986,8 @@ public class GreenTextLangParser extends Parser {
 		"\t\u0001\t\u0001\t\u0001\t\u0001\t\u0001\t\u0001\t\u0001\t\u0001\t\u0003"+
 		"\t\u00bb\b\t\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001"+
 		"\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001"+
-		"\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001"+
-		"\n\u0001\n\u0001\n\u0003\n\u00d9\b\n\u0001\n\u0001\n\u0003\n\u00dd\b\n"+
+		"\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0003\n\u00d5"+
+		"\b\n\u0001\n\u0001\n\u0003\n\u00d9\b\n\u0001\n\u0001\n\u0001\n\u0001\n"+
 		"\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001"+
 		"\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0001\n\u0003"+
 		"\n\u00f0\b\n\u0001\u000b\u0001\u000b\u0005\u000b\u00f4\b\u000b\n\u000b"+
@@ -4113,35 +4112,35 @@ public class GreenTextLangParser extends Parser {
 		"\u0000\u00ba\u00a7\u0001\u0000\u0000\u0000\u00ba\u00ad\u0001\u0000\u0000"+
 		"\u0000\u00ba\u00b2\u0001\u0000\u0000\u0000\u00ba\u00b7\u0001\u0000\u0000"+
 		"\u0000\u00bb\u0013\u0001\u0000\u0000\u0000\u00bc\u00bd\u0003\u0016\u000b"+
-		"\u0000\u00bd\u00be\u0005/\u0000\u0000\u00be\u00bf\u0003D\"\u0000\u00bf"+
-		"\u00f0\u0001\u0000\u0000\u0000\u00c0\u00c1\u0003\u0016\u000b\u0000\u00c1"+
-		"\u00c2\u0005/\u0000\u0000\u00c2\u00c3\u0003\u001a\r\u0000\u00c3\u00f0"+
-		"\u0001\u0000\u0000\u0000\u00c4\u00c5\u0003\u0016\u000b\u0000\u00c5\u00c6"+
-		"\u0005/\u0000\u0000\u00c6\u00c7\u0005\u0011\u0000\u0000\u00c7\u00c8\u0003"+
-		"\u0016\u000b\u0000\u00c8\u00f0\u0001\u0000\u0000\u0000\u00c9\u00ca\u0003"+
-		"\u0016\u000b\u0000\u00ca\u00cb\u0005/\u0000\u0000\u00cb\u00cc\u00059\u0000"+
-		"\u0000\u00cc\u00cd\u0003D\"\u0000\u00cd\u00f0\u0001\u0000\u0000\u0000"+
-		"\u00ce\u00cf\u0003\u0016\u000b\u0000\u00cf\u00d0\u0005:\u0000\u0000\u00d0"+
-		"\u00f0\u0001\u0000\u0000\u0000\u00d1\u00d2\u0003\u0016\u000b\u0000\u00d2"+
-		"\u00d3\u0005;\u0000\u0000\u00d3\u00f0\u0001\u0000\u0000\u0000\u00d4\u00d5"+
-		"\u0003\u0016\u000b\u0000\u00d5\u00d6\u0005/\u0000\u0000\u00d6\u00d8\u0005"+
-		"<\u0000\u0000\u00d7\u00d9\u0005A\u0000\u0000\u00d8\u00d7\u0001\u0000\u0000"+
-		"\u0000\u00d8\u00d9\u0001\u0000\u0000\u0000\u00d9\u00da\u0001\u0000\u0000"+
-		"\u0000\u00da\u00dc\u0003D\"\u0000\u00db\u00dd\u0005A\u0000\u0000\u00dc"+
-		"\u00db\u0001\u0000\u0000\u0000\u00dc\u00dd\u0001\u0000\u0000\u0000\u00dd"+
-		"\u00de\u0001\u0000\u0000\u0000\u00de\u00df\u0005=\u0000\u0000\u00df\u00f0"+
-		"\u0001\u0000\u0000\u0000\u00e0\u00e1\u0003\u0016\u000b\u0000\u00e1\u00e2"+
-		"\u0005/\u0000\u0000\u00e2\u00e3\u0005?\u0000\u0000\u00e3\u00e4\u0003D"+
-		"\"\u0000\u00e4\u00f0\u0001\u0000\u0000\u0000\u00e5\u00e6\u0003\u0016\u000b"+
-		"\u0000\u00e6\u00e7\u0005/\u0000\u0000\u00e7\u00e8\u0005>\u0000\u0000\u00e8"+
-		"\u00e9\u0003D\"\u0000\u00e9\u00f0\u0001\u0000\u0000\u0000\u00ea\u00eb"+
-		"\u0003\u0016\u000b\u0000\u00eb\u00ec\u0005/\u0000\u0000\u00ec\u00ed\u0005"+
-		"@\u0000\u0000\u00ed\u00ee\u0003D\"\u0000\u00ee\u00f0\u0001\u0000\u0000"+
+		"\u0000\u00bd\u00be\u0005/\u0000\u0000\u00be\u00bf\u0003\u001a\r\u0000"+
+		"\u00bf\u00f0\u0001\u0000\u0000\u0000\u00c0\u00c1\u0003\u0016\u000b\u0000"+
+		"\u00c1\u00c2\u0005/\u0000\u0000\u00c2\u00c3\u0005\u0011\u0000\u0000\u00c3"+
+		"\u00c4\u0003\u0016\u000b\u0000\u00c4\u00f0\u0001\u0000\u0000\u0000\u00c5"+
+		"\u00c6\u0003\u0016\u000b\u0000\u00c6\u00c7\u0005/\u0000\u0000\u00c7\u00c8"+
+		"\u00059\u0000\u0000\u00c8\u00c9\u0003D\"\u0000\u00c9\u00f0\u0001\u0000"+
+		"\u0000\u0000\u00ca\u00cb\u0003\u0016\u000b\u0000\u00cb\u00cc\u0005:\u0000"+
+		"\u0000\u00cc\u00f0\u0001\u0000\u0000\u0000\u00cd\u00ce\u0003\u0016\u000b"+
+		"\u0000\u00ce\u00cf\u0005;\u0000\u0000\u00cf\u00f0\u0001\u0000\u0000\u0000"+
+		"\u00d0\u00d1\u0003\u0016\u000b\u0000\u00d1\u00d2\u0005/\u0000\u0000\u00d2"+
+		"\u00d4\u0005<\u0000\u0000\u00d3\u00d5\u0005A\u0000\u0000\u00d4\u00d3\u0001"+
+		"\u0000\u0000\u0000\u00d4\u00d5\u0001\u0000\u0000\u0000\u00d5\u00d6\u0001"+
+		"\u0000\u0000\u0000\u00d6\u00d8\u0003D\"\u0000\u00d7\u00d9\u0005A\u0000"+
+		"\u0000\u00d8\u00d7\u0001\u0000\u0000\u0000\u00d8\u00d9\u0001\u0000\u0000"+
+		"\u0000\u00d9\u00da\u0001\u0000\u0000\u0000\u00da\u00db\u0005=\u0000\u0000"+
+		"\u00db\u00f0\u0001\u0000\u0000\u0000\u00dc\u00dd\u0003\u0016\u000b\u0000"+
+		"\u00dd\u00de\u0005/\u0000\u0000\u00de\u00df\u0005?\u0000\u0000\u00df\u00e0"+
+		"\u0003D\"\u0000\u00e0\u00f0\u0001\u0000\u0000\u0000\u00e1\u00e2\u0003"+
+		"\u0016\u000b\u0000\u00e2\u00e3\u0005/\u0000\u0000\u00e3\u00e4\u0005>\u0000"+
+		"\u0000\u00e4\u00e5\u0003D\"\u0000\u00e5\u00f0\u0001\u0000\u0000\u0000"+
+		"\u00e6\u00e7\u0003\u0016\u000b\u0000\u00e7\u00e8\u0005/\u0000\u0000\u00e8"+
+		"\u00e9\u0005@\u0000\u0000\u00e9\u00ea\u0003D\"\u0000\u00ea\u00f0\u0001"+
+		"\u0000\u0000\u0000\u00eb\u00ec\u0003\u0016\u000b\u0000\u00ec\u00ed\u0005"+
+		"/\u0000\u0000\u00ed\u00ee\u0003D\"\u0000\u00ee\u00f0\u0001\u0000\u0000"+
 		"\u0000\u00ef\u00bc\u0001\u0000\u0000\u0000\u00ef\u00c0\u0001\u0000\u0000"+
-		"\u0000\u00ef\u00c4\u0001\u0000\u0000\u0000\u00ef\u00c9\u0001\u0000\u0000"+
-		"\u0000\u00ef\u00ce\u0001\u0000\u0000\u0000\u00ef\u00d1\u0001\u0000\u0000"+
-		"\u0000\u00ef\u00d4\u0001\u0000\u0000\u0000\u00ef\u00e0\u0001\u0000\u0000"+
-		"\u0000\u00ef\u00e5\u0001\u0000\u0000\u0000\u00ef\u00ea\u0001\u0000\u0000"+
+		"\u0000\u00ef\u00c5\u0001\u0000\u0000\u0000\u00ef\u00ca\u0001\u0000\u0000"+
+		"\u0000\u00ef\u00cd\u0001\u0000\u0000\u0000\u00ef\u00d0\u0001\u0000\u0000"+
+		"\u0000\u00ef\u00dc\u0001\u0000\u0000\u0000\u00ef\u00e1\u0001\u0000\u0000"+
+		"\u0000\u00ef\u00e6\u0001\u0000\u0000\u0000\u00ef\u00eb\u0001\u0000\u0000"+
 		"\u0000\u00f0\u0015\u0001\u0000\u0000\u0000\u00f1\u00fa\u0001\u0000\u0000"+
 		"\u0000\u00f2\u00f4\u0005(\u0000\u0000\u00f3\u00f2\u0001\u0000\u0000\u0000"+
 		"\u00f4\u00f7\u0001\u0000\u0000\u0000\u00f5\u00f3\u0001\u0000\u0000\u0000"+
@@ -4327,7 +4326,7 @@ public class GreenTextLangParser extends Parser {
 		"\u0000\u0242\u0243\u0005A\u0000\u0000\u0243\u0245\u0005-\u0000\u0000\u0244"+
 		"\u0240\u0001\u0000\u0000\u0000\u0244\u0241\u0001\u0000\u0000\u0000\u0244"+
 		"\u0242\u0001\u0000\u0000\u0000\u0245[\u0001\u0000\u0000\u00007_dkoty\u0081"+
-		"\u0088\u0091\u0099\u009f\u00ba\u00d8\u00dc\u00ef\u00f5\u00f9\u0102\u0108"+
+		"\u0088\u0091\u0099\u009f\u00ba\u00d4\u00d8\u00ef\u00f5\u00f9\u0102\u0108"+
 		"\u010e\u0117\u011e\u0121\u0126\u0135\u0141\u014c\u0157\u015c\u0166\u016b"+
 		"\u0172\u0178\u0189\u019d\u01a6\u01ab\u01bc\u01c9\u01ce\u01d4\u01d9\u01df"+
 		"\u01e5\u0200\u020a\u0213\u0217\u021e\u0220\u0228\u022e\u0237\u023e\u0244";

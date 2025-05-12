@@ -1,6 +1,7 @@
 package Values;
 
 import Exceptions.ArithmeticException;
+import Exceptions.TypeException;
 import Exceptions.UnknownException;
 
 public class IntegerValue extends Value {
@@ -16,7 +17,7 @@ public class IntegerValue extends Value {
                 value = Integer.parseInt(text);
                 isNull = false;
             } catch (Exception e) {
-                throw new UnknownException("func: Value.Value.parseInt()" + text);
+                throw new TypeException("You cannot see " + text, "Unable to cast string " + text + " to integer.");
             }
         }
     }

@@ -69,8 +69,7 @@ variable_declaration
     ;
 
 variable_assignment
-    : parent_variable IS expressions
-    | parent_variable IS function_call_ing
+    : parent_variable IS function_call_ing
     | parent_variable IS SOMEONE_ELSES parent_variable
     | parent_variable IS JOINED_BY expressions
     | parent_variable EVOLVES
@@ -79,6 +78,7 @@ variable_assignment
     | parent_variable IS FLIPPED expressions
     | parent_variable IS THE_LITERAL_OPPOSITE_OF expressions
     | parent_variable IS WHATEVER_LEFT_FROM expressions
+    | parent_variable IS expressions
     ;
 
 parent_variable:
