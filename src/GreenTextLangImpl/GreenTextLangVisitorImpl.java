@@ -204,25 +204,24 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         Value currentValue = null;
         currentValue = memory.getVariable(currentVariable);
 
+        Value temp = null;
         if (ctx.expressions() != null) {
-            currentValue = visit(ctx.expressions());
-        } else if (ctx.function_call_ing() != null) {
+            temp = visit(ctx.expressions());
+        }
+
+        if (ctx.function_call_ing() != null) {
             currentValue = visit(ctx.function_call_ing());
         } else if (ctx.SOMEONE_ELSES() != null) {
             var e = new NotImplementedException("SOMEONE ELSES in variable assignment");
             addLocation(e, ctx);
             throw e;
-        } else if (ctx.EVOLVES() != null) {
-            // TODO
-        } else if (ctx.DEVOLVES() != null) {
-
-        }
-        Value temp = null;
-        if (ctx.expressions() != null) {
-            temp = visit(ctx.expressions());
         }
         try {
-            if (ctx.JOINED_BY() != null) {
+            if (ctx.EVOLVES() != null) {
+                currentValue = Operators.evolve(currentValue);
+            } else if (ctx.DEVOLVES() != null) {
+                currentValue = Operators.devolve(currentValue);
+            } else if (ctx.JOINED_BY() != null) {
                 currentValue = Operators.add(currentValue, temp);
             } else if (ctx.BREEDING_LIKE() != null) {
                 currentValue = Operators.mul(currentValue, temp);
@@ -232,6 +231,8 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
                 currentValue = Operators.opp(temp);
             } else if (ctx.WHATEVER_LEFT_FROM() != null) {
                 currentValue = Operators.mod(currentValue, temp);
+            } else {
+                currentValue = temp;
             }
         } catch (InterpreterException e) {
             addLocation(e, ctx);

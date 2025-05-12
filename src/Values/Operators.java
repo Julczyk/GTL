@@ -86,6 +86,26 @@ public class Operators {
         return val.getBoolean();
     }
 
+    public static Value evolve(Value val) {
+        if (val.isNull) {
+            throw new TypeException("You cannot evolve what you don't have.", "Invalid operation 'evolve' on null value");
+        }
+        if (val.type.baseType != Type.BaseType.INT) {
+            throw new TypeException("You cannot evolve "+ val.getMemeType() + ".", "Invalid operation 'evolve' on '" + val.type);
+        }
+        return val.add(new IntegerValue(1));
+    }
+
+    public static Value devolve(Value val) {
+        if (val.isNull) {
+            throw new TypeException("You cannot devolve what you don't have.", "Invalid operation 'devolve' on null value");
+        }
+        if (val.type.baseType != Type.BaseType.INT) {
+            throw new TypeException("You cannot devolve "+ val.getMemeType() + ".", "Invalid operation 'devolve' on '" + val.type);
+        }
+        return val.add(new IntegerValue(-1));
+    }
+
     public static Value flip(Value val) {
         if (val.isNull) {
             throw new TypeException("You cannot flip what you don't have.", "Invalid operation 'flipped' on null value");
