@@ -49,10 +49,6 @@ public class Type {
         return baseType == BaseType.BOOLEAN;
     }
 
-    public boolean equals(Type other) {
-        return baseType.equals(other.baseType) && subType.equals(other.subType);
-    }
-
     public static Type inferType(GreenTextLangParser.TypeContext typeCtx) {
         Type type;
         // primitive typeCtx
@@ -175,6 +171,23 @@ public class Type {
             case FUNCTION -> "be";
             default -> throw new UnknownException("func: Value.Type.getMemeType()" + baseType); // this won't happen
         };
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Type type = (Type) o;
+        if (type.baseType.equals(baseType)) {
+            if (type.subType == null && this.subType == null) {
+                return true;
+            } else if (type.subType == null || this.subType == null) {
+                return false;
+            } else {
+                return this.subType.equals(type.subType);
+            }
+        }
+        return false;
     }
 
     @Override

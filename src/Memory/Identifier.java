@@ -56,7 +56,22 @@ public class Identifier {
             var pair = (Pair<String, List<Type>>) id;
             var name = pair.a;
             var types = pair.b;
-            return "function: " + name + " " + types;
+            return "function: " + name + " types: " + types;
+        } else {
+            return id.toString();
+        }
+    }
+
+    public String toMemeString() {
+        if (id instanceof Pair) {
+            var pair = (Pair<String, List<Type>>) id;
+            var name = pair.a;
+            var types = pair.b;
+            List<String> memeTypes = new ArrayList<>();
+            for (var type : types) {
+                memeTypes.add(type.getMemeType());
+            }
+            return "person called: " + name + " who likes " + String.join(", ", memeTypes);
         } else {
             return id.toString();
         }

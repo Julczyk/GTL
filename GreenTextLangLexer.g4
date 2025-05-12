@@ -104,7 +104,7 @@ NAME: Letter LetterOrDigit*;
 // FRAGMENT RULES
 
 fragment EscapeSequence:
-    '\\' [btnfr"'\\]
+    '\\' [btnfr"\\]
     | '\\u' HexDigit HexDigit HexDigit HexDigit
     | '\\U' HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit
 ;

@@ -1,9 +1,6 @@
 package Memory;
 
-import Exceptions.NotImplementedException;
-import Exceptions.StackOverflowException;
-import Exceptions.UnknownException;
-import Exceptions.VariableNotFoundException;
+import Exceptions.*;
 import GreenTextLangBase.GreenTextLangParser;
 import Values.Value;
 import Values.FunctionValue;
@@ -190,7 +187,7 @@ public class Memory {
             function = globals.get(memoryName);
         }
         if (function == null) {
-            throw new VariableNotFoundException("Your " + memoryName + " is missing, maybe he went to buy milk and hasn't returned yet.",
+            throw new VariableNotFoundException("Your " + memoryName.toMemeString() + " is missing, maybe he went to buy milk and hasn't returned yet.",
                     "Variable '" + memoryName + "' has not been found in this scope");
         }
         if (function instanceof FunctionValue) {
