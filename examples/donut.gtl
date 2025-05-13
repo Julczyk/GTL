@@ -117,19 +117,71 @@ Main loop
  > ii evolves
  > reconsider
  > j is 0
- > think that 6.28 beaten by j
+ > think that 6.28 beats j
  > i is 0
- > think that 6.28 beaten by i
-    > taste c is calling sin regarding i
- >
- > i is joined by 0.02
+ > think that 6.28 beats i
+ > taste c is calling sin regarding i
+ > taste d is calling cos regarding j
+ > taste e is calling sin regarding A
+ > taste f is calling sin regarding j
+ > taste g is calling cos regarding A
+ > taste h is d joined by 2
+ > taste D is flipped (
+ >         c breeding like
+ >         h breeding like
+ >         e times times joined by f breeding like g times joined by 5)
+ > taste l is calling cos regarding i
+ > taste m is calling cos regarding B
+ > taste n is calling sin regarding B
+ > taste t is c breeding like
+ >            h breeding like
+ >            g times times joined by the literal opposite of (
+ >            f breeding like e times)
+ > see x is 40 joined by 30 breeding like D times breeding like
+ >       l breeding like h breeding like m
+ >       times times joined by the literal opposite of (
+ >       t breeding like n times)
+ >       times
+ > see y is 12 joined by 15 breeding like D times breeding like
+ >       l breeding like h breeding like n
+ >       times times joined by the literal opposite of (
+ >       t breeding like m times)
+ >       times
+ > see o is x joined by 80 breeding like y times
+ > see N is 8 breeding like
+ >       m breeding like
+ >          f breeding like e
+ >          times joined by the literal opposite of (
+ >          c breeding like
+ >          d breeding like
+ >          g times times)
+ >       times joined by the literal opposite of (
+ >          c breeding like
+ >          d breeding like
+ >          e times
+ >       times) joined by the literal opposite of (
+ >          f breeding like g
+ >       times) joined by the literal opposite of (
+ >          l breeding like
+ >          d breeding like
+ >          n times times)
+ >       times
+ > implying 22 beats y also y beats 0 also x beats 0 also 80 beats x also D beats o 'th z
+ > o 'th z is D
+ > implying N beats 0
+ > o 'th b is N 'th chars
+ > or not
+ > o 'th b is "."
+ > or sth
+ > or sth
+ > i is joined by 0.12
  > reconsider
- > j is joined by 0.07
+ > j is joined by 0.42
  > reconsider
 Printing everything at once
  > k is 0
  > hear out is "\u001b[H"
- > think that 1761 beaten by k
+ > think that 1761 beats k
  > implying k whatever left from 80 beats 0
  > out is joined by k 'th b
  > or not
@@ -138,6 +190,6 @@ Printing everything at once
  > k evolves
  > reconsider
  > spit out
- > A is joined by 0.04
- > B is joined by 0.02
+ > A is joined by 0.24
+ > B is joined by 0.12
  > reconsider
