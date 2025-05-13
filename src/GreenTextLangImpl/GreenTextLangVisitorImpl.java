@@ -208,7 +208,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             temp = visit(ctx.expressions());
         }
         if (ctx.function_call_ing() != null) {
-            currentValue = visit(ctx.function_call_ing());
+            temp = visit(ctx.function_call_ing());
         } else if (ctx.SOMEONE_ELSES() != null) {
             var e = new NotImplementedException("SOMEONE ELSES in variable assignment");
             addLocation(e, ctx);

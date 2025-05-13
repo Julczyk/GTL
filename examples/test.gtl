@@ -1,6 +1,9 @@
- > see x is 1
- > x is joined by 2
+ > hear x is "\\n \n\u0052"
  > spit x
+
+     > see x is 1
+     > x is joined by 2
+     > spit x
 
      > see x is 5
      > spit parent x

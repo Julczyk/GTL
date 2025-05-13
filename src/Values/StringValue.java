@@ -1,5 +1,7 @@
 package Values;
 
+import Exceptions.TypeException;
+
 public class StringValue extends Value {
 
     public StringValue(String value) {
@@ -9,14 +11,39 @@ public class StringValue extends Value {
     public StringValue(String value, boolean parseEscape) {
         super(value, new Type(Type.BaseType.STRING));
         if (parseEscape) { // escape btnfr"\\
-            value = value.replace("\\b", "\b");
-            value = value.replace("\\t", "\t");
-            value = value.replace("\\n", "\n");
-            value = value.replace("\\f", "\f");
-            value = value.replace("\\r", "\r");
-            value = value.replace("\\\"", "\"");
-            value = value.replace("\\\\", "\\");
-            this.value = value;
+            try {
+                String parsed = "";
+                int i = 0;
+                while (i < value.length()) {
+                    char c = value.charAt(i);
+                    if (c == '\\') {
+                        i++;
+                        c = value.charAt(i);
+                        switch (c) {
+                            case '\\': parsed += "\\"; break;
+                            case '"': parsed += "\""; break;
+                            case 'b': parsed += "\b"; break;
+                            case 't': parsed += "\t"; break;
+                            case 'n': parsed += "\n"; break;
+                            case 'f': parsed += "\f"; break;
+                            case 'r': parsed += "\r"; break;
+                            case 'u':
+                                parsed += (char) Integer.parseInt(value.substring(i + 1, i + 5), 16);
+                                i += 4;
+                                break;
+                            case 'U':
+                                parsed += (char) Integer.parseInt(value.substring(i + 1, i + 9), 16);
+                                i += 8;
+                                break;
+                        }
+                    } else {
+                        parsed += c;
+                    }
+                    i++;
+                    this.value = parsed;
+                }} catch (Exception e) {
+                throw new TypeException("Hearing is damaged due to " + value, "Unable to parse string: " + value);
+            }
         }
     }
 
