@@ -1,7 +1,7 @@
 ## Loops
 ## think (while) loop
 ```
->think that {expression}
+ > think that {expression}
 {body}
->reconsider
+ > reconsider
 ```

@@ -35,30 +35,30 @@
 
 ### array
 on declaration we specify array after datatype using `about` keyword followed by amount of allocated memory.\
-For example: `>see about 500 pigeons` allocates array of 500 integers called "pigeons".
+For example: ` > see about 500 pigeons` allocates array of 500 integers called "pigeons".
 
 #### Assigning values to the whole array
 We can assign values after `giving` keyword using `,` or `and` as separators between values.
 
-For example: `>pigeons giving 5, 3 and 7.`\
-or with declaration: `>see about 8 pigeons giving 5, 3, 7`. That will result with `[5, 3, 7, 0, 0, 0, 0, 0]`.
+For example: ` > pigeons giving 5, 3 and 7.`\
+or with declaration: ` > see about 8 pigeons giving 5, 3, 7`. That will result with `[5, 3, 7, 0, 0, 0, 0, 0]`.
 
 
 ## defining data structures:
 data structure are defined from line
-`>look around`\
+` > look around`\
 followed by a line with structure name.\
 Then fields are listed with standard declarations.\
-End definition with `>vibe with it`
+End definition with ` > vibe with it`
 
 example:
 ```
->look around
->table
->see count
->hear contents
->hear about 5 attributes
->vibe with it
+ > look around
+ > table
+ > see count
+ > hear contents
+ > hear about 5 attributes
+ > vibe with it
 ```
 is equivalent with C++ code:
 ```C++
