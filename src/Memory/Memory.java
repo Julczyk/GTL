@@ -2,10 +2,8 @@ package Memory;
 
 import Exceptions.*;
 import GreenTextLangBase.GreenTextLangParser;
-import Values.Value;
-import Values.FunctionValue;
-import Values.Operators;
-import Values.Type;
+import GreenTextLangBase.GreenTextLangParserVisitor;
+import Values.*;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.io.IOException;
@@ -56,7 +54,16 @@ public class Memory {
         try {
             assertNotExists(memoryName);
             Type type = Type.inferType(typeCtx);
-            locals.peek().put(memoryName, new Value(null, type, true));
+            if (type.baseType == Type.BaseType.ARRAY) {
+                int length = 0;
+                if (typeCtx.complex_type().expression() != null) {
+                    // TODO evaluate
+                    length = Integer.parseInt(typeCtx.complex_type().expression().also(0).inversion(0).comparison().sum(0).term().factor().atom().literal().getText());
+                }
+                locals.peek().put(memoryName, new ArrayValue(new Value[length], type));
+            } else {
+                locals.peek().put(memoryName, new Value(null, type, true));
+            }
         } catch (InterpreterException e) {
             addLocation(e, typeCtx);
             throw e;
@@ -140,9 +147,40 @@ public class Memory {
         if (varCtx.S() != null) {
             name = varCtx.NAME().getText();
         } else if (varCtx.TH() != null) {
-            var e = new NotImplementedException("Array");
-            addLocation(e, parentCtx);
-            throw e;
+            name = varCtx.variable().NAME().getText();
+            int index;
+            if (varCtx.NAME() != null) {
+                Value idxValue = getVariable(varCtx.NAME().getText());
+                if (idxValue.type.baseType != Type.BaseType.INT) {
+                    var e = new TypeException("int in array", "int in array");
+                    addLocation(e, parentCtx);
+                    throw e;
+                }
+                index = Operators.getInt(idxValue);
+            } else {
+                index = Integer.parseInt(varCtx.DECIMAL_LITERAL().getText());
+            }
+            var memoryName = new Identifier(name);
+            for (int i = 0; i < locals.size(); i++) {
+                if (scope > i) continue;
+                var loc = locals.get(locals.size() - i - 1); // reversed
+                if (loc.containsKey(memoryName)) {
+                    try {
+                        Value curr_val = loc.get(memoryName);
+                        if (curr_val.type.baseType != Type.BaseType.ARRAY) {
+                            throw new TypeException("not an array", "not an array");
+                        }
+                        ArrayValue array = (ArrayValue) curr_val;
+                        array.set(index, value);
+                        loc.put(memoryName, array);
+                        return;
+                    } catch (InterpreterException e) {
+                        addLocation(e, parentCtx);
+                        throw e;
+                    }
+                }
+            }
+            return;
         } else {
             name = varCtx.NAME().getText();
         }
@@ -191,9 +229,37 @@ public class Memory {
         if (varCtx.S() != null) {
             name = varCtx.NAME().getText();
         } else if (varCtx.TH() != null) {
-            var e = new NotImplementedException("Array");
-            addLocation(e, parentCtx);
-            throw e;
+            name = varCtx.variable().NAME().getText();
+            int index;
+            if (varCtx.NAME() != null) {
+                Value idxValue = getVariable(varCtx.NAME().getText());
+                if (idxValue.type.baseType != Type.BaseType.INT) {
+                    var e = new TypeException("int in array", "int in array");
+                    addLocation(e, parentCtx);
+                    throw e;
+                }
+                index = Operators.getInt(idxValue);
+            } else {
+                index = Integer.parseInt(varCtx.DECIMAL_LITERAL().getText());
+            }
+            var memoryName = new Identifier(name);
+            for (int i = 0; i < locals.size(); i++) {
+                if (scope > i) continue;
+                var loc = locals.get(locals.size() - i - 1); // reversed
+                if (loc.containsKey(memoryName)) {
+                    try {
+                        Value curr_val = loc.get(memoryName);
+                        if (curr_val.type.baseType != Type.BaseType.ARRAY) {
+                            throw new TypeException("not an array", "not an array");
+                        }
+                        ArrayValue array = (ArrayValue) curr_val;
+                        return array.get(index);
+                    } catch (InterpreterException e) {
+                        addLocation(e, parentCtx);
+                        throw e;
+                    }
+                }
+            }
         } else {
             name = varCtx.NAME().getText();
         }

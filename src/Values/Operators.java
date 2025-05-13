@@ -79,6 +79,10 @@ public class Operators {
         return new BooleanValue(val.getBoolean());
     }
 
+    public static int getInt(Value val) {
+        return val.getInt(); // TODO dirty hack
+    }
+
     public static boolean isTrue(Value val) {
         if (val.isNull) {
             return false;

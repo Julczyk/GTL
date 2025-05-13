@@ -74,8 +74,9 @@ public class GreenTextLangInterpreter {
         String typeTest = "type_test.gtl";
         String presentation = "presentation.gtl";
         String presentation_cd = "presentation_cd.gtl";
+        String donut = "donut.gtl";
         if (args.length == 0) {
-            Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + fib); // Change to test redeclaration
+            Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + donut); // Change to test redeclaration
             run(filePath, true, false);
         } else { // TODO windows always runs this main
             Path inputPath = Paths.get(args[0]).toAbsolutePath();
