@@ -257,6 +257,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             }
             memory.endScope();
         }
+        memory.endScope(); // endScope when existing the loop
         return null;
     }
 
