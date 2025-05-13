@@ -257,7 +257,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             }
             memory.endScope();
         }
-        memory.endScope(); // FIXME why does it fix itself?
+        memory.endScope(); // endScope when existing the loop
         return null;
     }
 
