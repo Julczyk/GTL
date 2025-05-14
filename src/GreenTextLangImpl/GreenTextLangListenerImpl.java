@@ -3,6 +3,7 @@ package GreenTextLangImpl;
 import Exceptions.*;
 import GreenTextLangBase.GreenTextLangParser;
 import GreenTextLangBase.GreenTextLangParserBaseListener;
+import Memory.Identifier;
 import Values.Value;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Pair;
@@ -13,8 +14,8 @@ import java.util.*; // For Stack and Set
 public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
     //This is the main structure checking for variable redeclaration
     //private Set<String> globalScope = new HashSet<>();
-    private Stack<Set<Pair<String, List<Values.Type>>>> functionScopes = new Stack<>();
-    private Stack<Set<String>> localScopes = new Stack<>();
+    public Stack<Map<Identifier, Pair<Integer, Integer>>> localScope = new Stack<>(); // working memory, available scopes
+    public Map<Identifier, Pair<Integer, Integer>> globalFunctionsScope = new HashMap<>();  // global statements
 
     // For error reporting location (optional if not throwing new SyntaxExceptions from listener)
     private final Path filePath;
@@ -31,29 +32,36 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
         }
     }
 
-    private void begin_scope() {
-        localScopes.push(new HashSet<>());
-        functionScopes.push(new HashSet<>());
+    Pair<Integer, Integer> getLocation(ParserRuleContext ctx) {
+        if (ctx != null && ctx.getStart() != null) {
+            return new Pair<>(ctx.getStart().getLine(), ctx.getStart().getCharPositionInLine());
+        } else {
+            return new Pair<>(-1, -1); // Default or error location
+        }
     }
 
+
+    private boolean isGlobal() {return localScope.size() <= 1;}
+    private void begin_scope() {
+        if (isGlobal()) {
+            localScope.push(new HashMap<>());
+        } else {
+            localScope.push(new HashMap<>(localScope.peek()));
+        }
+    }
     private void end_scope() {
-        if (localScopes.isEmpty()) {
+        if (localScope.isEmpty()) {
             System.err.println("CRITICAL ERROR: variableScopes stack was empty when exiting scope.");
         } else {
-            localScopes.pop();
-        }
-        if (functionScopes.isEmpty()) {
-            System.err.println("CRITICAL ERROR: functionScopes stack was empty when exiting scope.");
-        } else {
-            functionScopes.pop();
+            localScope.pop();
         }
     }
 
     // Helper method to check for redeclaration and add variable
     private void checkAndAddVariable(String varName, ParserRuleContext ctx) {
         // Check only top scope in the stack for prior declaration
-        var scope = localScopes.peek();
-        if (scope.contains(varName)) {
+        var scope = localScope.peek();
+        if (scope.containsKey(varName)) {
             RedeclarationException ex = new RedeclarationException(
                     "Bro, you already saw '" + varName + "'. You can't tell me that over and over. ",
                     "Variable '" + varName + "' has already been declared in this or an enclosing scope."
@@ -63,64 +71,83 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
         }
 
         // Add to the current (top-most) scope
-        if (!localScopes.isEmpty()) {
-            localScopes.peek().add(varName);
+        if (!localScope.isEmpty()) {
+            localScope.peek().put(new Identifier(varName), getLocation(ctx));
         } else {
             // This case should ideally not be reached if enterProgram initializes the stack.
             // It's a safeguard or indicates a logic error elsewhere.
             System.err.println("CRITICAL ERROR: variableScopes stack was empty during declaration of '" + varName + "'. Re-initializing global scope.");
-            localScopes.push(new HashSet<>());
-            localScopes.peek().add(varName);
+            begin_scope();
         }
     }
 
     private void checkAndAddFunction(String funcName, List<Values.Type> types, ParserRuleContext ctx) {
         // Check only top scope in the stack for prior declaration
         var func = new Pair<>(funcName, types);
-        var scope = functionScopes.peek();
-        if (scope.contains(func)) {
+        var scope = localScope.peek();
+        if (scope.containsKey(func)) {
             RedeclarationException ex = new RedeclarationException(
-                    "Bro, you already saw '" + funcName + "'. You can't tell me that over and over. ",
-                    "Function '" + funcName + "' with types: "+ types.toString() +" has already been declared in this or an enclosing scope."
+                    "Bro, you already ARE here, '" + funcName + "'. Stop cloning urselfffff.",
+                    "Function '" + funcName + "' with types: "+ types.toString() +" has already been declared in this scope."
+            );
+            addLocationToException(ex, ctx);
+            throw ex;
+        }
+        if (globalFunctionsScope.containsKey(func)) {
+            RedeclarationException ex = new RedeclarationException(
+                    "Bro, you already ARE EVERYWHERE, '" + funcName + "'. Stop cloning urselfffff.",
+                    "Function '" + funcName + "' with types: "+ types.toString() +" has already been declared in global scope."
             );
             addLocationToException(ex, ctx);
             throw ex;
         }
 
-        // Add to the current (top-most) scope
-        if (!functionScopes.isEmpty()) {
-            functionScopes.peek().add(func);
+        // Add function
+        if (isGlobal()) {
+            //global
+            globalFunctionsScope.put(new Identifier(funcName, types), getLocation(ctx));
         } else {
-            // This case should ideally not be reached if enterProgram initializes the stack.
-            // It's a safeguard or indicates a logic error elsewhere.
-            System.err.println("CRITICAL ERROR: functionScopes stack was empty during declaration of '" + funcName + "'. Re-initializing global scope.");
-            functionScopes.push(new HashSet<>());
-            functionScopes.peek().add(func);
+            //local
+            localScope.peek().put(new Identifier(funcName, types), getLocation(ctx));
         }
     }
 
     @Override
     public void enterProgram(GreenTextLangParser.ProgramContext ctx) {
-        functionScopes.push(new HashSet<>());
+        // Initialize the global scope
+        localScope.push(new HashMap<>());
+        globalFunctionsScope = new HashMap<>();
     }
 
     @Override
     public void exitProgram(GreenTextLangParser.ProgramContext ctx) {
-        functionScopes.pop();
+        // Clean up the global scope
+        if (!localScope.isEmpty()) {
+            localScope.pop();
+        }
+        if (!localScope.isEmpty()) {
+            System.err.println("CRITICAL ERROR: variableScopes stack was not empty after exiting program.");
+        }
+
+        //clear list of global functions
+        globalFunctionsScope.clear();
     }
 
     @Override
     public void enterCode_block(GreenTextLangParser.Code_blockContext ctx) {
-        localScopes.push(new HashSet<>());
+        localScope.push(new HashMap<>());
     }
 
     @Override
     public void exitCode_block(GreenTextLangParser.Code_blockContext ctx) {
-        localScopes.pop();
+        localScope.pop();
     }
 
     @Override
     public void enterFunction_declaration(GreenTextLangParser.Function_declarationContext ctx) {
+        if(localScope.isEmpty())
+        begin_scope();
+    }
         // Note: Function names themselves might be checked for redeclaration in a global function registry,
         // this listener focuses on variable scopes *within* constructs.
 //        String name = ctx.NAME().getText();
@@ -142,10 +169,10 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
 //            }
 //        }
 //        checkAndAddFunction(name, types, ctx);
-        begin_scope();
+//        begin_scope();
         // Function parameters defined in function_arguments will be added to this new scope
         // when their respective enterVariable_declaration_ing methods are called.
-    }
+//    }
 
     @Override
     public void exitFunction_declaration(GreenTextLangParser.Function_declarationContext ctx) {
