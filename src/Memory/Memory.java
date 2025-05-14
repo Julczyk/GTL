@@ -38,14 +38,14 @@ public class Memory {
 
     private void assertNotExists(Identifier memoryName) throws VariableNotFoundException {
         if (locals.peek().containsKey(memoryName)) {
-            throw new VariableNotFoundException("Double " + memoryName + " and give it to the next person.",
+            throw new VariableNotFoundException("Double " + memoryName.toMemeString() + " and give it to the next person.",
                     "Variable '" + memoryName + "' has already been declared.");
         }
     }
 
     private void assertNotExistsGlobal(Identifier memoryName) throws VariableNotFoundException {
         if (globals.containsKey(memoryName)) {
-            throw new VariableNotFoundException("Double " + memoryName + " and give it to the next person.",
+            throw new VariableNotFoundException("Double " + memoryName.toMemeString() + " and give it to the next person.",
                     "Variable '" + memoryName + "' has already been declared.");
         }
     }
@@ -124,7 +124,7 @@ public class Memory {
                 return;
             }
         }
-        throw new VariableNotFoundException("Your " + memoryName + " is missing, maybe he went to buy milk and hasn't returned yet.",
+        throw new VariableNotFoundException("Your " + memoryName.toMemeString() + " is missing, maybe he went to buy milk and hasn't returned yet.",
                 "Variable '" + memoryName + "' has not been found in this scope");
     }
 
@@ -162,7 +162,7 @@ public class Memory {
                 }
             }
         }
-        var e = new VariableNotFoundException("Your " + memoryName + " is missing, maybe he went to buy milk and hasn't returned yet.",
+        var e = new VariableNotFoundException("Your " + memoryName.toMemeString() + " is missing, maybe he went to buy milk and hasn't returned yet.",
                 "Variable '" + memoryName + "' has not been found in this scope");
         addLocation(e, parentCtx);
         throw e;
@@ -175,7 +175,7 @@ public class Memory {
                 return loc.get(memoryName);
             }
         }
-        throw new VariableNotFoundException("Your " + memoryName + " is missing, maybe he went to buy milk and hasn't returned yet.",
+        throw new VariableNotFoundException("Your " + memoryName.toMemeString() + " is missing, maybe he went to buy milk and hasn't returned yet.",
                 "Variable '" + memoryName + "' has not been found in this scope");
     }
 
@@ -208,7 +208,7 @@ public class Memory {
         if (globals.containsKey(memoryName)) {
             return globals.get(memoryName);
         }
-        var e = new VariableNotFoundException("Your " + memoryName + " is missing, maybe he went to buy milk and hasn't returned yet.",
+        var e = new VariableNotFoundException("Your " + memoryName.toMemeString() + " is missing, maybe he went to buy milk and hasn't returned yet.",
                 "Variable '" + memoryName + "' has not been found in this scope");
         addLocation(e, parentCtx);
         throw e;
