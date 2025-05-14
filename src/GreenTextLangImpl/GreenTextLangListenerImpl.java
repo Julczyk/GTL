@@ -39,15 +39,18 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
             return new Pair<>(-1, -1); // Default or error location
         }
     }
-
-
-    private boolean isGlobal() {return localScope.size() <= 1;}
-    private void begin_scope() {
-        if (isGlobal()) {
-            localScope.push(new HashMap<>());
+    String locationof(Identifier ID, Map<Identifier, Pair<Integer, Integer>> scope) {
+        if (scope.containsKey(ID)) {
+            Pair<Integer, Integer> loc = scope.get(ID);
+            return "[" + loc.a + ",  " + loc.b + "]";
         } else {
-            localScope.push(new HashMap<>(localScope.peek()));
+            return "Unknown location";
         }
+    }
+    private boolean isGlobal() {return localScope.size() <= 1;}
+
+    private void beginScope() {
+            localScope.push(new HashMap<>());
     }
     private void end_scope() {
         if (localScope.isEmpty()) {
@@ -61,9 +64,10 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
     private void checkAndAddVariable(String varName, ParserRuleContext ctx) {
         // Check only top scope in the stack for prior declaration
         var scope = localScope.peek();
-        if (scope.containsKey(varName)) {
-            RedeclarationException ex = new RedeclarationException(
-                    "Bro, you already saw '" + varName + "'. You can't tell me that over and over. ",
+        var varID = new Identifier(varName);
+        if (scope.containsKey(varID)) {
+            var ex = new RedeclarationException(
+                    "Bro, you already saw '" + varName + "' at " + locationof(varID, scope) +". You can't tell me that over and over. ",
                     "Variable '" + varName + "' has already been declared in this or an enclosing scope."
             );
             addLocationToException(ex, ctx);
@@ -72,31 +76,32 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
 
         // Add to the current (top-most) scope
         if (!localScope.isEmpty()) {
-            localScope.peek().put(new Identifier(varName), getLocation(ctx));
+            localScope.peek().put(varID, getLocation(ctx));
         } else {
             // This case should ideally not be reached if enterProgram initializes the stack.
             // It's a safeguard or indicates a logic error elsewhere.
             System.err.println("CRITICAL ERROR: variableScopes stack was empty during declaration of '" + varName + "'. Re-initializing global scope.");
-            begin_scope();
+            beginScope();
         }
     }
 
-    private void checkAndAddFunction(String funcName, List<Values.Type> types, ParserRuleContext ctx) {
+    private void checkAndAddFunction(String funcName, Identifier funcId, ParserRuleContext ctx) {
         // Check only top scope in the stack for prior declaration
-        var func = new Pair<>(funcName, types);
+        // LEGACY: var func = new Pair<>(funcName, types);
         var scope = localScope.peek();
-        if (scope.containsKey(func)) {
+        //Identifier funcId = new Identifier(funcName, types);
+        if (scope.containsKey(funcId)) {
             RedeclarationException ex = new RedeclarationException(
-                    "Bro, you already ARE here, '" + funcName + "'. Stop cloning urselfffff.",
-                    "Function '" + funcName + "' with types: "+ types.toString() +" has already been declared in this scope."
+                    "Bro, you already ARE here, '" + funcName + "' at " + locationof(funcId, scope) + ". Stop cloning urselfffff.",
+                    "Function '" + funcId.toString() + "'has already been declared in this scope at " + locationof(funcId, scope) + "."
             );
             addLocationToException(ex, ctx);
             throw ex;
         }
-        if (globalFunctionsScope.containsKey(func)) {
+        if (globalScope.containsKey(funcId)) {
             RedeclarationException ex = new RedeclarationException(
-                    "Bro, you already ARE EVERYWHERE, '" + funcName + "'. Stop cloning urselfffff.",
-                    "Function '" + funcName + "' with types: "+ types.toString() +" has already been declared in global scope."
+                    "Bro, you already ARE EVERYWHERE, '" + funcName + "' at " + locationof(funcId, scope) + ". Stop cloning urselfffff.",
+                    "Function '" + funcId.toString() + "'has already been declared in global scope at " + locationof(funcId, scope) + "."
             );
             addLocationToException(ex, ctx);
             throw ex;
@@ -108,7 +113,7 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
             globalFunctionsScope.put(new Identifier(funcName, types), getLocation(ctx));
         } else {
             //local
-            localScope.peek().put(new Identifier(funcName, types), getLocation(ctx));
+            localScope.peek().put(funcId, getLocation(ctx));
         }
     }
 
@@ -145,31 +150,13 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
 
     @Override
     public void enterFunction_declaration(GreenTextLangParser.Function_declarationContext ctx) {
-        if(localScope.isEmpty())
-        begin_scope();
-    }
         // Note: Function names themselves might be checked for redeclaration in a global function registry,
         // this listener focuses on variable scopes *within* constructs.
-//        String name = ctx.NAME().getText();
-//        List<Values.Type> types = new ArrayList<>();
-//
-//        if (ctx.function_arguments() != null) {
-//            for (var decl : ctx.function_arguments().variable_declaration_ing()) {
-//                if (decl.type_ing().primitive_type_ing().SEEING() != null) {
-//                    types.add(Values.Type.INT);
-//                } else if (decl.type_ing().primitive_type_ing().TASTING() != null) {
-//                    types.add(Values.Type.DOUBLE);
-//                } else if (decl.type_ing().primitive_type_ing().HEARING() != null) {
-//                    types.add(Values.Type.STRING);
-//                } else if (decl.type_ing().primitive_type_ing().SMELLING() != null) {
-//                    types.add(Values.Type.BOOLEAN);
-//                } else {
-//                    throw new UnknownException("Unhandled case: " + ctx.getText());
-//                }
-//            }
-//        }
-//        checkAndAddFunction(name, types, ctx);
-//        begin_scope();
+        Identifier funcId = new Identifier(ctx);
+        String funcName = ctx.NAME().getText();
+        checkAndAddFunction(funcName, funcId, ctx);
+        beginScope();
+    }
         // Function parameters defined in function_arguments will be added to this new scope
         // when their respective enterVariable_declaration_ing methods are called.
 //    }
@@ -181,7 +168,7 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
 
     @Override
     public void enterStruct_declaration(GreenTextLangParser.Struct_declarationContext ctx) {
-        begin_scope();
+        beginScope();
         // Struct member declarations would be handled within their rules, adding to this new scope.
     }
 
@@ -192,7 +179,7 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
 
     @Override
     public void enterLoop_declaration(GreenTextLangParser.Loop_declarationContext ctx) {
-        begin_scope();
+        beginScope();
     }
 
     @Override
@@ -202,7 +189,7 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
 
     @Override
     public void enterIf_declaration(GreenTextLangParser.If_declarationContext ctx) {
-        begin_scope();
+        beginScope();
     }
 
     @Override
@@ -254,6 +241,18 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
     // --- Empty Line Handling ---
     @Override
     public void enterStatement_newline(GreenTextLangParser.Statement_newlineContext ctx) {
+        // This is where we handle the empty line statement.
+        // If the line is empty, we clear all variable scopes.
+        // This is a bit of a hack, but it works for now.
+        if (ctx.NEWLINE() != null) {
+            System.err.println("DEBUG: Empty line statement encountered at line " +
+                    ctx.NEWLINE().getSymbol().getLine() +
+                    ". Clearing all variable scopes.");
+            localScope.clear();
+            localScope.push(new HashMap<>()); // Re-initialize with a new global scope
+        }
+    }
+
         // This rule has two alternatives:
         // 1. (compound_statement | simple_statement) NEWLINE
         // 2. NEWLINE (this is the "empty line statement")
@@ -265,7 +264,7 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
 //            localScopes.clear();
 //            localScopes.push(new HashSet<>()); // Re-initialize with a new global scope
 //        }
-    }
+    //}
 
     // Other listener methods (e.g., for expression evaluation, spit, etc.) would be added here
     // if the goal was full interpretation. For this task, we focus on scope and redeclaration.
