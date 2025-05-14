@@ -4,7 +4,6 @@ import Exceptions.*;
 import GreenTextLangBase.GreenTextLangParser;
 import GreenTextLangBase.GreenTextLangParserBaseListener;
 import Memory.Identifier;
-import Values.Value;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Pair;
 
@@ -15,7 +14,7 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
     //This is the main structure checking for variable redeclaration
     //private Set<String> globalScope = new HashSet<>();
     public Stack<Map<Identifier, Pair<Integer, Integer>>> localScope = new Stack<>(); // working memory, available scopes
-    public Map<Identifier, Pair<Integer, Integer>> globalFunctionsScope = new HashMap<>();  // global statements
+    public Map<Identifier, Pair<Integer, Integer>> globalScope = new HashMap<>();  // global statements
 
     // For error reporting location (optional if not throwing new SyntaxExceptions from listener)
     private final Path filePath;
@@ -52,7 +51,8 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
     private void beginScope() {
             localScope.push(new HashMap<>());
     }
-    private void end_scope() {
+
+    private void endScope() {
         if (localScope.isEmpty()) {
             System.err.println("CRITICAL ERROR: variableScopes stack was empty when exiting scope.");
         } else {
@@ -110,7 +110,7 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
         // Add function
         if (isGlobal()) {
             //global
-            globalFunctionsScope.put(new Identifier(funcName, types), getLocation(ctx));
+            globalScope.put(funcId, getLocation(ctx));
         } else {
             //local
             localScope.peek().put(funcId, getLocation(ctx));
@@ -121,7 +121,7 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
     public void enterProgram(GreenTextLangParser.ProgramContext ctx) {
         // Initialize the global scope
         localScope.push(new HashMap<>());
-        globalFunctionsScope = new HashMap<>();
+        globalScope = new HashMap<>();
     }
 
     @Override
@@ -135,7 +135,7 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
         }
 
         //clear list of global functions
-        globalFunctionsScope.clear();
+        globalScope.clear();
     }
 
     @Override
@@ -163,7 +163,7 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
 
     @Override
     public void exitFunction_declaration(GreenTextLangParser.Function_declarationContext ctx) {
-        end_scope();
+        endScope();
     }
 
     @Override
@@ -174,7 +174,7 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
 
     @Override
     public void exitStruct_declaration(GreenTextLangParser.Struct_declarationContext ctx) {
-        end_scope();
+        endScope();
     }
 
     @Override
@@ -184,7 +184,7 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
 
     @Override
     public void exitLoop_declaration(GreenTextLangParser.Loop_declarationContext ctx) {
-        end_scope();
+        endScope();
     }
 
     @Override
@@ -194,13 +194,13 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
 
     @Override
     public void exitIf_declaration(GreenTextLangParser.If_declarationContext ctx) {
-        end_scope();
+        endScope();
     }
 
     @Override
     public void enterOr_statement(GreenTextLangParser.Or_statementContext ctx) {
-        end_scope();
-        begin_scope(); // Each 'or' branch creates a new scope
+        endScope();
+        beginScope(); // Each 'or' branch creates a new scope
     }
 
     @Override
@@ -210,8 +210,8 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
 
     @Override
     public void enterOr_not_statement(GreenTextLangParser.Or_not_statementContext ctx) {
-        end_scope();
-        begin_scope(); // The 'or not' branch creates a new scope
+        endScope();
+        beginScope(); // The 'or not' branch creates a new scope
     }
 
     @Override
