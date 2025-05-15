@@ -7,6 +7,7 @@ import Memory.Identifier;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Pair;
 
+import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.*; // For Stack and Set
 
@@ -19,10 +20,12 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
     // For error reporting location (optional if not throwing new SyntaxExceptions from listener)
     private final Path filePath;
     private final String sourceInput;
+    PrintStream err;
 
-    public GreenTextLangListenerImpl(Path filePath, String sourceInput) {
+    public GreenTextLangListenerImpl(Path filePath, String sourceInput, PrintStream err) {
         this.filePath = filePath; // Used for context in exceptions
         this.sourceInput = sourceInput; // Used for context in exceptions
+        this.err = err;
     }
 
     private void addLocationToException(InterpreterException ex, ParserRuleContext ctx) {
@@ -54,7 +57,7 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
 
     private void endScope() {
         if (localScope.isEmpty()) {
-            System.err.println("CRITICAL ERROR: variableScopes stack was empty when exiting scope.");
+            err.println("CRITICAL ERROR: variableScopes stack was empty when exiting scope.");
         } else {
             localScope.pop();
         }
@@ -80,7 +83,7 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
         } else {
             // This case should ideally not be reached if enterProgram initializes the stack.
             // It's a safeguard or indicates a logic error elsewhere.
-            System.err.println("CRITICAL ERROR: variableScopes stack was empty during declaration of '" + varName + "'. Re-initializing global scope.");
+            err.println("CRITICAL ERROR: variableScopes stack was empty during declaration of '" + varName + "'. Re-initializing global scope.");
             beginScope();
         }
     }
@@ -234,7 +237,7 @@ public class GreenTextLangListenerImpl extends GreenTextLangParserBaseListener {
         // 2. NEWLINE (this is the "empty line statement")
         // If simple_statement and compound_statement are null, it means the second alternative was matched.
 //        if (ctx.simple_statement() == null && ctx.compound_statement() == null && ctx.NEWLINE() != null) {
-//            System.err.println("DEBUG: Empty line statement encountered at line " +
+//            err.println("DEBUG: Empty line statement encountered at line " +
 //                    ctx.NEWLINE().getSymbol().getLine() +
 //                    ". Clearing all variable scopes.");
 //            localScopes.clear();
