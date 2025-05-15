@@ -47,6 +47,9 @@ public class GreenTextLangApp {
                     System.exit(1);
                 }
                 GreenTextLangInterpreter.run(inputPath, res.getBoolean("debug"), res.getBoolean("program"));
+                Scanner terminalInput = new Scanner(System.in);
+                System.out.print("Press enter to terminate.");
+                terminalInput.nextLine();
             } else if (res.get("program")) {
                 System.err.println("You need to specify a program to run");
             } else if (res.get("debug")) {

@@ -75,21 +75,8 @@ public class GreenTextLangInterpreter {
         String presentation = "presentation.gtl";
         String presentation_cd = "presentation_cd.gtl";
         String donut = "donut.gtl";
-        if (args.length == 0) {
-            Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + donut); // Change to test redeclaration
-            run(filePath, true, false);
-        } else { // TODO windows always runs this main
-            Path inputPath = Paths.get(args[0]).toAbsolutePath();
-            File inputFile = inputPath.toFile();
-            if (!inputFile.exists() || !inputFile.isFile()) {
-                System.err.println("Error: File does not exist: " + inputPath);
-            } else {
-                GreenTextLangInterpreter.run(inputPath, false, false);
-            }
-            Scanner terminalInput = new Scanner(System.in);
-            System.out.print("Press enter to terminate.");
-            String input = terminalInput.nextLine();
-        }
+        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + donut); // Change to test redeclaration
+        run(filePath, true, false);
     }
 }
 
