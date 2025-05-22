@@ -235,6 +235,21 @@ public class SyntaxErrorListener extends BaseErrorListener {
         return null;
     }
 
+    private String[] getAllTokens(){
+        int maxTokenType = GreenTextLangParser.VOCABULARY.getMaxTokenType();
+        Vocabulary vocab = GreenTextLangParser.VOCABULARY;
+        String[] output = new String[maxTokenType + 1];
+        Arrays.fill(output, "");
+        for (int i = 3; i <= maxTokenType; i++) {
+            String name = vocab.getDisplayName(i);
+            if (name != null) {
+                //System.out.println("Token Type: " + i + " → " + name);
+                output[i] = name;
+            }
+        }
+        return output;
+    }
+
     private String findClosestToken(Parser parser, CommonToken faultyToken, NoViableAltException noViable) {
         String text = faultyToken.getText();
         String expectedTokens = ExpectedTokens(parser, noViable);
@@ -246,6 +261,22 @@ public class SyntaxErrorListener extends BaseErrorListener {
                 bestToken = token;
             }
         }
+
+        String bestToken2 = "No token found";
+        int similarity2 = Integer.MAX_VALUE;
+        String prev = getPreviousToken(parser, faultyToken).getText();
+        for (var token : possibleTokens) {
+            int a = compute_Levenshtein_distance(prev, token);
+            if(a <= similarity2) {
+                similarity2 = compute_Levenshtein_distance(prev, token);
+                bestToken2 = token;
+            }
+        }
+
+        if(similarity2 <= similarity) {
+            return bestToken2 + " " + text;
+        }
+
         return bestToken;
     }
 
@@ -284,4 +315,5 @@ public class SyntaxErrorListener extends BaseErrorListener {
                 Integer.MAX_VALUE);
     }
 
+    private String[] possibleTokens = {"invite","be","see","seeing","taste","tasting","hear","hearing","smell","smelling","spot","spotting","someone elses","about","multiple","\'th","look around","lose interest","\'s","spit","swallow","profit","call","calling","regarding","likes","think that","reconsider","implying","or sth","or","or not","let me","parent","and","is","vibe with","doesn\'t vibe with","beaten by","doesn\'t beat","beats","unbeaten by","also","alternatively","not","joined by","evolves","devolves","breeding like","times","the literal opposite of","flipped","whatever left from"};
 }
