@@ -1,5 +1,7 @@
 package Values;
 
+import Exceptions.OutOfBoundsException;
+
 public class ArrayValue extends Value {
     public ArrayValue(Object value, Type type) {
         super(value, type);
@@ -11,12 +13,23 @@ public class ArrayValue extends Value {
         }
     }
 
-    public Value get(int i) { // TODO add exception
+    public Value get(int i) {
         Value[] values = (Value[]) (value);
+        if (i < 0 || i >= values.length) {
+            throw new OutOfBoundsException(
+                    "You are not long enough you have only " + values.length + " but you wanted " + i,
+                    "Index " + i + " is out of bounds for an array of length " + values.length);
+        }
         return values[i];
     }
 
-    public void set(int i, Value value) { // TODO add exception
+    public void set(int i, Value value) {
+        Value[] values = (Value[]) (this.value);
+        if (i < 0 || i >= values.length) {
+            throw new OutOfBoundsException(
+                    "You are not long enough you have only " + values.length + " but you wanted " + i,
+                    "Index " + i + " is out of bounds for an array of length " + values.length);
+        }
         ((Value[])this.value)[i] = value;
     }
 
