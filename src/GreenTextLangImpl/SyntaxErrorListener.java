@@ -170,6 +170,7 @@ public class SyntaxErrorListener extends BaseErrorListener {
             if (tokens.get(index).getText().equals("implying")) {
                 closing[0]++;
             }else if (tokens.get(index).getText().equals("or sth")) {
+                closing[3] = 0;
                 closing[0]--;
             }else if (tokens.get(index).getText().equals("be")) {
                 closing[1]++;
@@ -184,6 +185,10 @@ public class SyntaxErrorListener extends BaseErrorListener {
             }
 
             index--;
+        }
+
+        if(closing[3] > 0 && closing[0] == 0) {
+            return "or was not expected. Declare start of if statement before by using \'implying\'";
         }
 
         if(closing[0] > 0) {
@@ -207,9 +212,7 @@ public class SyntaxErrorListener extends BaseErrorListener {
             return "Loop statement closed, but not opened use \'think that\' to start loop structure";
         }
 
-        if(closing[3] > 0) {
-            return "or was not expected. Declare start of if statement before by using \'implying\'";
-        }
+
 
         return tokens.toString();
     }
