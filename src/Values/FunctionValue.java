@@ -17,4 +17,9 @@ public class FunctionValue extends Value {
     public GreenTextLangParser.Function_declarationContext getFunction() {
         return (GreenTextLangParser.Function_declarationContext) value;
     }
+
+    @Override
+    public String toString() {
+        return "\b";
+    }
 }

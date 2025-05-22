@@ -15,9 +15,9 @@ import java.util.*;
  */
 public class Memory {
 
-    public Stack<Map<Identifier, Value>> locals = new Stack<>(); // working memory, available scopes
-    public Stack<Stack<Map<Identifier, Value>>> locals_stack = new Stack<>();  // drop off memory
-    public Map<Identifier, Value> globals = new HashMap<>();  // global statements
+    public Stack<HashMap<Identifier, Value>> locals = new Stack<>(); // working memory, available scopes
+    public Stack<Stack<HashMap<Identifier, Value>>> locals_stack = new Stack<>();  // drop off memory
+    public HashMap<Identifier, Value> globals = new HashMap<>();  // global statements
 
     private final int STACK_LIMIT = 200;
     private final Path filePath;
@@ -133,6 +133,22 @@ public class Memory {
             }
         }  catch (InterpreterException e) {
             addLocation(e, funcCtx);
+            throw e;
+        }
+    }
+
+    public void createStruct(String name, HashMap<Identifier, Value> struct, GreenTextLangParser.Struct_declarationContext structCtx) {
+        var memoryName = new Identifier(name);
+        try {
+            assertNotExists(memoryName);
+            if (isGlobal()) {
+                assertNotExistsGlobal(memoryName);
+                globals.put(memoryName, new StructValue(struct, name));
+            } else {
+                locals.peek().put(memoryName, new StructValue(struct, name));
+            }
+        }  catch (InterpreterException e) {
+            addLocation(e, structCtx);
             throw e;
         }
     }
@@ -349,6 +365,17 @@ public class Memory {
 
     public void endScope() {
         locals.pop();
+    }
+
+    public void beginStruct() {
+        locals_stack.push(locals);
+        locals = new Stack<>();
+        beginScope();
+    }
+
+    public void endStruct() {
+        endScope();
+        locals = locals_stack.pop();
     }
 
     public void beginFunction(FunctionValue func) throws StackOverflowException {

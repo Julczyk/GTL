@@ -72,4 +72,24 @@ public class ArrayValue extends Value {
         builder.setLength(builder.length() - 2);
         return builder.toString();  // There is always string representation
     }
+
+    @Override
+    public String toString() {
+        if (((Value[])this.value).length == 0) {
+            return "[]";
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        for (var val : ((Value[])this.value)) {
+            if (val == null) {
+                builder.append("null");
+            } else {
+                builder.append(val.toString());
+            }
+            builder.append(", ");
+        }
+        builder.setLength(builder.length() - 2);
+        builder.append("]");
+        return builder.toString();  // There is always string representation
+    }
 }

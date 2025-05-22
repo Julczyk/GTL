@@ -4,12 +4,14 @@ import Exceptions.*;
 import GreenTextLangBase.GreenTextLangParser;
 import GreenTextLangBase.GreenTextLangParserBaseVisitor;
 import Memory.Memory;
+import Memory.Identifier;
 import Values.*;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Pair;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -123,6 +125,20 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     @Override
     public Value visitFunction_declaration(GreenTextLangParser.Function_declarationContext ctx) {
         memory.createFunction(ctx);
+        return null;
+    }
+
+    @Override
+    public Value visitStruct_declaration(GreenTextLangParser.Struct_declarationContext ctx) {
+        String name = ctx.NAME().getText();
+        memory.beginStruct();
+        // TODO create in memory, structs
+        for (var stmt : ctx.statement_newline()) {
+            visit(stmt);
+        }
+        HashMap<Identifier, Value> mem = memory.locals.peek();
+        memory.endStruct();
+        memory.createStruct(name, mem, ctx);
         return null;
     }
 
