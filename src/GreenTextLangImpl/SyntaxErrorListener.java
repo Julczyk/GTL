@@ -91,7 +91,10 @@ public class SyntaxErrorListener extends BaseErrorListener {
                         "Expecting one of: " + expectedTokens;
             }
             if(rulename.equals("code_blocks")) {
-                return findNotClosedStatement(parser, faultyToken);
+                if (findNotClosedStatement(parser, faultyToken, noViable) != null){
+                    return findNotClosedStatement(parser, faultyToken, noViable);
+                }
+
 //                return "If expression not closed, expecting one of: {'or sth', 'or', 'or not'}" + "\n"
 //                        + ctx.getText() + "\n"
 //                        + ctx.getParent().getText() + "\n"
@@ -103,9 +106,7 @@ public class SyntaxErrorListener extends BaseErrorListener {
             }
             return "Unexpected token: " + text + "\n" +
                     "Expecting one of: " + expectedTokens + "\n"
-                    + rulename + "\n"
-                    + e + "\n"
-                    + faultyToken.getText();
+                    + "We think you meant: " +  findClosestToken(parser, faultyToken, noViable);
         }
 
         //System.out.println("token name" + tokenTypeName + " " + tokens);
@@ -161,7 +162,7 @@ public class SyntaxErrorListener extends BaseErrorListener {
         return null;
     }
 
-    private String findNotClosedStatement(Parser recognizer, CommonToken faultyToken) {
+    private String findNotClosedStatement(Parser recognizer, CommonToken faultyToken, NoViableAltException noViable) {
         TokenStream tokens = recognizer.getInputStream();
         if (tokens == null) return null;
         int index = faultyToken.getTokenIndex();
@@ -212,9 +213,58 @@ public class SyntaxErrorListener extends BaseErrorListener {
         if(closing[2] < 0) {
             return "Loop statement closed, but not opened use \'think that\' to start loop structure";
         }
+        String expected = ExpectedTokens(recognizer, noViable);
 
-
-
-        return tokens.toString();
+        return null;
     }
+
+    private String findClosestToken(Parser parser, CommonToken faultyToken, NoViableAltException noViable) {
+        String text = faultyToken.getText();
+        String expectedTokens = ExpectedTokens(parser, noViable);
+        String bestToken = "No token found";
+        int similarity = Integer.MAX_VALUE;
+        for (var token : expectedTokens.split(" ")) {
+            if(compute_Levenshtein_distance(text, token) < similarity) {
+                similarity = compute_Levenshtein_distance(text, token);
+                bestToken = token;
+            }
+        }
+        return bestToken;
+    }
+
+    static int compute_Levenshtein_distance(String str1, String str2){
+        if (str1.isEmpty())
+        {
+            return str2.length();
+        }
+
+        if (str2.isEmpty())
+        {
+            return str1.length();
+        }
+
+        int replace = compute_Levenshtein_distance(
+                str1.substring(1), str2.substring(1))
+                + NumOfReplacement(str1.charAt(0),str2.charAt(0));
+
+        int insert = compute_Levenshtein_distance(
+                str1, str2.substring(1))+ 1;
+
+        int delete = compute_Levenshtein_distance(
+                str1.substring(1), str2)+ 1;
+
+        return minm_edits(replace, insert, delete);
+    }
+
+    static int NumOfReplacement(char c1, char c2)
+    {
+        return c1 == c2 ? 0 : 1;
+    }
+
+    static int minm_edits(int... nums)
+    {
+        return Arrays.stream(nums).min().orElse(
+                Integer.MAX_VALUE);
+    }
+
 }
