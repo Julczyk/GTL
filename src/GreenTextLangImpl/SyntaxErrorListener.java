@@ -90,6 +90,9 @@ public class SyntaxErrorListener extends BaseErrorListener {
                 return "Missing token \n" +
                         "Expecting one of: " + expectedTokens;
             }
+            if(!Arrays.asList(possibleTokens).contains(faultyToken.getText())){
+                return findClosestToken(parser, faultyToken, noViable);
+            }
             if(rulename.equals("code_blocks")) {
                 if (findNotClosedStatement(parser, faultyToken, noViable) != null){
                     return findNotClosedStatement(parser, faultyToken, noViable);
@@ -108,10 +111,7 @@ public class SyntaxErrorListener extends BaseErrorListener {
                 return "Cannot assign to literal!";
             }
 
-
-            return "Unexpected token: " + text + "\n" +
-                    "Expecting one of: " + expectedTokens + "\n"
-                    + "We think you meant: " +  findClosestToken(parser, faultyToken, noViable);
+            return findClosestToken(parser, faultyToken, noViable);
         }
 
         //System.out.println("token name" + tokenTypeName + " " + tokens);
@@ -273,11 +273,14 @@ public class SyntaxErrorListener extends BaseErrorListener {
             }
         }
 
-        if(similarity2 <= similarity) {
-            return bestToken2 + " " + text;
+        if(similarity2 <= similarity && !prev.chars().allMatch( Character::isDigit ) ) {
+            return "Unexpected token: " + prev + " " + text + "\n" +
+                    "We think you meant:" + bestToken2 + " " + text;
         }
 
-        return bestToken;
+        return "Unexpected token: " + text + "\n" +
+                "Expecting one of: " + expectedTokens + "\n"
+                + "We think you meant:" + bestToken;
     }
 
     static int compute_Levenshtein_distance(String str1, String str2){
