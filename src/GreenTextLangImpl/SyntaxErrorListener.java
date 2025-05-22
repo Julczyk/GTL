@@ -168,6 +168,7 @@ public class SyntaxErrorListener extends BaseErrorListener {
         int[] closing = {0,0,0,0}; // if, fun, loop, ors from if
         while (index > 0){
             if (tokens.get(index).getText().equals("implying")) {
+                closing[3] = 0;
                 closing[0]++;
             }else if (tokens.get(index).getText().equals("or sth")) {
                 closing[3] = 0;
