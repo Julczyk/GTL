@@ -12,7 +12,7 @@ public class Value {
     public static final Value FALSE = new BooleanValue(false);
     public static final Value TRUE = new BooleanValue(true);
     // Fields
-    Object value;
+    public Object value;
     boolean isNull = false;
     public Type type;
     // Constructors
@@ -116,5 +116,10 @@ public class Value {
         if (value != null) result = value.hashCode();
         result = 29 * result + (isNull ? 1 : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
     }
 }

@@ -18,6 +18,7 @@ public class Operators {
             case STRING -> Operators.castString(valFrom);
             case INT -> Operators.castInt(valFrom);
             case DOUBLE -> Operators.castDouble(valFrom);
+            case ARRAY -> Operators.castArray(valTo, valFrom);
             default ->
                     throw new TypeException("Unable to cast " + valFrom.getMemeType() + " to " + valTo.getMemeType(), "Unable to cast " + valFrom.type + " to " + valTo.type);
         };
@@ -77,6 +78,25 @@ public class Operators {
             return new BooleanValue(null);
         }
         return new BooleanValue(val.getBoolean());
+    }
+
+    public static Value castArray(Value valTo, Value valFrom) {
+        if (valFrom.isNull) {
+            return new ArrayValue(null, valTo.type);
+        }
+        ArrayValue array = new ArrayValue(new Value[0], valTo.type);
+        if (valFrom.type.baseType == Type.BaseType.ARRAY) {
+            ArrayValue arrayFrom = (ArrayValue) valFrom;
+            for (var val : (Value[]) arrayFrom.value) {
+                array = (ArrayValue) array.add(val);
+            }
+        } else {
+            array = (ArrayValue) array.add(valFrom);
+        }
+        for (int i = ((Value[]) array.value).length; i < ((Value[]) valTo.value).length; i++) {
+            array = (ArrayValue) array.add(((Value[]) valTo.value)[i]);
+        }
+        return array;
     }
 
     public static int getInt(Value val) {

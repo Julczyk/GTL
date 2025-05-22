@@ -54,16 +54,7 @@ public class Memory {
         try {
             assertNotExists(memoryName);
             Type type = Type.inferType(typeCtx);
-            if (type.baseType == Type.BaseType.ARRAY) {
-                int length = 0;
-                if (typeCtx.complex_type().expression() != null) {
-                    // TODO evaluate
-                    length = Integer.parseInt(typeCtx.complex_type().expression().also(0).inversion(0).comparison().sum(0).term().factor().atom().literal().getText());
-                }
-                locals.peek().put(memoryName, new ArrayValue(new Value[length], type));
-            } else {
-                locals.peek().put(memoryName, new Value(null, type, true));
-            }
+            locals.peek().put(memoryName, new Value(null, type, true));
         } catch (InterpreterException e) {
             addLocation(e, typeCtx);
             throw e;
@@ -101,6 +92,31 @@ public class Memory {
                 assign(name, value);
             } catch (InterpreterException e) {
                 addLocation(e, type); throw e;
+            }
+        }
+    }
+
+    public void createArray(String name, GreenTextLangParser.TypeContext typeCtx, int length) {
+        // check if exists
+        var memoryName = new Identifier(name);
+        try {
+            assertNotExists(memoryName);
+            Type type = Type.inferType(typeCtx);
+            locals.peek().put(memoryName, new ArrayValue(new Value[length], type));
+        } catch (InterpreterException e) {
+            addLocation(e, typeCtx);
+            throw e;
+        }
+    }
+
+    public void createArray(String name, GreenTextLangParser.TypeContext typeCtx, int length, Value value) {
+        createArray(name, typeCtx, length);
+        if (value != null) {
+            try {
+                assign(name, value);
+            } catch (InterpreterException e) {
+                addLocation(e, typeCtx);
+                throw e;
             }
         }
     }

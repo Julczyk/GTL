@@ -1,9 +1,6 @@
 package GreenTextLangImpl;
 
-import Exceptions.InterpreterException;
-import Exceptions.NotImplementedException;
-import Exceptions.StackOverflowException;
-import Exceptions.UnknownException;
+import Exceptions.*;
 import GreenTextLangBase.GreenTextLangParser;
 import GreenTextLangBase.GreenTextLangParserBaseVisitor;
 import Memory.Memory;
@@ -189,6 +186,23 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             var e = new NotImplementedException("SOMEONE ELSES in variable declaration");
             addLocation(e, ctx);
             throw e;
+        } else if (ctx.type().complex_type() != null) { // it's an array
+            int length = 0;
+            if (ctx.type().complex_type().expression() != null) {
+                var exp = ctx.type().complex_type().expression();
+                Value size = visit(exp);
+                if (!(size instanceof IntegerValue)) {
+                    var e = new TypeException("You need to see the size of an array", "Size of an array must be an int not: " + size.toString());
+                    addLocation(e, ctx);
+                    throw e;
+                }
+                length = Operators.getInt(size);
+            }
+            if (ctx.expressions() != null) {
+                value = visit(ctx.expressions());
+            }
+            memory.createArray(name, ctx.type(), length, value);
+            return null;
         } else if (ctx.expressions() != null) {
             value = visit(ctx.expressions());
         } else if (ctx.function_call_ing() != null) {
@@ -331,10 +345,18 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         if (ctx.expression(1) == null) {
             value = visit(ctx.expression(0));
         } else {
-            // it's a list
-            var e = new NotImplementedException("Array");
-            addLocation(e, ctx);
-            throw e;
+            try {
+                // it's a list, type is null needs to be casts
+                Value[] values = new Value[ctx.expression().size()];
+                for (int i = 0; i < ctx.expression().size(); i++) {
+                    values[i] = visit(ctx.expression(i));
+                }
+                value = new ArrayValue(values, new Type(Type.BaseType.ARRAY, (Type) null)); // subType is null, because it's needs to be parsed
+            } catch (InterpreterException e) {
+                addLocation(e, ctx);
+                throw e;
+            }
+
         }
         return value;
     }

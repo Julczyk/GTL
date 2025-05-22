@@ -33,6 +33,11 @@ public class Type {
         this.subType = structName;
     }
 
+    public Type(Type type) {
+        this.baseType = type.baseType;
+        this.subType = type.subType;
+    }
+
     public boolean isString() {
         return baseType == BaseType.STRING;
     }
