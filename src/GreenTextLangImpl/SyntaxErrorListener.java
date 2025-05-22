@@ -104,6 +104,11 @@ public class SyntaxErrorListener extends BaseErrorListener {
 //                        + faultyToken.getTokenIndex() + "\n"
 //                        + findNotClosedStatement(parser, faultyToken);
             }
+            if(expectedTokens.equals("\'\'th\'") && getPreviousToken(parser, faultyToken).getText().chars().allMatch(Character::isDigit)) {
+                return "Cannot assign to literal!";
+            }
+
+
             return "Unexpected token: " + text + "\n" +
                     "Expecting one of: " + expectedTokens + "\n"
                     + "We think you meant: " +  findClosestToken(parser, faultyToken, noViable);
@@ -157,6 +162,18 @@ public class SyntaxErrorListener extends BaseErrorListener {
         int index = tokens.index();
         if (index > 0) {
             Token prevToken = tokens.get(index+38);
+            return (prevToken != null && prevToken.getType() != Token.EOF) ? prevToken : null;
+        }
+        return null;
+    }
+
+    private Token getPreviousToken(Parser recognizer, CommonToken faultyToken) {
+        TokenStream tokens = recognizer.getInputStream();
+        if (tokens == null) return null;
+        int index = faultyToken.getTokenIndex();
+
+        if (index > 2) {
+            Token prevToken = tokens.get(index-2);
             return (prevToken != null && prevToken.getType() != Token.EOF) ? prevToken : null;
         }
         return null;
