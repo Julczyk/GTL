@@ -165,7 +165,7 @@ public class SyntaxErrorListener extends BaseErrorListener {
     private String findNotClosedStatement(Parser recognizer, CommonToken faultyToken, NoViableAltException noViable) {
         TokenStream tokens = recognizer.getInputStream();
         if (tokens == null) return null;
-        int index = faultyToken.getTokenIndex();
+        int index = faultyToken.getTokenIndex();//recognizer.getInputStream().getText().length() - 1;//
         int[] closing = {0,0,0,0}; // if, fun, loop, ors from if
         while (index > 0){
             if (tokens.get(index).getText().equals("implying")) {
@@ -223,7 +223,7 @@ public class SyntaxErrorListener extends BaseErrorListener {
         String expectedTokens = ExpectedTokens(parser, noViable);
         String bestToken = "No token found";
         int similarity = Integer.MAX_VALUE;
-        for (var token : expectedTokens.split(" ")) {
+        for (var token : expectedTokens.split(",")) {
             if(compute_Levenshtein_distance(text, token) < similarity) {
                 similarity = compute_Levenshtein_distance(text, token);
                 bestToken = token;
