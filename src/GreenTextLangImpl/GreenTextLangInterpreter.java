@@ -75,8 +75,9 @@ public class GreenTextLangInterpreter {
         String presentation = "presentation.gtl";
         String presentation_cd = "presentation_cd.gtl";
         String functions = "functions.gtl";
+        String testing_syntax_err = "testing_syntax_err.gtl";
         if (args.length == 0) {
-            Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + functions); // Change to test redeclaration
+            Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + testing_syntax_err); // Change to test redeclaration
             run(filePath, true, false);
         } else { // TODO windows always runs this main
             Path inputPath = Paths.get(args[0]).toAbsolutePath();

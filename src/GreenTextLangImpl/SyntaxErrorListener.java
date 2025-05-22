@@ -52,7 +52,6 @@ public class SyntaxErrorListener extends BaseErrorListener {
 
     private String ExpectedTokens(Parser parser, NoViableAltException e) {
         IntervalSet tokenSet = new IntervalSet();
-
         for (var dead_end : e.getDeadEndConfigs().getStates())
         {
             var state_number = dead_end.stateNumber;
@@ -85,12 +84,28 @@ public class SyntaxErrorListener extends BaseErrorListener {
         if (e instanceof NoViableAltException noViable) {
             String text = faultyToken.getText();
             String expectedTokens = ExpectedTokens(parser, noViable);
+
+
             if(text.equals("\r\n")){
                 return "Missing token \n" +
                         "Expecting one of: " + expectedTokens;
             }
+            if(rulename.equals("code_blocks")) {
+                return findNotClosedStatement(parser, faultyToken);
+//                return "If expression not closed, expecting one of: {'or sth', 'or', 'or not'}" + "\n"
+//                        + ctx.getText() + "\n"
+//                        + ctx.getParent().getText() + "\n"
+//                        + expectedTokens + "\n"
+//                        + rulename + "\n"
+//                        + ((NoViableAltException) e).getDeadEndConfigs().getStates() + "\n"
+//                        + faultyToken.getTokenIndex() + "\n"
+//                        + findNotClosedStatement(parser, faultyToken);
+            }
             return "Unexpected token: " + text + "\n" +
-                    "Expecting one of: " + expectedTokens;
+                    "Expecting one of: " + expectedTokens + "\n"
+                    + rulename + "\n"
+                    + e + "\n"
+                    + faultyToken.getText();
         }
 
         //System.out.println("token name" + tokenTypeName + " " + tokens);
@@ -105,9 +120,7 @@ public class SyntaxErrorListener extends BaseErrorListener {
             }
         }
         //System.out.println(rulename + " faulty: " + faultyToken.getText() + " token type" + tokenTypeName +  ctx.getParent());
-        if(rulename.equals("code_blocks") && faultyToken.getText().equals("profit")) {
-            return "If expression not closed";
-        }
+
 
         if(rulename.equals("expression") && ctx.getParent() instanceof GreenTextLangParser.Loop_declarationContext) {
             return "While loop expression cannot be empty";
@@ -134,5 +147,70 @@ public class SyntaxErrorListener extends BaseErrorListener {
 
     private String getLexerName(CommonToken token) {
         return GreenTextLangParser.VOCABULARY.getSymbolicName(token.getType());
+    }
+
+    private Token getNextToken(Parser recognizer) {
+        TokenStream tokens = recognizer.getInputStream();
+        if (tokens == null) return null;
+
+        int index = tokens.index();
+        if (index > 0) {
+            Token prevToken = tokens.get(index+38);
+            return (prevToken != null && prevToken.getType() != Token.EOF) ? prevToken : null;
+        }
+        return null;
+    }
+
+    private String findNotClosedStatement(Parser recognizer, CommonToken faultyToken) {
+        TokenStream tokens = recognizer.getInputStream();
+        if (tokens == null) return null;
+        int index = faultyToken.getTokenIndex();
+        int[] closing = {0,0,0,0}; // if, fun, loop, ors from if
+        while (index > 0){
+            if (tokens.get(index).getText().equals("implying")) {
+                closing[0]++;
+            }else if (tokens.get(index).getText().equals("or sth")) {
+                closing[0]--;
+            }else if (tokens.get(index).getText().equals("be")) {
+                closing[1]++;
+            }else if (tokens.get(index).getText().equals("profit")) {
+                closing[1]--;
+            }else if (tokens.get(index).getText().equals("think that")) {
+                closing[2]++;
+            }else if (tokens.get(index).getText().equals("reconsider")) {
+                closing[2]--;
+            }else if (tokens.get(index).getText().equals("or")) {
+                closing[3]++;
+            }
+
+            index--;
+        }
+
+        if(closing[0] > 0) {
+            return "If statement was never closed, use \'or sth\' to close if";
+        }
+        if(closing[0] < 0) {
+            return "If statement closed, yet was never opened. Use \'implying\' to start if";
+        }
+
+        if(closing[1] > 0) {
+            return "Function statement was never closed, use \'profit\' to close function";
+        }
+        if(closing[1] < 0) {
+            return "Function statement closed, yet was never opened. Use \'be\' to start new function";
+        }
+
+        if(closing[2] > 0) {
+            return "Loop statement was never closed, use \'reconsider\' to close loop";
+        }
+        if(closing[2] < 0) {
+            return "Loop statement closed, but not opened use \'think that\' to start loop structure";
+        }
+
+        if(closing[3] > 0) {
+            return "or was not expected. Declare start of if statement before by using \'implying\'";
+        }
+
+        return tokens.toString();
     }
 }
