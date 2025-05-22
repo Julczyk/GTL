@@ -94,19 +94,7 @@ Setup of the constants
  > taste j
  > taste about 1760 z
  > hear about 1760 b
- > hear about 12 chars
- > 0'th chars is "."
- > 1'th chars is ","
- > 2'th chars is "-"
- > 3'th chars is "~"
- > 4'th chars is ":"
- > 5'th chars is ";"
- > 6'th chars is "="
- > 7'th chars is "!"
- > 8'th chars is "*"
- > 9'th chars is "#"
- > 10'th chars is "$"
- > 11'th chars is "@"
+ > hear about 12 chars is ".", ",", "-", "~", ":", ";", "=", "!", "*", "#", "$", "@"
  > spit "\u001b[2J"
 Main loop
  > think that c:
