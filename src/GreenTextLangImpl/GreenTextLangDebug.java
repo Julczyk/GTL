@@ -49,6 +49,7 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
 
     private void breakPoint(ParserRuleContext ctx) {
         ctx.getStart().getLine();
+        System.out.println(memory.locals.toString());
         System.out.println("Break point: " + ctx.getStart().getLine());
         try {
             char c = (char) System.in.read();

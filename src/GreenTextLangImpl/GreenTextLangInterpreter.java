@@ -83,7 +83,7 @@ public class GreenTextLangInterpreter {
         String presentation_cd = "presentation_cd.gtl";
         String functions = "functions.gtl";
         Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + functions); // Change to test redeclaration
-        run(filePath, false, false, System.err, System.out, System.in);
+        run(filePath, true, false, System.err, System.out, System.in);
     }
 }
 
