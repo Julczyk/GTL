@@ -47,18 +47,41 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
         super(filePath, out, in);
     }
 
+//    private void breakPoint(ParserRuleContext ctx) {
+//        var mem = memory.locals;
+//        if (mem!=null) {
+//            System.out.println(mem.toString());
+//            ctx.getStart().getLine();
+//            System.out.println("Break point: " + ctx.getStart().getLine());
+//            try {
+//                char c = (char) System.in.read();
+//            } catch (Exception e) {
+//                System.out.println("Error: " + e.getMessage());
+//            }
+//        }
+//     }
     private void breakPoint(ParserRuleContext ctx) {
-        ctx.getStart().getLine();
-        System.out.println(memory.locals.toString());
-        System.out.println("Break point: " + ctx.getStart().getLine());
-        try {
-            char c = (char) System.in.read();
-        }catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+        System.out.println("\n--- Breakpoint at line " + ctx.getStart().getLine() + " ---");
+        System.out.println();
+        if (memory.locals != null && !memory.locals.isEmpty()) {
+            System.out.println("Current variable values:");
+            for (var entry : memory.locals) {
+                System.out.println("  " + entry.toString());
+            }
+        } else {
+            System.out.println("No local variables yet.");
         }
-     }
 
-    //TODO add for each visit override function which waits for
+        System.out.println("Press ENTER to continue...");
+        try {
+            System.in.read();
+        } catch (IOException e) {
+            System.out.println("Error reading input: " + e.getMessage());
+        }
+    }
+
+
+
     @Override
     public Value visitProgram(GreenTextLangParser.ProgramContext ctx) {
         breakPoint(ctx);
@@ -85,13 +108,13 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
 
     @Override
     public Value visitCode_block(GreenTextLangParser.Code_blockContext ctx) {
-        breakPoint(ctx);
+        //breakPoint(ctx);
         return super.visitCode_block(ctx);
     }
 
     @Override
     public Value visitCode_blocks(GreenTextLangParser.Code_blocksContext ctx) {
-        breakPoint(ctx);
+        //breakPoint(ctx);
         return super.visitCode_blocks(ctx);
     }
 
@@ -127,79 +150,79 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
 
     @Override
     public Value visitIf_declaration(GreenTextLangParser.If_declarationContext ctx) {
-        breakPoint(ctx);
+        //breakPoint(ctx);
         return super.visitIf_declaration(ctx);
     }
 
     @Override
     public Value visitOr_statement(GreenTextLangParser.Or_statementContext ctx) {
-        breakPoint(ctx);
+        //breakPoint(ctx);
         return super.visitOr_statement(ctx);
     }
 
     @Override
     public Value visitOr_not_statement(GreenTextLangParser.Or_not_statementContext ctx) {
-        breakPoint(ctx);
+        //breakPoint(ctx);
         return super.visitOr_not_statement(ctx);
     }
 
     @Override
     public Value visitExpressions(GreenTextLangParser.ExpressionsContext ctx) {
-        breakPoint(ctx);
+        //breakPoint(ctx);
         return super.visitExpressions(ctx);
     }
 
     @Override
     public Value visitExpression(GreenTextLangParser.ExpressionContext ctx) {
-        breakPoint(ctx);
+        //breakPoint(ctx);
         return super.visitExpression(ctx);
     }
 
     @Override
     public Value visitAlso(GreenTextLangParser.AlsoContext ctx) {
-        breakPoint(ctx);
+        //breakPoint(ctx);
         return super.visitAlso(ctx);
     }
 
     @Override
     public Value visitInversion(GreenTextLangParser.InversionContext ctx) {
-        breakPoint(ctx);
+        //breakPoint(ctx);
         return super.visitInversion(ctx);
     }
 
     @Override
     public Value visitComparison(GreenTextLangParser.ComparisonContext ctx) {
-        breakPoint(ctx);
+        //breakPoint(ctx);
         return super.visitComparison(ctx);
     }
 
     @Override
     public Value visitSum(GreenTextLangParser.SumContext ctx) {
-        breakPoint(ctx);
+        //breakPoint(ctx);
         return super.visitSum(ctx);
     }
 
     @Override
     public Value visitTerm(GreenTextLangParser.TermContext ctx) {
-        breakPoint(ctx);
+        //breakPoint(ctx);
         return super.visitTerm(ctx);
     }
 
     @Override
     public Value visitFactor(GreenTextLangParser.FactorContext ctx) {
-        breakPoint(ctx);
+        //breakPoint(ctx);
         return super.visitFactor(ctx);
     }
 
     @Override
     public Value visitAtom(GreenTextLangParser.AtomContext ctx) {
-        breakPoint(ctx);
+        //breakPoint(ctx);
         return super.visitAtom(ctx);
     }
 
     @Override
     public Value visitLiteral(GreenTextLangParser.LiteralContext ctx) {
-        breakPoint(ctx);
+        //breakPoint(ctx);
         return super.visitLiteral(ctx);
     }
 
@@ -209,5 +232,5 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
         return super.visitStatement(ctx);
     }
 
-    //TODO override all visits and add breakpoint before calling super
+
 }
