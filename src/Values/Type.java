@@ -33,6 +33,11 @@ public class Type {
         this.subType = structName;
     }
 
+    public Type(Type type) {
+        this.baseType = type.baseType;
+        this.subType = type.subType;
+    }
+
     public boolean isString() {
         return baseType == BaseType.STRING;
     }
@@ -149,7 +154,7 @@ public class Type {
         String basicType = getMemeType(this.baseType);
         if (subType != null) {
             String subType;
-            if (this.subType == BaseType.STRUCT || this.subType == BaseType.FUNCTION) {
+            if (this.baseType == BaseType.STRUCT || this.baseType == BaseType.FUNCTION) {
                 subType = (String) this.subType;
             } else {
                 subType = ((Type) this.subType).getMemeType();
