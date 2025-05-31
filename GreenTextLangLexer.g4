@@ -7,7 +7,7 @@ ENTRY: ' >' -> mode(CODE), channel(HIDDEN); //start symbol of every line, starts
 
 COMMENT:  (~[ \n] ~[\r\n]* | ' ' ~[>\n] ~[\r\n]* | ' ') -> channel(HIDDEN); //don't bother undestanding that, anything but the entry
 
-COMMENT_NEWLINE: COMMENT NEWLINE -> channel(HIDDEN); //needed because NEWLINE is not HIDDEN
+COMMENT_NEWLINE: COMMENT NEWLINE -> channel(HIDDEN); //needed  because NEWLINE is not HIDDEN
 
 END_LIFE: '\r'? '\n';
 

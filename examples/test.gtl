@@ -1,11 +1,53 @@
  > look around
- > yes
- > see x
- > see about 5 ys is 1,2
- > be me
+ > Complex
+ > taste r is 0
+ > taste i is 0
+ >
+ > be init
+ > spotting Complex ret
+ > likes tasting r, tasting i
+ > ret 's r is r
+ > ret 's i is i
  > profit
+ >
+ > be +
+ > spotting Complex ret
+ > likes spotting Complex arg1, spotting Complex arg2
+ > ret 's r is arg1 's r joined by arg2 's r
+ > ret 's i is arg1 's i joined by arg2 's i
+ > profit
+ >
+ > be -
+ > spotting Complex ret
+ > likes spotting Complex arg
+ > ret 's r is the literal opposite of ret 's r
+ > ret 's i is the literal opposite of ret 's i
+ > profit
+ >
+ > be *
+ > spotting Complex ret
+ > likes spotting Complex arg1, spotting Complex arg2
+ > ret 's r is arg1 's r breeding like arg2 's r times joined by the literal opposite of (arg1 's i breeding like arg2 's i times)
+ > ret 's i is arg1 's i breeding like arg2 's r times joined by arg1 's r breeding like arg2 's i times
+ > profit
+ >
  > lose interest
  >
+ > spot Complex c1 is calling Complex 's init regarding 1., 2.
+ > spot Complex c2 is calling Complex 's init regarding 5., 6.
+ > spot multiple Complex complexArray is c1, c2
+ > spit 0'th complexArray 's r
+     > spit c1
+     > spit c2
+     > spit c1 joined by c2
+     > spit c1 breeding like c2 times
+     > implying c:
+     > spot c1 c1
+     > c1 's r is 69
+     > spit c1 's r
+     > spit parent c1 's r
+     > or sth
+     > spit c1 's r
 
      > see multiple chars is 1,2,3,4
      > see i is the literal opposite of 7

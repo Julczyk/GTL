@@ -54,7 +54,14 @@ public class Memory {
         try {
             assertNotExists(memoryName);
             Type type = Type.inferType(typeCtx);
-            locals.peek().put(memoryName, new Value(null, type, true));
+            if (type.baseType == Type.BaseType.STRUCT) {
+                Value value = getVariable((String) type.subType);
+                StructValue struct = (StructValue) value;
+                StructValue newStruct = new StructValue(struct);
+                locals.peek().put(memoryName, newStruct);
+            } else {
+                locals.peek().put(memoryName, new Value(null, type, true));
+            }
         } catch (InterpreterException e) {
             addLocation(e, typeCtx);
             throw e;
@@ -67,7 +74,14 @@ public class Memory {
         try {
             assertNotExists(memoryName);
             Type type = Type.inferType_ing(typeCtx);
-            locals.peek().put(memoryName, new Value(null, type, true));
+            if (type.baseType == Type.BaseType.STRUCT) {
+                Value value = getVariable((String) type.subType);
+                StructValue struct = (StructValue) value;
+                StructValue newStruct = new StructValue(struct);
+                locals.peek().put(memoryName, newStruct);
+            } else {
+                locals.peek().put(memoryName, new Value(null, type, true));
+            }
         } catch (InterpreterException e) {
             addLocation(e, typeCtx);
             throw e;
@@ -167,6 +181,104 @@ public class Memory {
                 "Variable '" + memoryName + "' has not been found in this scope");
     }
 
+    public StructValue getStruct(String name, GreenTextLangParser.Parent_variableContext parentCtx) {
+        int scope = parentCtx.PARENT().size();
+        var ctx = parentCtx.variable();
+        var memoryName = new Identifier(name);
+        Value value = null;
+        for (int i = 0; i < locals.size(); i++) {
+            if (scope > i) continue;
+            var loc = locals.get(locals.size() - i - 1); // reversed
+            if (loc.containsKey(memoryName)) {
+                value = loc.get(memoryName);
+                if (value.type.baseType != Type.BaseType.STRUCT) {
+                    var e = new TypeException("not a struct", "not a struct");
+                    addLocation(e, ctx);
+                    throw e;
+                }
+                return (StructValue) value;
+            }
+        }
+        if (globals.containsKey(memoryName)) {
+            value = globals.get(memoryName);
+            if (value.type.baseType != Type.BaseType.STRUCT) {
+                var e = new TypeException("not a struct", "not a struct");
+                addLocation(e, ctx);
+                throw e;
+            }
+            return (StructValue) value;
+        }
+        var e = new VariableNotFoundException("Your " + memoryName.toMemeString() + " is missing, maybe he went to buy milk and hasn't returned yet.",
+                "Variable '" + memoryName + "' has not been found in this scope");
+        addLocation(e, parentCtx);
+        throw e;
+    }
+
+    public void assignToStruct(StructValue struct, GreenTextLangParser.VariableContext varCtx, Value value) {
+        HashMap<Identifier, Value> structMem = struct.getStruct();
+        if (varCtx.S() != null) {
+            String name = varCtx.NAME().getText();
+            var memoryName = new Identifier(name);
+            if (structMem.containsKey(memoryName)) {
+                Value currValue = structMem.get(memoryName);
+                if (currValue.type.baseType != Type.BaseType.STRUCT) {
+                    var e = new TypeException("not a struct", "not a struct");
+                    addLocation(e, varCtx.variable());
+                    throw e;
+                }
+                StructValue subStruct = (StructValue) currValue;
+                assignToStruct(subStruct, varCtx.variable(), value);
+                return;
+            }
+        }else if (varCtx.TH() != null) {
+            int index;
+            if (varCtx.NAME() != null) {
+                Value idxValue = getVariable(varCtx.NAME().getText());
+                if (idxValue.type.baseType != Type.BaseType.INT) {
+                    var e = new TypeException("int in array", "int in array");
+                    addLocation(e, varCtx);
+                    throw e;
+                }
+                index = Operators.getInt(idxValue);
+            } else {
+                index = Integer.parseInt(varCtx.DECIMAL_LITERAL().getText());
+            }
+            String name = varCtx.variable().NAME().getText();
+            var memoryName = new Identifier(name);
+            try {
+                Value currValue = structMem.get(memoryName);
+                if (currValue.type.baseType != Type.BaseType.ARRAY) {
+                    throw new TypeException("not an array", "not an array");
+                }
+                ArrayValue array = (ArrayValue) currValue;
+                array.set(index, value);
+                structMem.put(memoryName, array);
+                return;
+            } catch (InterpreterException e) {
+                addLocation(e, varCtx);
+                throw e;
+            }
+        }
+        // else
+        String name = varCtx.NAME().getText();
+        var memoryName = new Identifier(name);
+        if (structMem.containsKey(memoryName)) {
+            try {
+                Value currValue = structMem.get(memoryName);
+                currValue = Operators.automaticCastValue(currValue, value);
+                structMem.put(memoryName, currValue);
+                return;
+            } catch (InterpreterException e) {
+                addLocation(e, varCtx);
+                throw e;
+            }
+        }
+        var e = new VariableNotFoundException("Your " + memoryName.toMemeString() + " is not in the " + struct.type.subType + ".",
+                "Variable '" + memoryName + "' has not been found in the '" + struct.type.subType + "' struct");
+        addLocation(e, varCtx);
+        throw e;
+    }
+
     public void assign(GreenTextLangParser.Parent_variableContext parentCtx, Value value) {
         int scope = parentCtx.PARENT().size();
         if (scope >= locals.size()) {
@@ -177,7 +289,9 @@ public class Memory {
         var varCtx = parentCtx.variable();
         String name;
         if (varCtx.S() != null) {
-            name = varCtx.NAME().getText();
+            StructValue structValue = getStruct(varCtx.NAME().getText(), parentCtx);
+            assignToStruct(structValue, varCtx.variable(), value);
+            return;
         } else if (varCtx.TH() != null) {
             name = varCtx.variable().NAME().getText();
             int index;
@@ -232,6 +346,17 @@ public class Memory {
                 }
             }
         }
+        if (globals.containsKey(memoryName)) {
+            try {
+                Value curr_val = globals.get(memoryName);
+                curr_val = Operators.automaticCastValue(curr_val, value);
+                globals.put(memoryName, curr_val);
+                return;
+            } catch (InterpreterException e) {
+                addLocation(e, parentCtx);
+                throw e;
+            }
+        }
         var e = new VariableNotFoundException("Your " + memoryName.toMemeString() + " is missing, maybe he went to buy milk and hasn't returned yet.",
                 "Variable '" + memoryName + "' has not been found in this scope");
         addLocation(e, parentCtx);
@@ -245,8 +370,71 @@ public class Memory {
                 return loc.get(memoryName);
             }
         }
+        if (globals.containsKey(memoryName)) {
+            return globals.get(memoryName);
+        }
         throw new VariableNotFoundException("Your " + memoryName.toMemeString() + " is missing, maybe he went to buy milk and hasn't returned yet.",
                 "Variable '" + memoryName + "' has not been found in this scope");
+    }
+
+    public Value getFromStruct(StructValue struct, GreenTextLangParser.VariableContext varCtx) {
+        HashMap<Identifier, Value> structMem = struct.getStruct();
+        if (varCtx.S() != null) {
+            String name = varCtx.NAME().getText();
+            var memoryName = new Identifier(name);
+            if (structMem.containsKey(memoryName)) {
+                Value value = structMem.get(memoryName);
+                if (value.type.baseType != Type.BaseType.STRUCT) {
+                    var e = new TypeException("not a struct", "not a struct");
+                    addLocation(e, varCtx.variable());
+                    throw e;
+                }
+                StructValue subStruct = (StructValue) value;
+                return getFromStruct(subStruct, varCtx.variable());
+            }
+        } else if (varCtx.TH() != null) {
+            int index;
+            if (varCtx.NAME() != null) {
+                Value idxValue;
+                try {
+                    idxValue = getVariable(varCtx.NAME().getText());
+                } catch (InterpreterException e) {
+                    addLocation(e, varCtx);
+                    throw e;
+                }
+                if (idxValue.type.baseType != Type.BaseType.INT) {
+                    var e = new TypeException("int in array", "int in array");
+                    addLocation(e, varCtx);
+                    throw e;
+                }
+                index = Operators.getInt(idxValue);
+            } else {
+                index = Integer.parseInt(varCtx.DECIMAL_LITERAL().getText());
+            }
+            Value arrayValue = getFromStruct(struct, varCtx.variable());
+            if (arrayValue.type.baseType != Type.BaseType.ARRAY) {
+                var e = new TypeException("not an array", "not an array");
+                addLocation(e, varCtx.variable());
+                throw e;
+            }
+            ArrayValue array = (ArrayValue) arrayValue;
+            try {
+                return array.get(index);
+            } catch (InterpreterException e) {
+                addLocation(e, varCtx.variable());
+                throw e;
+            }
+        }
+        // else
+        String name = varCtx.NAME().getText();
+        var memoryName = new Identifier(name);
+        if (structMem.containsKey(memoryName)) {
+            return structMem.get(memoryName);
+        }
+        var e = new VariableNotFoundException("Your " + memoryName.toMemeString() + " is not in the " + struct.type.subType + ".",
+                "Variable '" + memoryName + "' has not been found in the '" + struct.type.subType + "' struct");
+        addLocation(e, varCtx);
+        throw e;
     }
 
     public Value getVariable(GreenTextLangParser.Parent_variableContext parentCtx) {
@@ -259,12 +447,18 @@ public class Memory {
         var varCtx = parentCtx.variable();
         String name;
         if (varCtx.S() != null) {
-            name = varCtx.NAME().getText();
+            StructValue struct = getStruct(varCtx.NAME().getText(), parentCtx);
+            return getFromStruct(struct, varCtx.variable());
         } else if (varCtx.TH() != null) {
-            name = varCtx.variable().NAME().getText();
             int index;
             if (varCtx.NAME() != null) {
-                Value idxValue = getVariable(varCtx.NAME().getText());
+                Value idxValue;
+                try {
+                    idxValue = getVariable(varCtx.NAME().getText());
+                } catch (InterpreterException e) {
+                    addLocation(e, parentCtx);
+                    throw e;
+                }
                 if (idxValue.type.baseType != Type.BaseType.INT) {
                     var e = new TypeException("int in array", "int in array");
                     addLocation(e, parentCtx);
@@ -274,6 +468,7 @@ public class Memory {
             } else {
                 index = Integer.parseInt(varCtx.DECIMAL_LITERAL().getText());
             }
+            name = varCtx.variable().NAME().getText(); // TODO work with structs
             var memoryName = new Identifier(name);
             for (int i = 0; i < locals.size(); i++) {
                 if (scope > i) continue;
@@ -282,7 +477,9 @@ public class Memory {
                     try {
                         Value curr_val = loc.get(memoryName);
                         if (curr_val.type.baseType != Type.BaseType.ARRAY) {
-                            throw new TypeException("not an array", "not an array");
+                            var e = new TypeException("not an array", "not an array");
+                            addLocation(e, parentCtx);
+                            throw e;
                         }
                         ArrayValue array = (ArrayValue) curr_val;
                         return array.get(index);
@@ -312,6 +509,58 @@ public class Memory {
         throw e;
     }
 
+    public FunctionValue getFunctionFromStruct(StructValue struct, GreenTextLangParser.VariableContext varCtx, List<Type> funcArgs) {
+        HashMap<Identifier, Value> structMem = struct.getStruct();
+        if (varCtx.S() != null) {
+            String name = varCtx.NAME().getText();
+            var memoryName = new Identifier(name);
+            if (structMem.containsKey(memoryName)) {
+                Value value = structMem.get(memoryName);
+                if (value.type.baseType != Type.BaseType.STRUCT) {
+                    var e = new TypeException("not an struct", "not an struct");
+                    addLocation(e, varCtx.variable());
+                    throw e;
+                }
+                StructValue subStruct = (StructValue) value;
+                return getFunctionFromStruct(subStruct, varCtx.variable(), funcArgs);
+            }
+        } else if (varCtx.TH() != null) {
+            var e = new NotImplementedException("Array");
+            addLocation(e, varCtx.variable());
+            throw e;
+        }
+        // else
+        String name = varCtx.NAME().getText();
+        var memoryName = new Identifier(name, funcArgs);
+        if (structMem.containsKey(memoryName)) {
+            Value function = structMem.get(memoryName);
+            if (function instanceof FunctionValue) {
+                return (FunctionValue) function;
+            } else {
+                var e = new UnknownException("Memory.getFunctionFromStruct");
+                addLocation(e, varCtx);
+                throw e;
+            }
+        }
+        // try to do it with struct as first argument
+        funcArgs.addFirst(struct.type);
+        memoryName = new Identifier(name, funcArgs);
+        if (structMem.containsKey(memoryName)) {
+            Value function = structMem.get(memoryName);
+            if (function instanceof FunctionValue) {
+                return new FunctionValue((FunctionValue) function, struct);
+            } else {
+                var e = new UnknownException("Memory.getFunctionFromStruct");
+                addLocation(e, varCtx);
+                throw e;
+            }
+        }
+        var e = new VariableNotFoundException("Your " + memoryName.toMemeString() + " is not in the " + struct.type.subType + ".",
+                "Variable '" + memoryName + "' has not been found in the '" + struct.type.subType + "' struct");
+        addLocation(e, varCtx);
+        throw e;
+    }
+
     public FunctionValue getFunction(GreenTextLangParser.Parent_variableContext parentCtx, List<Type> funcArgs) {
         int scope = parentCtx.PARENT().size();
         if (scope >= locals.size()) {
@@ -322,9 +571,8 @@ public class Memory {
         var varCtx = parentCtx.variable();
         String name;
         if (varCtx.S() != null) {
-            var e = new NotImplementedException("Function from struct");
-            addLocation(e, parentCtx);
-            throw e;
+            StructValue struct = getStruct(varCtx.NAME().getText(), parentCtx);
+            return getFunctionFromStruct(struct, varCtx.variable(), funcArgs);
         } else if (varCtx.TH() != null) {
             var e = new NotImplementedException("Array");
             addLocation(e, parentCtx);
