@@ -12,36 +12,36 @@ public class StringValue extends Value {
         super(value, new Type(Type.BaseType.STRING));
         if (parseEscape) { // escape btnfr"\\
             try {
-                String parsed = "";
-                int i = 0;
-                while (i < value.length()) {
-                    char c = value.charAt(i);
-                    if (c == '\\') {
-                        i++;
-                        c = value.charAt(i);
-                        switch (c) {
-                            case '\\': parsed += "\\"; break;
-                            case '"': parsed += "\""; break;
-                            case 'b': parsed += "\b"; break;
-                            case 't': parsed += "\t"; break;
-                            case 'n': parsed += "\n"; break;
-                            case 'f': parsed += "\f"; break;
-                            case 'r': parsed += "\r"; break;
-                            case 'u':
-                                parsed += (char) Integer.parseInt(value.substring(i + 1, i + 5), 16);
-                                i += 4;
-                                break;
-                            case 'U':
-                                parsed += (char) Integer.parseInt(value.substring(i + 1, i + 9), 16);
-                                i += 8;
-                                break;
-                        }
-                    } else {
-                        parsed += c;
-                    }
+            String parsed = "";
+            int i = 0;
+            while (i < value.length()) {
+                char c = value.charAt(i);
+                if (c == '\\') {
                     i++;
-                    this.value = parsed;
-                }} catch (Exception e) {
+                    c = value.charAt(i);
+                    switch (c) {
+                        case '\\': parsed += "\\"; break;
+                        case '"': parsed += "\""; break;
+                        case 'b': parsed += "\b"; break;
+                        case 't': parsed += "\t"; break;
+                        case 'n': parsed += "\n"; break;
+                        case 'f': parsed += "\f"; break;
+                        case 'r': parsed += "\r"; break;
+                        case 'u':
+                            parsed += (char) Integer.parseInt(value.substring(i + 1, i + 5), 16);
+                            i += 4;
+                            break;
+                        case 'U':
+                            parsed += (char) Integer.parseInt(value.substring(i + 1, i + 9), 16);
+                            i += 8;
+                            break;
+                    }
+                } else {
+                    parsed += c;
+                }
+                i++;
+                this.value = parsed;
+            }} catch (Exception e) {
                 throw new TypeException("Hearing is damaged due to " + value, "Unable to parse string: " + value);
             }
         }

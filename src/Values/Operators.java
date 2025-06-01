@@ -6,7 +6,7 @@ import Exceptions.TypeException;
 public class Operators {
 
     public static String getString(Value val) {
-        if (val.isNull) {
+        if (val == null || val.isNull) {
             return "null";
         }
         return val.getString();
@@ -18,6 +18,8 @@ public class Operators {
             case STRING -> Operators.castString(valFrom);
             case INT -> Operators.castInt(valFrom);
             case DOUBLE -> Operators.castDouble(valFrom);
+            case ARRAY -> Operators.castArray(valTo, valFrom);
+            case STRUCT -> Operators.castStruct(valTo, valFrom);
             default ->
                     throw new TypeException("Unable to cast " + valFrom.getMemeType() + " to " + valTo.getMemeType(), "Unable to cast " + valFrom.type + " to " + valTo.type);
         };
@@ -52,42 +54,75 @@ public class Operators {
     }
 
     public static Value castString(Value val) {
-        if (val.isNull) {
+        if (val == null || val.isNull) {
             return new StringValue(null);
         }
         return new StringValue(val.getString());
     }
 
     public static Value castInt(Value val) {
-        if (val.isNull) {
+        if (val == null || val.isNull) {
             return new IntegerValue(null);
         }
         return new IntegerValue(val.getInt());
     }
 
     public static Value castDouble(Value val) {
-        if (val.isNull) {
+        if (val == null || val.isNull) {
             return new DoubleValue(null);
         }
         return new DoubleValue(val.getDouble());
     }
 
     public static Value castBoolean(Value val) {
-        if (val.isNull) {
+        if (val == null || val.isNull) {
             return new BooleanValue(null);
         }
         return new BooleanValue(val.getBoolean());
     }
 
+    public static Value castArray(Value valTo, Value valFrom) {
+        if (valFrom == null || valFrom.isNull) {
+            return new ArrayValue(null, valTo.type);
+        }
+        ArrayValue array = new ArrayValue(new Value[0], valTo.type);
+        if (valFrom.type.baseType == Type.BaseType.ARRAY) {
+            ArrayValue arrayFrom = (ArrayValue) valFrom;
+            for (var val : (Value[]) arrayFrom.value) {
+                array = (ArrayValue) array.add(val);
+            }
+        } else {
+            array = (ArrayValue) array.add(valFrom);
+        }
+        for (int i = ((Value[]) array.value).length; i < ((Value[]) valTo.value).length; i++) {
+            array = (ArrayValue) array.add(((Value[]) valTo.value)[i]);
+        }
+        return array;
+    }
+
+    public static Value castStruct(Value valTo, Value valFrom) {
+        if (valFrom == null || valFrom.isNull) {
+            return new Value(null, valTo.type);
+        }
+        if (valFrom.type.equals(valTo.type)) {
+            return new StructValue((StructValue) valFrom);
+        }
+        throw new TypeException("Unable to cast " + valFrom.getMemeType() + " to " + valTo.getMemeType(), "Unable to cast " + valFrom.type + " to " + valTo.type);
+    }
+
+    public static int getInt(Value val) {
+        return val.getInt(); // TODO dirty hack
+    }
+
     public static boolean isTrue(Value val) {
-        if (val.isNull) {
+        if (val == null || val.isNull) {
             return false;
         }
         return val.getBoolean();
     }
 
     public static Value evolve(Value val) {
-        if (val.isNull) {
+        if (val == null || val.isNull) {
             throw new TypeException("You cannot evolve what you don't have.", "Invalid operation 'evolve' on null value");
         }
         if (val.type.baseType != Type.BaseType.INT) {
@@ -97,7 +132,7 @@ public class Operators {
     }
 
     public static Value devolve(Value val) {
-        if (val.isNull) {
+        if (val == null || val.isNull) {
             throw new TypeException("You cannot devolve what you don't have.", "Invalid operation 'devolve' on null value");
         }
         if (val.type.baseType != Type.BaseType.INT) {
@@ -107,21 +142,21 @@ public class Operators {
     }
 
     public static Value flip(Value val) {
-        if (val.isNull) {
+        if (val == null || val.isNull) {
             throw new TypeException("You cannot flip what you don't have.", "Invalid operation 'flipped' on null value");
         }
         return val.flip();
     }
 
     public static Value opp(Value val) {
-        if (val.isNull) {
+        if (val == null || val.isNull) {
             throw new TypeException("You cannot inverse what you don't have.", "Invalid operation 'the literal opposite of' on null value");
         }
         return val.opp();
     }
 
     public static Value mul(Value left, Value right) {
-        if (left.isNull || right.isNull) {
+        if (left == null || right == null || left.isNull || right.isNull) {
             throw new TypeException("You cannot breed like what you don't have times.", "Invalid operation 'breeding like times' on null value");
         }
         InterpreterException exception;
@@ -134,7 +169,7 @@ public class Operators {
     }
 
     public static Value mod(Value left, Value right) {
-        if (left.isNull || right.isNull) {
+        if (left == null || right == null || left.isNull || right.isNull) {
             throw new TypeException("You cannot see whatever is left from nothing.", "Invalid operation 'whatever left from' on null value");
         }
         try {return left.mod(right);}
@@ -144,7 +179,7 @@ public class Operators {
     }
 
     public static Value add(Value left, Value right) {
-        if (left.isNull || right.isNull) {
+        if (left == null || right == null || left.isNull || right.isNull) {
             throw new TypeException("You cannot join nothing.", "Invalid operation 'joined by' on null value");
         }
         InterpreterException exception;

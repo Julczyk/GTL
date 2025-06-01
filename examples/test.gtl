@@ -1,253 +1,196 @@
-FUNCTIONS:
- > spit "FUNCTIONS:"
- > be example1 # define function
- > seeing x  # return value
- > likes seeing anon  # argument
- > x is anon
+ > look around
+ > sub
+ > see x is 5
+ > lose interest
+ >
+ > look around
+ > Complex
+ > taste r is 0
+ > taste i is 0
+ > taste multiple ar is 1,2,3
+ >
+ > look around
+ > s
+ > see x is 5
+ > lose interest
+ >
+ > be init
+ > spotting Complex ret
+ > likes tasting r, tasting i
+ > ret 's r is r
+ > ret 's i is i
  > profit
  >
- > be example2
- > seeing x is 15 # default return value
+ > be +
+ > spotting Complex ret
+ > likes spotting Complex arg1, spotting Complex arg2
+ > ret 's r is arg1 's r joined by arg2 's r
+ > ret 's i is arg1 's i joined by arg2 's i
  > profit
  >
- > see x is calling example1 regarding 5
- > spit "x1: " joined by x
- > x is calling example2
- > spit "x2: " joined by x
-Overloading:
-This is function for adding int
- > spit "\nOVERLOADING:"
- > be fooi
- > seeing ret
- > likes seeing anon
- > spit "I am int function"
- > ret is anon joined by 2
- > profit
-
-This is same function, but for double
- > be fooi
- > tasting ret
- > likes tasting anon
- > spit "I am double function"
- > ret is anon joined by 2.2
- > profit
-
-Test it
- > see anna is 2
- > anna is calling fooi regarding anna
- > spit "anna int is: " joined by anna
- > taste bob is 2
- > bob is calling fooi regarding bob
- > spit "bob double is: " joined by bob
-    > call fooi regarding "ee" # error, func(string) does not exist
-
-RECURSION:
- > spit "\nRECURSION:"
-This is recursive implementation of classic factorial function defined over non-negative integers
- > be factorial
- > seeing colleague is 1
- > likes seeing level
- > spit "Hi! We are currently on level " joined by level joined by " in our recursive function"
- > implying level beats 1
- > colleague is calling factorial regarding level joined by the literal opposite of 1
- > colleague is breeding like level times
- > or sth
+ > be -
+ > spotting Complex ret
+ > likes spotting Complex arg
+ > ret 's r is the literal opposite of ret 's r
+ > ret 's i is the literal opposite of ret 's i
  > profit
  >
- > see absolute_unit is calling factorial regarding 10
- > spit "factorial of 10: " joined by absolute_unit
-
-RECURSION IN SUB FUNCTION:
- > spit "\nRECURSION IN SUB FUNCTION:"
- > be gay
- > likes seeing man
- >   be straight
- >      likes seeing woman
- >      woman devolves
- >      spit woman
- >      implying woman beats 0
- >          call straight regarding woman
- >      or sth
- >   profit
- > call straight regarding man
+ > be *
+ > spotting Complex ret
+ > likes spotting Complex arg1, spotting Complex arg2
+ > ret 's r is arg1 's r breeding like arg2 's r times joined by the literal opposite of (arg1 's i breeding like arg2 's i times)
+ > ret 's i is arg1 's i breeding like arg2 's r times joined by arg1 's r breeding like arg2 's i times
  > profit
  >
- > call gay regarding 10 #correct
-    > call gay regarding 250 # error, stack overflow
-
-SubFunctions:
- > spit "\nSUB FUNCTIONS:"
- > be mainFunc
- > spit "I am main function"
- >  be subFunc
- >  spit "I am sub function"
- >  profit
- > call subFunc
- > profit
- > call mainFunc
-    > call subFunc # sub func does not exist in this scope
-SubFunctions in different scopes
- > spit "\nSCOPED FUNCTIONS:"
- > be function
- > spit "Global function"
- > profit
- > call function # global
- > implying c:
- >  be function # define local
- >  spit "Local function"
- >  profit
- >  call function # local
- > or sth
- > call function # global
-
-Reference to function: everything
- > spit "\nPASS BY REFERENCE:"
- > be reference
- > likes seeing someone elses x, seeing someone elses y
- > x is 5
- > y is 7
- > profit
+ > lose interest
  >
- > see y is 0
- > call reference regarding 4, 5 # values are passed as normal
- > call reference regarding y, 5 # x changes to 5 in function
- > spit "x: " joined by y
- > call reference regarding y, y # with 2 references the last one is taking priority
- > spit "x: " joined by y
- > x is 0
- > call reference regarding y joined by 1, (y) # x must be passed directly to be referenced
- > spit "x: " joined by y
-
-save void:
- > spit "\nVOID RETURN:"
- > be foo
- > profit
+ > spot Complex c1 is calling Complex 's init regarding 1., 2.
+ > spot Complex c2 is calling Complex 's init regarding 5., 6.
+ > spot multiple Complex complexArray is c1, c2
+ > 1'th complexArray 's 0'th ar is 3
+ > spit 1'th complexArray 's ar
  >
- > see karen is calling foo
- > spit karen  # returns null
-    > karen is joined by 5 # error can't add null
- > karen is 5
- > spit karen
+ >
+ > Complex 's s 's x is 3
+ > spit Complex 's s
+     > spit c1
+     > spit c2
+     > spit c1 joined by c2
+     > spit c1 breeding like c2 times
+     > implying c:
+     > spot c1 c1
+     > c1 's r is 69
+     > spit c1 's r
+     > spit parent c1 's r
+     > or sth
+     > spit c1 's r
+
+     > see multiple chars is 1,2,3,4
+     > see i is the literal opposite of 7
+     > spit i 'th chars
+
+     > see about 5 x
+     > see i is 0
+     > think that i beaten by 5
+     > i 'th x is 0
+     > i evolves
+     > reconsider
+     > spit x
+
+     > see x is 1
+     > x is joined by 2
+     > spit x
+
+     > see x is 5
+     > spit parent x
+
+     > hear x is "c:"
+     > see y is let me see let me smell x
+     > spit y
+
+     > hear x is "yes\nno"
+     > spit x
+
+     > be me
+     > likes smelling someone elses x, seeing someone elses y
+     > y is 7
+     > x is 4
+     > profit
+
+     > see x is 3
+     > call me regarding x, 6
+     > spit x
+
+     > be a
+     > spit "up"
+     > profit
+     >
+     > implying c:
+     > be a
+     > spit "down"
+     > profit
+     > call a
+     > call parent a
+     > or sth
+
+     > see x is 4
+     > implying c:
+     > see x is 5
+     > spit x
+     > spit parent x
+     > parent x is 6
+     > spit x
+     > or sth
+     > spit x
+
+     > be me
+     > seeing z
+     > likes seeing x and seeing y
+     > spit x
+     > spit y
+     > z is x joined by y
+     > profit
+     >
+     > see baddie is calling me regarding 5 and 6
+     > spit baddie
+
+     > be me
+     > spit "old"
+     > profit
+     > call me
+     > implying c:
+     > be me
+     > spit "new" and "hey"
+     > profit
+     > call me
+     > or sth
+     > call me
 
 
-# > see x is 5
-# > spit parent parent x
-#
-#     > hear x is "\\n \n\u0052"
-#     > spit x
-#
-#     > see x is 1
-#     > x is joined by 2
-#     > spit x
-#
-#     > see x is 5
-#     > spit parent x
-#
-#     > hear x is "c:"
-#     > see y is let me see let me smell x
-#     > spit y
-#
-#     > hear x is "yes\nno"
-#     > spit x
-#
-#     > be me
-#     > likes smelling someone elses x, seeing someone elses y
-#     > y is 7
-#     > x is 4
-#     > profit
-#
-#     > see x is 3
-#     > call me regarding x, 6
-#     > spit x
-#
-#     > be a
-#     > spit "up"
-#     > profit
-#     >
-#     > implying c:
-#     > be a
-#     > spit "down"
-#     > profit
-#     > call a
-#     > call parent a
-#     > or sth
-#
-#     > see x is 4
-#     > implying c:
-#     > see x is 5
-#     > spit x
-#     > spit parent x
-#     > parent x is 6
-#     > spit x
-#     > or sth
-#     > spit x
-#
-#     > be me
-#     > seeing z
-#     > likes seeing x and seeing y
-#     > spit x
-#     > spit y
-#     > z is x joined by y
-#     > profit
-#     >
-#     > see baddie is calling me regarding 5 and 6
-#     > spit baddie
-#
-#     > be me
-#     > spit "old"
-#     > profit
-#     > call me
-#     > implying c:
-#     > be me
-#     > spit "new" and "hey"
-#     > profit
-#     > call me
-#     > or sth
-#     > call me
-#
-#
-#     > see y1 is 2 joined by 2 breeding like 3 times
-#     > spit y1
-#
-#     > see y2 is (2 joined by 2) breeding like 3 times
-#     > spit y2
-#
-#     > smell bool is c: alternatively :c also :c
-#     > spit bool
-#     > bool is (c: alternatively :c) also :c
-#     > spit bool
-#
-#
-#
-#     > see x is 5
-#     > spit "text"
-#     > see x
-#     > spit "x = 5: " joined by x
-#
-#     > see a is 1 breeding like 2 joined by 2 times breeding like 3 times
-#     > spit "a = 2 + 2 * 3: " joined by a
-#
-#     > smell b is c: alternatively :c also :c
-#     > spit "b = true or false and false: " joined by b
-#
-#     > taste c is 3 breeding like flipped 2 times
-#     > see whole is c
-#     > spit whole
-#     > spit "c = 3/2: " joined by c
-#
-#     > see i is 3
-#     > see j is c: breeding like 3 joined by 5 times breeding like 3 times
-#     > see k is 4 breeding like flipped 3 times joined by the literal opposite of 4
-#     > spit "i = 3: " joined by i
-#     > spit "j = (3 + 5) * 3: " joined by j
-#     > spit "k = 4/3 - 4: " joined by k
-#
-#     > smell y is 5 unbeaten by 5
-#     > spit "5 == 5: " joined by y
-#
-#     > see int is 7 breeding like flipped 3 times
-#
-#     #> see zero is 0
-#     #> taste l is 7 breeding like flipped 0 times
-#     #> taste l is 7 breeding like flipped zero times
-#     #> see t is 7 joined by joined by 7
+     > see y1 is 2 joined by 2 breeding like 3 times
+     > spit y1
+
+     > see y2 is (2 joined by 2) breeding like 3 times
+     > spit y2
+
+     > smell bool is c: alternatively :c also :c
+     > spit bool
+     > bool is (c: alternatively :c) also :c
+     > spit bool
+
+     > see x is 3 breeding like flipped (3 joined by the literal opposite of 3) times
+     > spit x
+
+
+     > see x is 5
+     > spit "text"
+     > see x
+     > spit "x = 5: " joined by x
+
+     > see a is 1 breeding like 2 joined by 2 times breeding like 3 times
+     > spit "a = 2 + 2 * 3: " joined by a
+
+     > smell b is c: alternatively :c also :c
+     > spit "b = true or false and false: " joined by b
+
+     > taste c is 3 breeding like flipped 2 times
+     > see whole is c
+     > spit whole
+     > spit "c = 3/2: " joined by c
+
+     > see i is 3
+     > see j is c: breeding like 3 joined by 5 times breeding like 3 times
+     > see k is 4 breeding like flipped 3 times joined by the literal opposite of 4
+     > spit "i = 3: " joined by i
+     > spit "j = (3 + 5) * 3: " joined by j
+     > spit "k = 4/3 - 4: " joined by k
+
+     > smell y is 5 unbeaten by 5
+     > spit "5 == 5: " joined by y
+
+     > see int is 7 breeding like flipped 3 times
+
+     #> see zero is 0
+     #> taste l is 7 breeding like flipped 0 times
+     #> taste l is 7 breeding like flipped zero times
+     #> see t is 7 joined by joined by 7

@@ -1,18 +1,17 @@
 package GreenTextLangImpl;
 
-import Exceptions.InterpreterException;
-import Exceptions.NotImplementedException;
-import Exceptions.StackOverflowException;
-import Exceptions.UnknownException;
+import Exceptions.*;
 import GreenTextLangBase.GreenTextLangParser;
 import GreenTextLangBase.GreenTextLangParserBaseVisitor;
 import Memory.Memory;
+import Memory.Identifier;
 import Values.*;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Pair;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -47,6 +46,39 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             addLocation(e, ctx);
             throw e;
         }
+    }
+
+    private Value callFunction(FunctionValue function, List<Value> values) {
+        memory.beginFunction(function);
+        GreenTextLangParser.Function_declarationContext funcCtx = function.getFunction();
+        String retValueName = null;
+        if (funcCtx.function_return() != null) {
+            var decl = funcCtx.function_return().variable_declaration_ing_without_elses();
+            retValueName = decl.NAME().getText();
+            Value value = null;
+            if (decl.expressions() != null) {
+                value = visit(decl.expressions());
+            } else if (decl.function_call_ing() != null) {
+                value = visit(decl.function_call_ing());
+            }
+            memory.createVariable(retValueName, decl.type_ing(), value);
+        }
+        if (funcCtx.function_arguments() != null) {
+            for (int i = 0; i < funcCtx.function_arguments().variable_declaration_ing().size(); i++) {
+                var decl = funcCtx.function_arguments().variable_declaration_ing(i);
+                String name = decl.NAME().getText();
+                memory.createVariable(name, decl.type_ing(), values.get(i));
+            }
+        }
+        for (var stmt : function.getFunctionBody()) {
+            visit(stmt);
+        }
+        Value retValue = null;
+        if (retValueName != null) {
+            retValue = memory.getVariable(retValueName);
+        }
+        memory.endFunction();
+        return retValue;
     }
 
     private Value callFunction(GreenTextLangParser.Parent_variableContext varCtx, GreenTextLangParser.ExpressionsContext expCtx) {
@@ -91,7 +123,15 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         }
         List<Pair<String, GreenTextLangParser.Parent_variableContext>> translations = new ArrayList<>();
         if (funcCtx.function_arguments() != null) {
-            for (int i = 0; i < funcCtx.function_arguments().variable_declaration_ing().size(); i++) {
+            int start = 0;
+            if (function.getFirstArgument() != null) {
+                memory.locals.peek().put(
+                        new Identifier(funcCtx.function_arguments().variable_declaration_ing(0).NAME().getText()),
+                        function.getFirstArgument()
+                );
+                start = 1;
+            }
+            for (int i = start; i < funcCtx.function_arguments().variable_declaration_ing().size(); i++) {
                 var decl = funcCtx.function_arguments().variable_declaration_ing(i);
                 String name = decl.NAME().getText();
                 var valuePair = valuePairs.get(i);
@@ -126,6 +166,19 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     @Override
     public Value visitFunction_declaration(GreenTextLangParser.Function_declarationContext ctx) {
         memory.createFunction(ctx);
+        return null;
+    }
+
+    @Override
+    public Value visitStruct_declaration(GreenTextLangParser.Struct_declarationContext ctx) {
+        String name = ctx.NAME().getText();
+        memory.beginStruct();
+        for (var stmt : ctx.statement_newline()) {
+            visit(stmt);
+        }
+        HashMap<Identifier, Value> mem = memory.locals.peek();
+        memory.endStruct();
+        memory.createStruct(name, mem, ctx);
         return null;
     }
 
@@ -189,6 +242,23 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             var e = new NotImplementedException("SOMEONE ELSES in variable declaration");
             addLocation(e, ctx);
             throw e;
+        } else if (ctx.type().complex_type() != null) { // it's an array
+            int length = 0;
+            if (ctx.type().complex_type().expression() != null) {
+                var exp = ctx.type().complex_type().expression();
+                Value size = visit(exp);
+                if (!(size instanceof IntegerValue)) {
+                    var e = new TypeException("You need to see the size of an array", "Size of an array must be an int not: " + size.toString());
+                    addLocation(e, ctx);
+                    throw e;
+                }
+                length = Operators.getInt(size);
+            }
+            if (ctx.expressions() != null) {
+                value = visit(ctx.expressions());
+            }
+            memory.createArray(name, ctx.type(), length, value);
+            return null;
         } else if (ctx.expressions() != null) {
             value = visit(ctx.expressions());
         } else if (ctx.function_call_ing() != null) {
@@ -220,15 +290,35 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             } else if (ctx.DEVOLVES() != null) {
                 currentValue = Operators.devolve(currentValue);
             } else if (ctx.JOINED_BY() != null) {
-                currentValue = Operators.add(currentValue, temp);
+                Value ret = Operators.add(currentValue, temp);
+                if (ret instanceof FunctionValue func) {
+                    ret = callFunction(func, List.of(currentValue, temp));
+                }
+                currentValue = ret;
             } else if (ctx.BREEDING_LIKE() != null) {
-                currentValue = Operators.mul(currentValue, temp);
+                Value ret = Operators.mul(currentValue, temp);
+                if (ret instanceof FunctionValue func) {
+                    ret = callFunction(func, List.of(currentValue, temp));
+                }
+                currentValue = ret;
             } else if (ctx.FLIPPED() != null) {
-                currentValue = Operators.flip(temp);
+                Value ret = Operators.flip(temp);
+                if (ret instanceof FunctionValue func) {
+                    ret = callFunction(func, List.of(temp));
+                }
+                currentValue = ret;
             } else if (ctx.THE_LITERAL_OPPOSITE_OF() != null) {
-                currentValue = Operators.opp(temp);
+                Value ret = Operators.opp(temp);
+                if (ret instanceof FunctionValue func) {
+                    ret = callFunction(func, List.of(temp));
+                }
+                currentValue = ret;
             } else if (ctx.WHATEVER_LEFT_FROM() != null) {
-                currentValue = Operators.mod(currentValue, temp);
+                Value ret = Operators.mod(currentValue, temp);
+                if (ret instanceof FunctionValue func) {
+                    ret = callFunction(func, List.of(currentValue, temp));
+                }
+                currentValue = ret;
             } else {
                 currentValue = temp;
             }
@@ -331,10 +421,18 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         if (ctx.expression(1) == null) {
             value = visit(ctx.expression(0));
         } else {
-            // it's a list
-            var e = new NotImplementedException("Array");
-            addLocation(e, ctx);
-            throw e;
+            try {
+                // it's a list, type is null needs to be casts
+                Value[] values = new Value[ctx.expression().size()];
+                for (int i = 0; i < ctx.expression().size(); i++) {
+                    values[i] = visit(ctx.expression(i));
+                }
+                value = new ArrayValue(values, new Type(Type.BaseType.ARRAY, (Type) null)); // subType is null, because it's needs to be parsed
+            } catch (InterpreterException e) {
+                addLocation(e, ctx);
+                throw e;
+            }
+
         }
         return value;
     }
@@ -427,12 +525,17 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         if (ctx.JOINED_BY() != null) {
             Value val1 = visit(ctx.sum());
             Value val2 = visit(ctx.term());
+            Value ret;
             try {
-                return Operators.add(val1, val2);
+                ret = Operators.add(val1, val2);
             } catch (InterpreterException e) {
                 addLocation(e, ctx);
                 throw e;
             }
+            if (ret instanceof FunctionValue func) {
+                ret = callFunction(func, List.of(val1, val2));
+            }
+            return ret;
         } else {
             return visit(ctx.term());
         }
@@ -443,21 +546,31 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         if (ctx.BREEDING_LIKE() != null) {
             Value val1 = visit(ctx.term());
             Value val2 = visit(ctx.expressions());
+            Value ret;
             try {
-                return Operators.mul(val1, val2);
+                ret = Operators.mul(val1, val2);
             } catch (InterpreterException e) {
                 addLocation(e, ctx);
                 throw e;
             }
+            if (ret instanceof FunctionValue func) {
+                ret = callFunction(func, List.of(val1, val2));
+            }
+            return ret;
         } else if (ctx.WHATEVER_LEFT_FROM() != null) {
             Value val1 = visit(ctx.term());
             Value val2 = visit(ctx.factor());
+            Value ret;
             try {
-                return Operators.mod(val1, val2);
+                ret = Operators.mod(val1, val2);
             } catch (InterpreterException e) {
                 addLocation(e, ctx);
                 throw e;
             }
+            if (ret instanceof FunctionValue func) {
+                ret = callFunction(func, List.of(val1, val2));
+            }
+            return ret;
         } else if (ctx.factor() != null) {
             return visit(ctx.factor());
         }
@@ -468,13 +581,18 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     public Value visitFactor(GreenTextLangParser.FactorContext ctx) {
         if (ctx.factor() != null) {
             Value val = visit(ctx.factor());
+            Value ret = null;
             try {
-                if (ctx.THE_LITERAL_OPPOSITE_OF() != null) return Operators.opp(val);
-                else if (ctx.FLIPPED() != null) return Operators.flip(val);
+                if (ctx.THE_LITERAL_OPPOSITE_OF() != null) ret = Operators.opp(val);
+                else if (ctx.FLIPPED() != null) ret = Operators.flip(val);
             } catch (InterpreterException e) {
                 addLocation(e, ctx);
                 throw e;
             }
+            if (ret instanceof FunctionValue func) {
+                ret = callFunction(func, List.of(val));
+            }
+            return ret;
         } else if (ctx.atom() != null) {
             return visit(ctx.atom());
         }
