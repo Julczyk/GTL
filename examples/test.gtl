@@ -1,7 +1,18 @@
  > look around
+ > sub
+ > see x is 5
+ > lose interest
+ >
+ > look around
  > Complex
  > taste r is 0
  > taste i is 0
+ > taste multiple ar is 1,2,3
+ >
+ > look around
+ > s
+ > see x is 5
+ > lose interest
  >
  > be init
  > spotting Complex ret
@@ -36,7 +47,12 @@
  > spot Complex c1 is calling Complex 's init regarding 1., 2.
  > spot Complex c2 is calling Complex 's init regarding 5., 6.
  > spot multiple Complex complexArray is c1, c2
- > spit 0'th complexArray 's r
+ > 1'th complexArray 's 0'th ar is 3
+ > spit 1'th complexArray 's ar
+ >
+ >
+ > Complex 's s 's x is 3
+ > spit Complex 's s
      > spit c1
      > spit c2
      > spit c1 joined by c2

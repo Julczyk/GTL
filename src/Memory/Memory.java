@@ -293,7 +293,6 @@ public class Memory {
             assignToStruct(structValue, varCtx.variable(), value);
             return;
         } else if (varCtx.TH() != null) {
-            name = varCtx.variable().NAME().getText();
             int index;
             if (varCtx.NAME() != null) {
                 Value idxValue = getVariable(varCtx.NAME().getText());
@@ -306,23 +305,45 @@ public class Memory {
             } else {
                 index = Integer.parseInt(varCtx.DECIMAL_LITERAL().getText());
             }
+            var subVarCtx = varCtx.variable();  // sub arrays are not supported
+            if (subVarCtx.TH() != null) {
+                var e = new NotImplementedException("Sub arrays");
+                addLocation(e, subVarCtx);
+                throw e;
+            }
+            name = subVarCtx.NAME().getText();
             var memoryName = new Identifier(name);
             for (int i = 0; i < locals.size(); i++) {
                 if (scope > i) continue;
                 var loc = locals.get(locals.size() - i - 1); // reversed
                 if (loc.containsKey(memoryName)) {
+                    Value struct;
                     try {
                         Value curr_val = loc.get(memoryName);
                         if (curr_val.type.baseType != Type.BaseType.ARRAY) {
                             throw new TypeException("not an array", "not an array");
                         }
                         ArrayValue array = (ArrayValue) curr_val;
-                        array.set(index, value);
-                        loc.put(memoryName, array);
-                        return;
+                        if (subVarCtx.S() == null) {  // not a struct
+                            array.set(index, value);
+                            loc.put(memoryName, array);
+                            return;
+                        } else {  // it is a struct
+                            struct = array.get(index);
+                        }
                     } catch (InterpreterException e) {
-                        addLocation(e, parentCtx);
+                        addLocation(e, subVarCtx);
                         throw e;
+                    }
+                    if (subVarCtx.S() != null) { // it is a struct
+                        if (struct.type.baseType != Type.BaseType.STRUCT) {
+                            var e = new TypeException("not a struct", "not a struct");
+                            addLocation(e, subVarCtx);
+                            throw e;
+                        }
+                        StructValue structValue = (StructValue) struct;
+                        assignToStruct(structValue, subVarCtx.variable(), value);
+                        return;
                     }
                 }
             }
@@ -468,24 +489,43 @@ public class Memory {
             } else {
                 index = Integer.parseInt(varCtx.DECIMAL_LITERAL().getText());
             }
-            name = varCtx.variable().NAME().getText(); // TODO work with structs
+            var subVarCtx = varCtx.variable();  // sub arrays are not supported
+            if (subVarCtx.TH() != null) {
+                var e = new NotImplementedException("Sub arrays");
+                addLocation(e, subVarCtx);
+                throw e;
+            }
+            // get name
+            name = subVarCtx.NAME().getText();
             var memoryName = new Identifier(name);
             for (int i = 0; i < locals.size(); i++) {
                 if (scope > i) continue;
                 var loc = locals.get(locals.size() - i - 1); // reversed
                 if (loc.containsKey(memoryName)) {
+                    Value value;
                     try {
                         Value curr_val = loc.get(memoryName);
                         if (curr_val.type.baseType != Type.BaseType.ARRAY) {
                             var e = new TypeException("not an array", "not an array");
-                            addLocation(e, parentCtx);
+                            addLocation(e, subVarCtx);
                             throw e;
                         }
                         ArrayValue array = (ArrayValue) curr_val;
-                        return array.get(index);
+                        value = array.get(index);
                     } catch (InterpreterException e) {
-                        addLocation(e, parentCtx);
+                        addLocation(e, subVarCtx);
                         throw e;
+                    }
+                    if (subVarCtx.S() != null) {
+                        if (value.type.baseType != Type.BaseType.STRUCT) {
+                            var e = new TypeException("not a struct", "not a struct");
+                            addLocation(e, subVarCtx);
+                            throw e;
+                        }
+                        StructValue structValue = (StructValue) value;
+                        return getFromStruct(structValue, subVarCtx.variable());
+                    } else {
+                        return value;
                     }
                 }
             }

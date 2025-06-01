@@ -30,6 +30,8 @@ public class ArrayValue extends Value {
                     "You are not long enough you have only " + values.length + " but you wanted " + i,
                     "Index " + i + " is out of bounds for an array of length " + values.length);
         }
+        Value temp = new Value(null, (Type) this.type.subType);
+        value = Operators.automaticCastValue(temp, value);
         ((Value[])this.value)[i] = value;
     }
 

@@ -1,5 +1,6 @@
 package Values;
 
+import Exceptions.NotImplementedException;
 import Exceptions.UnknownException;
 import GreenTextLangBase.GreenTextLangParser;
 
@@ -101,6 +102,9 @@ public class Type {
     }
 
     private static Type inferStruct(GreenTextLangParser.Nested_nameContext nestedName) {
+        if (nestedName.S() != null) {
+            throw new NotImplementedException("Sub structs");
+        }
         return new Type(BaseType.STRUCT, nestedName.getText());
     }
 

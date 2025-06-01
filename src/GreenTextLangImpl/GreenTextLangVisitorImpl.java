@@ -173,7 +173,6 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     public Value visitStruct_declaration(GreenTextLangParser.Struct_declarationContext ctx) {
         String name = ctx.NAME().getText();
         memory.beginStruct();
-        // TODO create in memory, structs
         for (var stmt : ctx.statement_newline()) {
             visit(stmt);
         }
