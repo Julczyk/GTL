@@ -8,7 +8,11 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class GreenTextLangDebug {
@@ -43,8 +47,17 @@ public class GreenTextLangDebug {
 
 
 class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
-    public GreenTextLangDebugVisitor(Path filePath, PrintStream out, InputStream in) {
+    // 59 for output 2 for split, 59 for memory
+    private final String separator = " |";
+    private final int size = 59;
+    private final String header = "PROGRAM OUTPUT" + " ".repeat(45) + separator + " MEMORY GLOBALS\n";
+    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    final String utf8 = StandardCharsets.UTF_8.name();
+    PrintStream out = new PrintStream(baos, true, utf8);
+
+    public GreenTextLangDebugVisitor(Path filePath, PrintStream out, InputStream in) throws UnsupportedEncodingException {
         super(filePath, out, in);
+        super.out = this.out;
     }
 
 //    private void breakPoint(ParserRuleContext ctx) {
@@ -60,19 +73,89 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
 //            }
 //        }
 //     }
-    private void breakPoint(ParserRuleContext ctx) {
-        System.out.println("\n--- Breakpoint at line " + ctx.getStart().getLine() + " ---");
-        System.out.println();
-        if (memory.locals != null && !memory.locals.isEmpty()) {
-            System.out.println("Current variable values:");
-            for (var entry : memory.locals) {
-                System.out.println("  " + entry.toString());
-            }
-        } else {
-            System.out.println("No local variables yet.");
+    private void print() {
+        System.out.print("\u001b[2J");
+        System.out.print("\u001b[H");
+        System.out.print(header);
+        String locals = this.memory.locals.toString();
+        String globals = this.memory.globals.toString();
+        String output = "";
+        try {
+            output = baos.toString(utf8);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        // TODO add clear command
+        // TODO add line command
+        // TODO add better structs and functions
+        // TODO try not to split by name, soft split
+        var localsSplit = split(locals, size);  // TODO separate scopes
+        var globalsSplit = split(globals, size); //TODO pretty and remove \n from strings
+        var outputSplit = split(output, size); // TODO split by \n
+        int maxRows = 10;
+        int row = 0;
+        boolean loop = false;
+        while (row < maxRows || loop) {
+            loop = false;
+            String toolOutput = "";
+            if (row < outputSplit.size()) {
+                toolOutput = outputSplit.get(row);
+                loop = true;
+            }
+            if (toolOutput.length() != size) {
+                toolOutput += " ".repeat(size - toolOutput.length());
+            }
+            String memory = "";
+            if (row < globalsSplit.size()) {
+                memory = globalsSplit.get(row);
+                loop = true;
+            } else if (row == globalsSplit.size()) {
+                memory = " MEMORY LOCALS";
+                loop = true;
+            } else if (row - globalsSplit.size() - 1 < localsSplit.size()) {
+                memory = localsSplit.get(row - globalsSplit.size() - 1);
+                loop = true;
+            }
+            if (memory.length() != size) {
+                memory += " ".repeat(size - memory.length());
+            }
+            String finalOutput = toolOutput + separator + memory;
+            System.out.println(finalOutput);
+            row++;
+        }
+        System.out.println("-".repeat(size*2 + separator.length()));
+    }
 
-        System.out.println("Press ENTER to continue...");
+    private List<String> split(String input, int size) {
+        List<String> output = new ArrayList<String>();
+        int index = 0;
+        while (index < input.length()) {
+            output.add(input.substring(index, Math.min(index + size,input.length())));
+            index += size;
+        }
+        return output;
+    }
+
+    private void breakPoint(ParserRuleContext ctx) {
+        print();
+        int line = ctx.getStart().getLine();
+        int posInLine = ctx.getStart().getCharPositionInLine();
+        int length = ctx.getStop().getCharPositionInLine() - posInLine + 1;
+        String input;
+        try {
+            input = Files.readString(super.filePath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        List<String> sourceLines = Arrays.stream(input.split("\\r?\\n")).toList();
+        String codeLine = sourceLines.get(line - 1);
+        codeLine += " ".repeat(size - codeLine.length()); // TODO line splitting
+        String ctxName = ctx.getClass().getSimpleName();
+        codeLine += separator + ctxName.substring(0, ctxName.length() - "Context".length());
+        codeLine += "\n";
+        codeLine += " ".repeat(posInLine) + "^".repeat(length) + " ".repeat(size - posInLine - length) + separator;
+        System.out.println(codeLine);
+        System.out.println("-".repeat(size*2 + separator.length()));
         try {
             System.in.read();
         } catch (IOException e) {
@@ -84,7 +167,7 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
 
     @Override
     public Value visitProgram(GreenTextLangParser.ProgramContext ctx) {
-        breakPoint(ctx);
+        //breakPoint(ctx);
         return super.visitProgram(ctx);
     }
 
@@ -228,9 +311,13 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
 
     @Override
     public Value visitStatement(GreenTextLangParser.StatementContext ctx) {
-        breakPoint(ctx);
+        //breakPoint(ctx);
         return super.visitStatement(ctx);
     }
 
-
+    @Override
+    public Value visitStruct_declaration(GreenTextLangParser.Struct_declarationContext ctx) {
+        breakPoint(ctx);
+        return super.visitStruct_declaration(ctx);
+    }
 }
