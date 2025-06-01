@@ -8,7 +8,10 @@ import Memory.Identifier;
 import Values.*;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Pair;
+import org.antlr.v4.runtime.tree.ParseTree;
 
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,10 +21,14 @@ import java.util.Scanner;
 class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     public Memory memory;
     private final Path filePath;
+    PrintStream out;
+    InputStream in;
 
-    public GreenTextLangVisitorImpl(Path filePath) {
+    public GreenTextLangVisitorImpl(Path filePath, PrintStream out, InputStream in) {
         this.filePath = filePath;
         this.memory = new Memory(filePath);
+        this.out = out;
+        this.in = in;
     }
 
     private void addLocation(InterpreterException ex, ParserRuleContext ctx) {
@@ -198,7 +205,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
             Value val = visit(exp);
             strings.add(Operators.getString(val));
         }
-        System.out.println(String.join(", ", strings));
+        out.println(String.join(", ", strings));
         return null;
     }
 
@@ -207,7 +214,7 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         Value value;
         value = memory.getVariable(ctx.parent_variable());
         Value newValue;
-        Scanner terminalInput = new Scanner(System.in);
+        Scanner terminalInput = new Scanner(in);
         String input = terminalInput.nextLine();
         try {
             switch (value.type.baseType) {

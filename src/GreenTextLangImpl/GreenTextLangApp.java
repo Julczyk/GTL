@@ -46,9 +46,13 @@ public class GreenTextLangApp {
                     System.err.println("Error: File does not exist: " + inputPath);
                     System.exit(1);
                 }
-                GreenTextLangInterpreter.run(inputPath, res.getBoolean("debug"), res.getBoolean("program"));
+                if (res.getBoolean("debug")) {
+                    GreenTextLangDebug.run(inputPath, res.getBoolean("program"), System.err, System.out, System.in);
+                } else {
+                    GreenTextLangInterpreter.run(inputPath, false, res.getBoolean("program"), System.err, System.out, System.in);
+                }
                 Scanner terminalInput = new Scanner(System.in);
-                System.out.print("Press enter to terminate.");
+                System.out.print("Press ENTER to terminate...");
                 terminalInput.nextLine();
             } else if (res.get("program")) {
                 System.err.println("You need to specify a program to run");
