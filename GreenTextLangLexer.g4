@@ -3,11 +3,11 @@ lexer grammar GreenTextLangLexer;
 // DEFAULT TOP LEVEL WORDS
 // =======================
 
-ENTRY: ' >' -> pushMode(CODE), channel(HIDDEN); //start symbol of every line, starts CODE
+ENTRY: ' >' -> mode(CODE), channel(HIDDEN); //start symbol of every line, starts CODE
 
 COMMENT:  (~[ \n] ~[\r\n]* | ' ' ~[>\n] ~[\r\n]* | ' ') -> channel(HIDDEN); //don't bother undestanding that, anything but the entry
 
-COMMENT_NEWLINE: COMMENT NEWLINE -> channel(HIDDEN); //needed because NEWLINE is not HIDDEN
+COMMENT_NEWLINE: COMMENT NEWLINE -> channel(HIDDEN); //needed  because NEWLINE is not HIDDEN
 
 END_LIFE: '\r'? '\n';
 
@@ -93,7 +93,7 @@ WHATEVER_LEFT_FROM     : 'whatever left from';
 
 // WHITESPACE AND COMMENTS
 
-NEWLINE     : '\r'? '\n'   -> popMode;
+NEWLINE     : '\r'? '\n'   -> mode(DEFAULT_MODE);
 WS          : [ \t\f]+     -> channel(HIDDEN);
 LINE_COMMENT: '#' ~[\r\n]* -> channel(HIDDEN);
 

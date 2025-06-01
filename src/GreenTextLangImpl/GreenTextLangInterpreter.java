@@ -81,8 +81,11 @@ public class GreenTextLangInterpreter {
         String typeTest = "type_test.gtl";
         String presentation = "presentation.gtl";
         String presentation_cd = "presentation_cd.gtl";
+        String donut = "donut.gtl";
         String functions = "functions.gtl";
-        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + functions); // Change to test redeclaration
+        String testing_syntax_err = "testing_syntax_err.gtl";
+        String struct = "struct_test.gtl";
+        Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + test); // Change to test redeclaration
         run(filePath, true, false, System.err, System.out, System.in);
     }
 }

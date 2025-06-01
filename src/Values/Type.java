@@ -1,5 +1,6 @@
 package Values;
 
+import Exceptions.NotImplementedException;
 import Exceptions.UnknownException;
 import GreenTextLangBase.GreenTextLangParser;
 
@@ -31,6 +32,11 @@ public class Type {
         }
         this.baseType = baseType;
         this.subType = structName;
+    }
+
+    public Type(Type type) {
+        this.baseType = type.baseType;
+        this.subType = type.subType;
     }
 
     public boolean isString() {
@@ -96,6 +102,9 @@ public class Type {
     }
 
     private static Type inferStruct(GreenTextLangParser.Nested_nameContext nestedName) {
+        if (nestedName.S() != null) {
+            throw new NotImplementedException("Sub structs");
+        }
         return new Type(BaseType.STRUCT, nestedName.getText());
     }
 
@@ -149,7 +158,7 @@ public class Type {
         String basicType = getMemeType(this.baseType);
         if (subType != null) {
             String subType;
-            if (this.subType == BaseType.STRUCT || this.subType == BaseType.FUNCTION) {
+            if (this.baseType == BaseType.STRUCT || this.baseType == BaseType.FUNCTION) {
                 subType = (String) this.subType;
             } else {
                 subType = ((Type) this.subType).getMemeType();
