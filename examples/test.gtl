@@ -1,10 +1,12 @@
  > look around
  > aaa
  > see x is 4
+ >
  > lose interest
  >
  > see multiple xs is 1,2,3,4
  >
- > see x is 56
+ > see x is 69 # nie można się odwoływać do połowicznego elementu
  >
- > spit x 'th xs
+ > spit aaa 's x
+ > spit 0'th x
