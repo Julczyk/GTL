@@ -30,16 +30,38 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
     Scanner terminalInput = new Scanner(System.in);
     int line = 0;
     int goToLine = line;
+    String tempOut ="";
+    String tempOut2 ="";
 
     public GreenTextLangDebugVisitor(Path filePath, PrintStream out, InputStream in) throws UnsupportedEncodingException {
         super(filePath, out, in);
         super.out = this.out;
     }
 
+    public final static void clearConsole()
+    {
+        try
+        {
+            final String os = System.getProperty("os.name");
+
+            if (os.contains("Windows"))
+            {
+                Runtime.getRuntime().exec("cls");
+            }
+            else
+            {
+                Runtime.getRuntime().exec("clear");
+            }
+        }
+        catch (final Exception e)
+        {
+            //  Handle any exceptions.
+        }
+    }
+
     private void print() {
-        System.out.print("\u001b[2J");
-        System.out.print("\u001b[H");
-        System.out.print(header);
+        clearConsole();
+        tempOut += header;
         String output = "";
         try {
             output = baos.toString(utf8);
@@ -49,10 +71,9 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
         var localsSplit = localsSplit(this.memory.locals, size);
         var globalsSplit = memorySplit(this.memory.globals, size);
         var outputSplit = softSplit(output, size);
-        int maxRows = 10;
         int row = 0;
-        boolean loop = false;
-        while (row < maxRows || loop) {
+        boolean loop = true;
+        while (loop) {
             loop = false;
             String toolOutput = "";
             if (row < outputSplit.size()) {
@@ -76,11 +97,13 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
             if (memory.length() != size) {
                 memory += " ".repeat(size - memory.length());
             }
+            if (loop == false) {
+                break;
+            }
             String finalOutput = toolOutput + separator + memory;
-            System.out.println(finalOutput);
+            tempOut += finalOutput + "\n";
             row++;
         }
-        System.out.println("-".repeat(size*2 + separator.length()));
     }
 
     private List<String> localsSplit(Stack<HashMap<Identifier, Value>> locals, int size) {
@@ -203,11 +226,18 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
             if (loop == false) {
                 break;
             }
-            System.out.println(finalOutput);
+            tempOut2 += finalOutput + "\n";
             row++;
         }
-
+        int rows = tempOut.split("\n").length + tempOut2.split("\n").length;
+        int filler = 27 - rows;
+        System.out.print(tempOut);
+        if (filler > 0) System.out.print((" ".repeat(size) + separator + "\n").repeat(filler));
         System.out.println("-".repeat(size*2 + separator.length()));
+        System.out.print(tempOut2);
+        System.out.println("-".repeat(size*2 + separator.length()));
+        tempOut = "";
+        tempOut2 = "";
 
         if (ctx instanceof GreenTextLangParser.SwallowContext) {
             System.out.print("PROGRAM: ");
@@ -233,7 +263,7 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
 
     @Override
     public Value visitProgram(GreenTextLangParser.ProgramContext ctx) {
-        breakPoint(ctx);
+        //breakPoint(ctx);
         return super.visitProgram(ctx);
     }
 
