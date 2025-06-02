@@ -24,7 +24,6 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
     private final String separator = " |";
     private int size = 59;
     private int height = 30;
-    private final String header = "PROGRAM OUTPUT" + " ".repeat(45) + separator + " MEMORY GLOBALS\n";
     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
     final String utf8 = StandardCharsets.UTF_8.name();
     PrintStream out = new PrintStream(baos, true, utf8);
@@ -62,6 +61,7 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
 
     private void print() {
         clearConsole();
+        String header = "PROGRAM OUTPUT" + " ".repeat(size - 14) + separator + " MEMORY GLOBALS\n";
         tempOut += header;
         String output = "";
         try {
@@ -292,7 +292,10 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
         String size = sb.toString();
         int rows = Integer.parseInt(size.substring(size.indexOf("\u001b[") + 2, size.indexOf(';')));
         int cols = Integer.parseInt(size.substring(size.indexOf(';') + 1, size.indexOf('R')));
-
+        if (rows < 10 || cols < 80) {
+            System.out.println("Window too small to resize.");
+            return;
+        }
         height = rows;
         this.size = (int)(cols / 2) - 1;
     }
