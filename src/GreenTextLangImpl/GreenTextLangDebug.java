@@ -22,7 +22,8 @@ public class GreenTextLangDebug {
 class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
     // 59 for output 2 for split, 59 for memory
     private final String separator = " |";
-    private final int size = 59;
+    private int size = 59;
+    private int height = 30;
     private final String header = "PROGRAM OUTPUT" + " ".repeat(45) + separator + " MEMORY GLOBALS\n";
     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
     final String utf8 = StandardCharsets.UTF_8.name();
@@ -230,7 +231,7 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
             row++;
         }
         int rows = tempOut.split("\n").length + tempOut2.split("\n").length;
-        int filler = 27 - rows;
+        int filler = height - 3 - rows;
         System.out.print(tempOut);
         if (filler > 0) System.out.print((" ".repeat(size) + separator + "\n").repeat(filler));
         System.out.println("-".repeat(size*2 + separator.length()));
@@ -255,10 +256,45 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
                 break;
             } else if (command.matches("clear")) {
                 this.baos.reset();
+            } else if (command.matches("resize")) {
+                getSize();
             } else {
                 System.out.println("Unknown command: " + command);
             }
         } while (true);
+    }
+
+    private void getSize() {
+        String[] signals = new String[] {
+            "\u001b[s",            // save cursor position
+            "\u001b[5000;5000H",   // move to col 5000 row 5000
+            "\u001b[6n",           // request cursor position
+            "\u001b[u",            // restore cursor position
+        };
+        for (String s : signals) {
+            System.out.print(s);
+        }
+        int read = -1;
+        StringBuilder sb = new StringBuilder();
+        byte[] buff = new byte[1];
+        while (true) {
+            try {
+                if ((read = System.in.read(buff, 0, 1)) == -1) break;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            sb.append((char) buff[0]);
+            //System.err.printf("Read %s chars, buf size=%s%n", read, sb.length());
+            if ('R' == buff[0]) {
+                break;
+            }
+        }
+        String size = sb.toString();
+        int rows = Integer.parseInt(size.substring(size.indexOf("\u001b[") + 2, size.indexOf(';')));
+        int cols = Integer.parseInt(size.substring(size.indexOf(';') + 1, size.indexOf('R')));
+
+        height = rows;
+        this.size = (int)(cols / 2) - 1;
     }
 
     @Override
