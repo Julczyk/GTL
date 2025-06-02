@@ -1,46 +1,19 @@
 package GreenTextLangImpl;
 
 import GreenTextLangBase.GreenTextLangParser;
+import Memory.Identifier;
 import Values.Value;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ParseTree;
 //import picocli.CommandLine;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class GreenTextLangDebug {
     public static void run(Path filePath, boolean programMode, PrintStream err, PrintStream out, InputStream in) throws IOException {
-//        String[] signals = new String[] {
-//                "\u001b[s",            // save cursor position
-//                "\u001b[5000;5000H",   // move to col 5000 row 5000
-//                "\u001b[6n",           // request cursor position
-//                "\u001b[u",            // restore cursor position
-//        };
-//        for (String s : signals) {
-//            System.out.print(s);
-//        }
-//        int read = -1;
-//        StringBuilder sb = new StringBuilder();
-//        byte[] buff = new byte[1];
-//        while ((read = System.in.read(buff, 0, 1)) != -1) {
-//            sb.append((char) buff[0]);
-//            //System.err.printf("Read %s chars, buf size=%s%n", read, sb.length());
-//            if ('R' == buff[0]) {
-//                break;
-//            }
-//        }
-//        String size = sb.toString();
-//        int rows = Integer.parseInt(size.substring(size.indexOf("\u001b[") + 2, size.indexOf(';')));
-//        int cols = Integer.parseInt(size.substring(size.indexOf(';') + 1, size.indexOf('R')));
-//        System.err.printf("rows = %s, cols = %s%n", rows, cols);
-
         GreenTextLangInterpreter.run(filePath, true, programMode, err, out, in);
     }
 }
@@ -54,44 +27,28 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
     final String utf8 = StandardCharsets.UTF_8.name();
     PrintStream out = new PrintStream(baos, true, utf8);
+    Scanner terminalInput = new Scanner(System.in);
+    int line = 0;
+    int goToLine = line;
 
     public GreenTextLangDebugVisitor(Path filePath, PrintStream out, InputStream in) throws UnsupportedEncodingException {
         super(filePath, out, in);
         super.out = this.out;
     }
 
-//    private void breakPoint(ParserRuleContext ctx) {
-//        var mem = memory.locals;
-//        if (mem!=null) {
-//            System.out.println(mem.toString());
-//            ctx.getStart().getLine();
-//            System.out.println("Break point: " + ctx.getStart().getLine());
-//            try {
-//                char c = (char) System.in.read();
-//            } catch (Exception e) {
-//                System.out.println("Error: " + e.getMessage());
-//            }
-//        }
-//     }
     private void print() {
         System.out.print("\u001b[2J");
         System.out.print("\u001b[H");
         System.out.print(header);
-        String locals = this.memory.locals.toString();
-        String globals = this.memory.globals.toString();
         String output = "";
         try {
             output = baos.toString(utf8);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // TODO add clear command
-        // TODO add line command
-        // TODO add better structs and functions
-        // TODO try not to split by name, soft split
-        var localsSplit = split(locals, size);  // TODO separate scopes
-        var globalsSplit = split(globals, size); //TODO pretty and remove \n from strings
-        var outputSplit = split(output, size); // TODO split by \n
+        var localsSplit = localsSplit(this.memory.locals, size);
+        var globalsSplit = memorySplit(this.memory.globals, size);
+        var outputSplit = softSplit(output, size);
         int maxRows = 10;
         int row = 0;
         boolean loop = false;
@@ -126,7 +83,48 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
         System.out.println("-".repeat(size*2 + separator.length()));
     }
 
-    private List<String> split(String input, int size) {
+    private List<String> localsSplit(Stack<HashMap<Identifier, Value>> locals, int size) {
+        int charCount = String.valueOf(locals.size()).length() + 1;
+        List<String> result = new ArrayList<>();
+        for (int j = 0; j < locals.size(); j++) {
+            var temp = memorySplit(locals.get(j), size - charCount);
+            if (temp.isEmpty()) {
+                continue;
+            }
+            String number = String.valueOf(j);
+            number += " ".repeat(charCount - number.length());
+            temp.set(0, number + temp.get(0));
+            String buffer = " ".repeat(charCount);
+            for (int i = 1; i < temp.size(); i++) {
+                temp.set(i, buffer + temp.get(i));
+            }
+            result.addAll(temp);
+        }
+        return result;
+    }
+
+    private List<String> memorySplit(HashMap<Identifier, Value> memory, int size) {
+        List<String> temp = new ArrayList<>();
+        for (var entry : memory.entrySet()) {
+            temp.add(entry.getKey().toString() + "=" + entry.getValue().toString());
+        }
+        List<String> result = new ArrayList<>();
+        for (var t : temp) {
+            result.addAll(hardSplit(t, size));
+        }
+        return result;
+    }
+
+    private List<String> softSplit(String input, int size) {
+        List<String> temp = Arrays.asList(input.split("\\r?\\n"));
+        List<String> result = new ArrayList<>();
+        for (var t : temp) {
+            result.addAll(hardSplit(t, size));
+        }
+        return result;
+    }
+
+    private List<String> hardSplit(String input, int size) {
         List<String> output = new ArrayList<String>();
         int index = 0;
         while (index < input.length()) {
@@ -137,44 +135,114 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
     }
 
     private void breakPoint(ParserRuleContext ctx) {
-        print();
+        breakPoint(ctx, null);
+    }
+
+    private void breakPoint(ParserRuleContext ctx, Value ret) {
         int line = ctx.getStart().getLine();
+        this.line = line;
+        if (goToLine > this.line && ! (ctx instanceof GreenTextLangParser.SwallowContext)) {
+            return;
+        } else {
+            goToLine = this.line;
+        }
         int posInLine = ctx.getStart().getCharPositionInLine();
         int length = ctx.getStop().getCharPositionInLine() - posInLine + 1;
+        int lineCount = Math.toIntExact(Arrays.stream(ctx.getText().split("\\r?\\n")).count());
         String input;
         try {
             input = Files.readString(super.filePath);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        print();
+
         List<String> sourceLines = Arrays.stream(input.split("\\r?\\n")).toList();
-        String codeLine = sourceLines.get(line - 1);
-        codeLine += " ".repeat(size - codeLine.length()); // TODO line splitting
-        String ctxName = ctx.getClass().getSimpleName();
-        codeLine += separator + ctxName.substring(0, ctxName.length() - "Context".length());
-        codeLine += "\n";
-        codeLine += " ".repeat(posInLine) + "^".repeat(length) + " ".repeat(size - posInLine - length) + separator;
-        System.out.println(codeLine);
-        System.out.println("-".repeat(size*2 + separator.length()));
-        try {
-            System.in.read();
-        } catch (IOException e) {
-            System.out.println("Error reading input: " + e.getMessage());
+        List<String> codeLines = new ArrayList<>();
+        String lineCode = sourceLines.get(line - 1);
+        var codeLine = hardSplit(lineCode, size);
+        var underline = hardSplit(" ".repeat(posInLine) + "^".repeat(length), size);
+        for (int i = 0; i < codeLine.size(); i++) {
+            codeLines.add(codeLine.get(i));
+            String under = underline.get(i);
+            if (under.contains("^")) {
+                codeLines.add(underline.get(i));
+            }
         }
+        for (int i = 1; i < lineCount; i++) {
+            String code = sourceLines.get(i + line - 1);
+            codeLines.addAll(hardSplit(code, size));
+        }
+
+        List<String> additionalInfo = new ArrayList<>();
+        String ctxName = ctx.getClass().getSimpleName();
+        additionalInfo.add(ctxName.substring(0, ctxName.length() - "Context".length()));
+        additionalInfo.addAll(hardSplit((ret == null ? "" : ret.toString() + ", type: " + ret.type), size));
+
+        int row = 0;
+        boolean loop = true;
+        while (loop) {
+            loop = false;
+            String toolOutput = "";
+            if (row < codeLines.size()) {
+                toolOutput = codeLines.get(row);
+                loop = true;
+            }
+            if (toolOutput.length() != size) {
+                toolOutput += " ".repeat(size - toolOutput.length());
+            }
+            String addInfo = "";
+            if (row < additionalInfo.size()) {
+                addInfo = additionalInfo.get(row);
+                loop = true;
+            }
+            if (addInfo.length() != size) {
+                addInfo += " ".repeat(size - addInfo.length());
+            }
+            String finalOutput = toolOutput + separator + addInfo;
+            if (loop == false) {
+                break;
+            }
+            System.out.println(finalOutput);
+            row++;
+        }
+
+        System.out.println("-".repeat(size*2 + separator.length()));
+
+        if (ctx instanceof GreenTextLangParser.SwallowContext) {
+            System.out.print("PROGRAM: ");
+            return;
+        }
+
+        do {
+            String command = terminalInput.nextLine();
+            if (command == "") break;
+            else if (command.matches("\\d+")) {
+                this.goToLine += Integer.parseInt(command);
+                break;
+            } else if (command.matches("line \\d+")) {
+                this.goToLine += Integer.parseInt(command.substring(5));
+                break;
+            } else if (command.matches("clear")) {
+                this.baos.reset();
+            } else {
+                System.out.println("Unknown command: " + command);
+            }
+        } while (true);
     }
-
-
 
     @Override
     public Value visitProgram(GreenTextLangParser.ProgramContext ctx) {
-        //breakPoint(ctx);
+        breakPoint(ctx);
         return super.visitProgram(ctx);
     }
 
     @Override
     public Value visitFunction_call_ing(GreenTextLangParser.Function_call_ingContext ctx) {
         breakPoint(ctx);
-        return super.visitFunction_call_ing(ctx);
+        Value ret = super.visitFunction_call_ing(ctx);
+        breakPoint(ctx, ret);
+        return ret;
     }
 
     @Override
@@ -251,56 +319,94 @@ class GreenTextLangDebugVisitor extends GreenTextLangVisitorImpl {
 
     @Override
     public Value visitExpressions(GreenTextLangParser.ExpressionsContext ctx) {
-        //breakPoint(ctx);
-        return super.visitExpressions(ctx);
+        if (ctx.expression(1) == null) {
+            return super.visitExpressions(ctx);
+        }
+        breakPoint(ctx);
+        Value ret = super.visitExpressions(ctx);
+        breakPoint(ctx, ret);
+        return ret;
     }
 
     @Override
     public Value visitExpression(GreenTextLangParser.ExpressionContext ctx) {
-        //breakPoint(ctx);
-        return super.visitExpression(ctx);
+        breakPoint(ctx);
+        Value ret = super.visitExpression(ctx);
+        breakPoint(ctx, ret);
+        return ret;
     }
 
     @Override
     public Value visitAlso(GreenTextLangParser.AlsoContext ctx) {
-        //breakPoint(ctx);
-        return super.visitAlso(ctx);
+        if (ctx.inversion(1) == null) {
+            return super.visitAlso(ctx);
+        }
+        breakPoint(ctx);
+        Value ret = super.visitAlso(ctx);
+        breakPoint(ctx, ret);
+        return ret;
     }
 
     @Override
     public Value visitInversion(GreenTextLangParser.InversionContext ctx) {
-        //breakPoint(ctx);
-        return super.visitInversion(ctx);
+        if (ctx.NOT() == null) {
+            return super.visitInversion(ctx);
+        }
+        breakPoint(ctx);
+        Value ret = super.visitInversion(ctx);
+        breakPoint(ctx, ret);
+        return ret;
     }
 
     @Override
     public Value visitComparison(GreenTextLangParser.ComparisonContext ctx) {
-        //breakPoint(ctx);
-        return super.visitComparison(ctx);
+        if (ctx.sum(1) == null) {
+            return super.visitComparison(ctx);
+        }
+        breakPoint(ctx);
+        Value ret = super.visitComparison(ctx);
+        breakPoint(ctx, ret);
+        return ret;
     }
 
     @Override
     public Value visitSum(GreenTextLangParser.SumContext ctx) {
-        //breakPoint(ctx);
-        return super.visitSum(ctx);
+        if (ctx.JOINED_BY() == null) {
+            return super.visitSum(ctx);
+        }
+        breakPoint(ctx);
+        Value ret = super.visitSum(ctx);
+        breakPoint(ctx, ret);
+        return ret;
     }
 
     @Override
     public Value visitTerm(GreenTextLangParser.TermContext ctx) {
-        //breakPoint(ctx);
-        return super.visitTerm(ctx);
+        if (ctx.term() == null) {
+            return super.visitTerm(ctx);
+        }
+        breakPoint(ctx);
+        Value ret = super.visitTerm(ctx);
+        breakPoint(ctx, ret);
+        return ret;
     }
 
     @Override
     public Value visitFactor(GreenTextLangParser.FactorContext ctx) {
-        //breakPoint(ctx);
-        return super.visitFactor(ctx);
+        if (ctx.factor() == null) {
+            return super.visitFactor(ctx);
+        }
+        breakPoint(ctx);
+        Value ret = super.visitFactor(ctx);
+        breakPoint(ctx, ret);
+        return ret;
     }
 
     @Override
     public Value visitAtom(GreenTextLangParser.AtomContext ctx) {
-        //breakPoint(ctx);
-        return super.visitAtom(ctx);
+        Value ret = super.visitAtom(ctx);
+        breakPoint(ctx, ret);
+        return ret;
     }
 
     @Override
