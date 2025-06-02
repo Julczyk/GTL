@@ -47,7 +47,7 @@ public class GreenTextLangInterpreter {
 
             GreenTextLangParserBaseVisitor<Value> visitor;
             if (debug) {
-                out.println("Program parsed and listener processed successfully (if no exceptions).");
+                //out.println("Program parsed and listener processed successfully (if no exceptions).");
                 visitor = new GreenTextLangDebugVisitor(filePath, out, in);
             } else {
                 visitor = new GreenTextLangVisitorImpl(filePath, out, in);
