@@ -1,13 +1,21 @@
 # GreenTextLang
+The GreenText Programming Language or GTL for short is a multi-paradigm programming language designed in such a way that
+functional code written in it resembles the style of classical internet copypasta, more specifically green text posts found
+on meme imageboards with notable mention of (now defunct) 4chan.
+
+While it is not intended to be taken completely seriously, it is a fully fledged language.
+However we often sacrificed some of the more advanced features and ease of use for the sake of resemblance to the original style and thus do not recommend using it for production code.
+
+
 
 ## 📦 Installation guide
 ### Requirements
-- **Java 1.4** (must be available in your system's `PATH`)
+- **Java 1.8** (must be available in your system's `PATH`)
 - Windows, Linux, or macOS terminal access
 
-#### 1. Install Java 1.4
+#### 1. Install Java 1.8
 
-Check if Java 1.4 is already installed:
+Check if Java 1.8 is already installed:
 ```sh
 java -version
 ```
@@ -47,3 +55,10 @@ Command	Description
 - line **number**	  - Equivalent to entering the number directly
 - resize then *ENTER* - Recalculates display size (use if output looks misaligned)
 - clear	              - Clears the program output window
+
+
+## 🧍Credits🧍
+This implementation of GreenTextLang started as a college project for the compilation theory course by the following team:
+- Project lead and main developer - **[Mateusz Kotarba](https://github.com/komumati1)**
+- Lead language designer and developer - **[Juliusz Kociński](https://github.com/Julczyk)**
+- Developer and main tester - **[Jakub Kierznowski](https://github.com/qualv13)**
