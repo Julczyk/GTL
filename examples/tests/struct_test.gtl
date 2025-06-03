@@ -48,7 +48,10 @@
  >
  > spit complexArray
  >
- > spit c1 joined by c2
- > spit c1 breeding like c2 times
- > spit c1 breeding like 4 times
+ > spot Complex c3 is c1 joined by c2
+ > spot Complex c4 is c1 breeding like c2 times
+ > spot Complex c5 is c1 breeding like 4 times
  >
+ > spit c3 's r, c3 's i
+ > spit c4 's r, c4 's i
+ > spit c5 's r, c5 's i
