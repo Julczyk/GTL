@@ -1,18 +1,8 @@
- > look around
- > sub
- > see x is 5
- > lose interest
  >
  > look around
  > Complex
  > taste r is 0
  > taste i is 0
- > taste multiple ar is 1,2,3
- >
- > look around
- > s
- > see x is 5
- > lose interest
  >
  > be init
  > spotting Complex ret
@@ -42,155 +32,26 @@
  > ret 's i is arg1 's i breeding like arg2 's r times joined by arg1 's r breeding like arg2 's i times
  > profit
  >
+ > be *
+ > spotting Complex ret
+ > likes spotting Complex arg1, seeing arg2
+ > ret 's r is arg1 's r breeding like arg2 times
+ > ret 's i is arg1 's i breeding like arg2 times
+ > profit
+ >
  > lose interest
  >
  > spot Complex c1 is calling Complex 's init regarding 1., 2.
  > spot Complex c2 is calling Complex 's init regarding 5., 6.
+ >
  > spot multiple Complex complexArray is c1, c2
- > 1'th complexArray 's 0'th ar is 3
- > spit 1'th complexArray 's ar
  >
+ > spit complexArray
  >
- > Complex 's s 's x is 3
- > spit Complex 's s
-     > spit c1
-     > spit c2
-     > spit c1 joined by c2
-     > spit c1 breeding like c2 times
-     > implying c:
-     > spot c1 c1
-     > c1 's r is 69
-     > spit c1 's r
-     > spit parent c1 's r
-     > or sth
-     > spit c1 's r
-
-     > see multiple chars is 1,2,3,4
-     > see i is the literal opposite of 7
-     > spit i 'th chars
-
-     > see about 5 x
-     > see i is 0
-     > think that i beaten by 5
-     > i 'th x is 0
-     > i evolves
-     > reconsider
-     > spit x
-
-     > see x is 1
-     > x is joined by 2
-     > spit x
-
-     > see x is 5
-     > spit parent x
-
-     > hear x is "c:"
-     > see y is let me see let me smell x
-     > spit y
-
-     > hear x is "yes\nno"
-     > spit x
-
-     > be me
-     > likes smelling someone elses x, seeing someone elses y
-     > y is 7
-     > x is 4
-     > profit
-
-     > see x is 3
-     > call me regarding x, 6
-     > spit x
-
-     > be a
-     > spit "up"
-     > profit
-     >
-     > implying c:
-     > be a
-     > spit "down"
-     > profit
-     > call a
-     > call parent a
-     > or sth
-
-     > see x is 4
-     > implying c:
-     > see x is 5
-     > spit x
-     > spit parent x
-     > parent x is 6
-     > spit x
-     > or sth
-     > spit x
-
-     > be me
-     > seeing z
-     > likes seeing x and seeing y
-     > spit x
-     > spit y
-     > z is x joined by y
-     > profit
-     >
-     > see baddie is calling me regarding 5 and 6
-     > spit baddie
-
-     > be me
-     > spit "old"
-     > profit
-     > call me
-     > implying c:
-     > be me
-     > spit "new" and "hey"
-     > profit
-     > call me
-     > or sth
-     > call me
-
-
-     > see y1 is 2 joined by 2 breeding like 3 times
-     > spit y1
-
-     > see y2 is (2 joined by 2) breeding like 3 times
-     > spit y2
-
-     > smell bool is c: alternatively :c also :c
-     > spit bool
-     > bool is (c: alternatively :c) also :c
-     > spit bool
-
-     > see x is 3 breeding like flipped (3 joined by the literal opposite of 3) times
-     > spit x
-
-
-     > see x is 5
-     > spit "text"
-     > see x
-     > spit "x = 5: " joined by x
-
-     > see a is 1 breeding like 2 joined by 2 times breeding like 3 times
-     > spit "a = 2 + 2 * 3: " joined by a
-
-     > smell b is c: alternatively :c also :c
-     > spit "b = true or false and false: " joined by b
-
-     > taste c is 3 breeding like flipped 2 times
-     > see whole is c
-     > spit whole
-     > spit "c = 3/2: " joined by c
-
-     > see i is 3
-     > see j is c: breeding like 3 joined by 5 times breeding like 3 times
-     > see k is 4 breeding like flipped 3 times joined by the literal opposite of 4
-     > spit "i = 3: " joined by i
-     > spit "j = (3 + 5) * 3: " joined by j
-     > spit "k = 4/3 - 4: " joined by k
-
-     > smell y is 5 unbeaten by 5
-     > spit "5 == 5: " joined by y
-
-     > see int is 7 breeding like flipped 3 times
-
-     #> see zero is 0
-     #> taste l is 7 breeding like flipped 0 times
-     #> taste l is 7 breeding like flipped zero times
-     #> see t is 7 joined by joined by 7
+ > spot Complex c3 is c1 joined by c2
+ > spot Complex c4 is c1 breeding like c2 times
+ > spot Complex c5 is c1 breeding like 4 times
+ >
+ > spit c3 's r, c3 's i
+ > spit c4 's r, c4 's i
+ > spit c5 's r, c5 's i
