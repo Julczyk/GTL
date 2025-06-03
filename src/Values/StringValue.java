@@ -3,13 +3,16 @@ package Values;
 import Exceptions.TypeException;
 
 public class StringValue extends Value {
+    String rawString;
 
     public StringValue(String value) {
         super(value, new Type(Type.BaseType.STRING));
+        rawString = value;
     }
 
     public StringValue(String value, boolean parseEscape) {
         super(value, new Type(Type.BaseType.STRING));
+        rawString = value;
         if (parseEscape) { // escape btnfr"\\
             try {
             String parsed = "";
@@ -45,6 +48,11 @@ public class StringValue extends Value {
                 throw new TypeException("Hearing is damaged due to " + value, "Unable to parse string: " + value);
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return rawString;
     }
 
     @Override

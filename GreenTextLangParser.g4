@@ -26,6 +26,7 @@ code_block
 statement
     : compound_statement
     | simple_statement
+    |
     ;
 
 statement_newline

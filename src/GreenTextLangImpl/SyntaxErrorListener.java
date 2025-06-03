@@ -90,7 +90,7 @@ public class SyntaxErrorListener extends BaseErrorListener {
                 return "Missing token \n" +
                         "Expecting one of: " + expectedTokens;
             }
-            if(!Arrays.asList(possibleTokens).contains(faultyToken.getText())){
+            if(!Arrays.asList(possibleTokens).contains(faultyToken.getText()) && ctx.children != null) {
                 return findClosestToken(parser, faultyToken, noViable);
             }
             if(rulename.equals("code_blocks")) {
@@ -189,6 +189,9 @@ public class SyntaxErrorListener extends BaseErrorListener {
                 closing[3] = 0;
                 closing[0]++;
             }else if (tokens.get(index).getText().equals("or sth")) {
+//                if(closing[3] != 0){
+//                    return "or was not expected. Declare start of if statement before by using \'implying\'";
+//                }
                 closing[3] = 0;
                 closing[0]--;
             }else if (tokens.get(index).getText().equals("be")) {
@@ -255,7 +258,7 @@ public class SyntaxErrorListener extends BaseErrorListener {
         String expectedTokens = ExpectedTokens(parser, noViable);
         String bestToken = "No token found";
         int similarity = Integer.MAX_VALUE;
-        for (var token : expectedTokens.split(",")) {
+        for (var token : possibleTokens) {
             if(compute_Levenshtein_distance(text, token) < similarity) {
                 similarity = compute_Levenshtein_distance(text, token);
                 bestToken = token;
@@ -265,7 +268,7 @@ public class SyntaxErrorListener extends BaseErrorListener {
         String bestToken2 = "No token found";
         int similarity2 = Integer.MAX_VALUE;
         String prev = getPreviousToken(parser, faultyToken).getText();
-        for (var token : possibleTokens) {
+        for (var token : possibleTokens) { //possibleTokens expectedTokens.split(",")
             int a = compute_Levenshtein_distance(prev, token);
             if(a <= similarity2) {
                 similarity2 = compute_Levenshtein_distance(prev, token);
@@ -273,7 +276,11 @@ public class SyntaxErrorListener extends BaseErrorListener {
             }
         }
 
-        if(similarity2 <= similarity && !prev.chars().allMatch( Character::isDigit ) ) {
+        if(text.equals("or")) {
+            return "or was not expected. Declare start of if statement before by using \'implying\'";
+        }
+
+        if(similarity2 < similarity && !prev.chars().allMatch( Character::isDigit ) ) {
             return "Unexpected token: " + prev + " " + text + "\n" +
                     "We think you meant:" + bestToken2 + " " + text;
         }

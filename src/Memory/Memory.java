@@ -192,7 +192,7 @@ public class Memory {
             if (loc.containsKey(memoryName)) {
                 value = loc.get(memoryName);
                 if (value.type.baseType != Type.BaseType.STRUCT) {
-                    var e = new TypeException("not a struct", "not a struct");
+                    var e = new TypeException("not a struct", "Trying to access struct from not struct type.");
                     addLocation(e, ctx);
                     throw e;
                 }
@@ -202,7 +202,7 @@ public class Memory {
         if (globals.containsKey(memoryName)) {
             value = globals.get(memoryName);
             if (value.type.baseType != Type.BaseType.STRUCT) {
-                var e = new TypeException("not a struct", "not a struct");
+                var e = new TypeException("not a struct", "Trying to access struct from not struct type.");
                 addLocation(e, ctx);
                 throw e;
             }
@@ -222,7 +222,7 @@ public class Memory {
             if (structMem.containsKey(memoryName)) {
                 Value currValue = structMem.get(memoryName);
                 if (currValue.type.baseType != Type.BaseType.STRUCT) {
-                    var e = new TypeException("not a struct", "not a struct");
+                    var e = new TypeException("not a struct", "Trying to access struct from not struct type.");
                     addLocation(e, varCtx.variable());
                     throw e;
                 }
@@ -235,7 +235,7 @@ public class Memory {
             if (varCtx.NAME() != null) {
                 Value idxValue = getVariable(varCtx.NAME().getText());
                 if (idxValue.type.baseType != Type.BaseType.INT) {
-                    var e = new TypeException("int in array", "int in array");
+                    var e = new TypeException("int in array", "Cannot access index which is not an int.");
                     addLocation(e, varCtx);
                     throw e;
                 }
@@ -248,7 +248,7 @@ public class Memory {
             try {
                 Value currValue = structMem.get(memoryName);
                 if (currValue.type.baseType != Type.BaseType.ARRAY) {
-                    throw new TypeException("not an array", "not an array");
+                    throw new TypeException("not an array", "Trying to get element from not array type");
                 }
                 ArrayValue array = (ArrayValue) currValue;
                 array.set(index, value);
@@ -297,7 +297,7 @@ public class Memory {
             if (varCtx.NAME() != null) {
                 Value idxValue = getVariable(varCtx.NAME().getText());
                 if (idxValue.type.baseType != Type.BaseType.INT) {
-                    var e = new TypeException("int in array", "int in array");
+                    var e = new TypeException("int in array", "Cannot access index which is not an int.");
                     addLocation(e, parentCtx);
                     throw e;
                 }
@@ -321,7 +321,7 @@ public class Memory {
                     try {
                         Value curr_val = loc.get(memoryName);
                         if (curr_val.type.baseType != Type.BaseType.ARRAY) {
-                            throw new TypeException("not an array", "not an array");
+                            throw new TypeException("not an array", "Trying to get element from not array type");
                         }
                         ArrayValue array = (ArrayValue) curr_val;
                         if (subVarCtx.S() == null) {  // not a struct
@@ -337,7 +337,7 @@ public class Memory {
                     }
                     if (subVarCtx.S() != null) { // it is a struct
                         if (struct.type.baseType != Type.BaseType.STRUCT) {
-                            var e = new TypeException("not a struct", "not a struct");
+                            var e = new TypeException("not a struct", "Trying to access struct from not struct type.");
                             addLocation(e, subVarCtx);
                             throw e;
                         }
@@ -406,7 +406,7 @@ public class Memory {
             if (structMem.containsKey(memoryName)) {
                 Value value = structMem.get(memoryName);
                 if (value.type.baseType != Type.BaseType.STRUCT) {
-                    var e = new TypeException("not a struct", "not a struct");
+                    var e = new TypeException("not a struct", "Trying to access struct from not struct type.");
                     addLocation(e, varCtx.variable());
                     throw e;
                 }
@@ -424,7 +424,7 @@ public class Memory {
                     throw e;
                 }
                 if (idxValue.type.baseType != Type.BaseType.INT) {
-                    var e = new TypeException("int in array", "int in array");
+                    var e = new TypeException("int in array", "Cannot access index which is not an int.");
                     addLocation(e, varCtx);
                     throw e;
                 }
@@ -434,7 +434,7 @@ public class Memory {
             }
             Value arrayValue = getFromStruct(struct, varCtx.variable());
             if (arrayValue.type.baseType != Type.BaseType.ARRAY) {
-                var e = new TypeException("not an array", "not an array");
+                var e = new TypeException("not an array", "Trying to get element from not array type");
                 addLocation(e, varCtx.variable());
                 throw e;
             }
@@ -481,7 +481,7 @@ public class Memory {
                     throw e;
                 }
                 if (idxValue.type.baseType != Type.BaseType.INT) {
-                    var e = new TypeException("int in array", "int in array");
+                    var e = new TypeException("int in array", "Cannot access index which is not an int.");
                     addLocation(e, parentCtx);
                     throw e;
                 }
@@ -506,7 +506,7 @@ public class Memory {
                     try {
                         Value curr_val = loc.get(memoryName);
                         if (curr_val.type.baseType != Type.BaseType.ARRAY) {
-                            var e = new TypeException("not an array", "not an array");
+                            var e = new TypeException("not an array", "Trying to get element from not array type");
                             addLocation(e, subVarCtx);
                             throw e;
                         }
@@ -518,7 +518,7 @@ public class Memory {
                     }
                     if (subVarCtx.S() != null) {
                         if (value.type.baseType != Type.BaseType.STRUCT) {
-                            var e = new TypeException("not a struct", "not a struct");
+                            var e = new TypeException("not a struct", "Trying to access struct from not struct type.");
                             addLocation(e, subVarCtx);
                             throw e;
                         }
@@ -557,7 +557,7 @@ public class Memory {
             if (structMem.containsKey(memoryName)) {
                 Value value = structMem.get(memoryName);
                 if (value.type.baseType != Type.BaseType.STRUCT) {
-                    var e = new TypeException("not an struct", "not an struct");
+                    var e = new TypeException("not an struct", "Trying to access struct from not struct type.");
                     addLocation(e, varCtx.variable());
                     throw e;
                 }
