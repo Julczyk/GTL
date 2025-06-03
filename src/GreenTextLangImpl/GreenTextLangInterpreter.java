@@ -72,19 +72,16 @@ public class GreenTextLangInterpreter {
         String world = "hello_world.gtl";
         String fib = "fibonacci.gtl";
         String fib_rec = "fibonacci_rec.gtl";
-        String syntaxTest = "invalid_missing_assignment.gtl";
         // Example for redeclaration test
-        String redeclarationTest = "redeclaration_test.gtl";
-        String funcTest = "func.gtl";
-        String loopTest = "loop_test.gtl";
-        String ifTest = "if_test.gtl";
-        String typeTest = "type_test.gtl";
-        String presentation = "presentation.gtl";
-        String presentation_cd = "presentation_cd.gtl";
+        String redeclarationTest = "tests/redeclaration_test.gtl";
+        String loopTest = "tests/loop_test.gtl";
+        String presentation = "tests/presentation.gtl";
+        String presentation_cd = "tests/presentation_cd.gtl";
         String donut = "donut.gtl";
-        String functions = "functions.gtl";
-        String testing_syntax_err = "testing_syntax_err.gtl";
-        String struct = "struct_test.gtl";
+        String functions = "tests/functions.gtl";
+        String testing_syntax_err = "tests/testing_syntax_err.gtl";
+        String struct = "tests/struct_test.gtl";
+        String arrays_struct = "tests/arrays_structs_test.gtl";
         Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + test); // Change to test redeclaration
         run(filePath, false, false, System.err, System.out, System.in);
     }
