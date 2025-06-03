@@ -6,7 +6,7 @@ A function in GTL is declared as follows:
  > {return type-ing} day
  > love {argument1}, {argument2} and {argument3}
 ```
-Arguments are declared like standard [variables](typing.md) with a key difference of data keyword ending with a -ing suffix.
+Arguments are declared like standard [variables](data_types.md) with a key difference of data keyword ending with a -ing suffix.
 Multiple parameters can be given also in consecutive lines starting with `loves`
 
 example:
