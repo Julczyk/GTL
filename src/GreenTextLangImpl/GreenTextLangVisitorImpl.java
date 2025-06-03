@@ -20,7 +20,7 @@ import java.util.Scanner;
 
 class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
     public Memory memory;
-    private final Path filePath;
+    final Path filePath;
     PrintStream out;
     InputStream in;
 
