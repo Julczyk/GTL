@@ -1,0 +1,20 @@
+ > look around
+ > aaa
+ > see x is 4
+ > see multiple ys is 1,2,3,4
+ > lose interest
+ >
+ > look around
+ > bbb
+ > see z is 5
+ > lose interest
+ >
+ > see multiple xs is 1,2,3,4
+ >
+ > see x is 69
+ > taste y is 2.5 # nie można się odwoływać do połowicznego elementu
+ > spit aaa 's x
+    > spit 0'th x # Trying to get element from not array type
+    > spit 5 'th xs # Index 5 is out of bounds for an array of length 4
+    > spit aaa 's y 'th ys # Cannot access index which is not an int.
+    > spit x 's y # Trying to access struct, but given namespace is not a struct.
