@@ -13,13 +13,13 @@
  > see i is 1
  > think that 2 beats i #usunięcie: Loop statement closed, but not opened use 'think that' to start loop structure
  > i evolves
- > reconsider #usunięcie: Loop statement was never closed, use 'reconsider' to close loop
+ >  reconsider #usunięcie: Loop statement was never closed, use 'reconsider' to close loop
  > see b is 4 #zmiana na iz: Expecting one of: {<EOF>, END_LIFE, 'is', NEWLINE}  We think you meant:is
  > spit b
  >
  or sth # If statement closed, yet was never opened. Use 'implying' to start if
 
- > be an #usunięcie: Function statement closed, yet was never opened. Use 'be' to start new function
+ >  be an #usunięcie: Function statement closed, yet was never opened. Use 'be' to start new function
  > spit 5
  > profit #usunięcie: Function statement was never closed, use 'profit' to close function
 

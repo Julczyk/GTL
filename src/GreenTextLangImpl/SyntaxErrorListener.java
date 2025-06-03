@@ -90,7 +90,7 @@ public class SyntaxErrorListener extends BaseErrorListener {
                 return "Missing token \n" +
                         "Expecting one of: " + expectedTokens;
             }
-            if(!Arrays.asList(possibleTokens).contains(faultyToken.getText())){
+            if(!Arrays.asList(possibleTokens).contains(faultyToken.getText()) && ctx.children != null) {
                 return findClosestToken(parser, faultyToken, noViable);
             }
             if(rulename.equals("code_blocks")) {
@@ -274,6 +274,10 @@ public class SyntaxErrorListener extends BaseErrorListener {
                 similarity2 = compute_Levenshtein_distance(prev, token);
                 bestToken2 = token;
             }
+        }
+
+        if(text.equals("or")) {
+            return "or was not expected. Declare start of if statement before by using \'implying\'";
         }
 
         if(similarity2 < similarity && !prev.chars().allMatch( Character::isDigit ) ) {
