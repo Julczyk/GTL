@@ -83,6 +83,9 @@ public class GreenTextLangInterpreter {
         String struct = "tests/struct_test.gtl";
         String arrays_struct = "tests/arrays_structs_test.gtl";
         String bubble = "bubble_sort.gtl";
+        String nested = "tests/nested.gtl";
+        String booleanN = "tests/boolean_nightmare.gtl";
+        String scopes = "tests/test_scopes.gtl";
         Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + test); // Change to test redeclaration
         run(filePath, false, false, System.err, System.out, System.in);
     }
