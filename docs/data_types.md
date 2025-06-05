@@ -43,28 +43,4 @@ We can assign values after `giving` keyword using `,` or `and` as separators bet
 For example: ` > pigeons giving 5, 3 and 7.`\
 or with declaration: ` > see about 8 pigeons giving 5, 3, 7`. That will result with `[5, 3, 7, 0, 0, 0, 0, 0]`.
 
-
-## defining data structures:
-data structure are defined from line
-` > look around`\
-followed by a line with structure name.\
-Then fields are listed with standard declarations.\
-End definition with ` > vibe with it`
-
-example:
-```
- > look around
- > table
- > see count
- > hear contents
- > hear about 5 attributes
- > vibe with it
-```
-is equivalent with C++ code:
-```C++
-struct table{
-    int count;
-    String contents;
-    String attributes[5];
-}
-```
+---
