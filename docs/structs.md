@@ -3,7 +3,7 @@
 data structure are defined from line
 ` > look around`\
 followed by a line with structure name.\
-Then fields are listed with standard declarations of [variables/collections](data_types.md).\
+Then fields are listed with standard declarations of [variables/collections](variables.md).\
 #TODO: if needed follow with defini
 End definition with ` > vibe with it`
 

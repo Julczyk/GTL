@@ -13,7 +13,7 @@ A function in GTL is declared as follows:
  > likes {arg1 type-ing} {arg1 name}, {arg2 type-ing} {arg2 name}
  > and {arg3 type-ing} {arg3 name}
  ```
-Arguments are declared like standard [variables](data_types.md) with a key difference of data keyword ending with a -ing suffix.
+Arguments are declared like standard [variables](variables.md) with a key difference of data keyword ending with a -ing suffix.
 Multiple parameters can be given also in consecutive lines starting with `likes` keyword.\
 
 example:

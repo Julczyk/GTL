@@ -43,4 +43,12 @@ We can assign values after `giving` keyword using `,` or `and` as separators bet
 For example: ` > pigeons giving 5, 3 and 7.`\
 or with declaration: ` > see about 8 pigeons giving 5, 3, 7`. That will result with `[5, 3, 7, 0, 0, 0, 0, 0]`.
 
+## Access through copy and reference
+
+### Copy
+To access a variable by copy, we do basically nothing, as this is the default behavior in GTL.\
+
+### Reference
+To access a variable by reference, we use the keyphrase `someone elses` before the variable name.\
+
 ---
