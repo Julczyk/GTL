@@ -1,0 +1,575 @@
+\documentclass{article}
+
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[intlimits]{amsmath}
+\usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{xcolor}
+
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{mathptmx}
+\usepackage{geometry}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{caption}
+%\captionsetup{labelfont=bf}
+%\captionsetup{format=hang}
+\usepackage{cancel}
+\usepackage{wrapfig}
+\usepackage{multirow}
+\usepackage{fancyvrb}
+\usepackage{emoji}
+
+
+\title{GTL - The Green Text Programming Language}
+\author{Jakub Kierznowski, Mateusz Kotarba, Juliusz Kociński}
+
+\begin{document}
+\maketitle
+
+%\begin{abstract}
+%Brak.
+%\end{abstract}
+
+\section{Wstęp}
+Green Text Programming Language (GTL) to uniwersalny, imperatywny język programowania, którego głównym założeniem jest składnia możliwie zbliżona do Greenext - formatu krótkich, charakterystycznie pisanych historyjek internetowych, spopularyzowanego przez portal 4chan.org, a następnie różne fora. W Polsce szerzej jest znany jako klasyczny format pasty (i zapisywany czerwonym tekstem).
+
+\section{Komentarze}
+
+\begin{itemize}
+    \item Każda linia musi zaczynać się od znaku \texttt{>} poprzedzonym spacją. Jest ona traktowana jako kod. Po tym znaku można dać dowolną ilość spacji lub tabów, aby uczynić program bardziej czytelnym.
+    \item Linia, która nie zaczyna się od \texttt{ >}, jest traktowana jako komentarz.
+    \item Komentarze w tej samej linijce muszą być poprzedzone spacją i znakiem \texttt{\#}.
+\end{itemize}
+
+
+\textbf{Składnia:}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{green}{ > \{To jest kod\}}
+\textcolor{red}{To jest komentarz}
+\textcolor{green}{ > \{To jest kod\}} \textcolor{red}{# To jest komentarz w linii}
+\end{Verbatim}
+
+\section{Zmienne}
+
+\begin{itemize}
+    \item Zmienne muszą być deklarowane z podaniem typu: \texttt{type nazwa\_zmiennej}.
+    \item Nazwy zmiennych mogą być dowolnym znakiem z unicode (nawet może być to emoji), z wyjątkiem \texttt{'} i \texttt{,}. Zmienna nie może zaczynać się od cyfry. Zmienna nie może być słowem kluczowym.
+    \item GTL obsługuje szereg typów prostych:
+
+    \begin{table}[H]
+    \centering
+    \begin{tabular}{ccc}
+        int                   & → & see   \\
+        double                & → & taste \\
+        string                & → & hear  \\
+        boolean               & → & smell \\
+        struktury             & → & spot
+    \end{tabular}
+    \end{table}
+
+        \item Przypisanie do zmiennej odbywa się za pomocą słowa kluczowego \texttt{is} po czym następuje wyrażenie, lista wyrażeń lub wywołanie funkcji.
+
+\textbf{Składnia definicji zmiennej i przypisania zmiennej:}
+{\color{green}
+\begin{Verbatim}
+> {typ zmiennej} {nazwa zmiennej}
+> {typ zmiennej} {nazwa zmiennej} is {wywołanie funkcji, wyrażenie, lista wyrażeń}
+> {nazwa zmiennej} is {wywołanie funkcji, wyrażenie, lista wyrażeń}
+\end{Verbatim}
+}
+
+\newpage
+
+\textbf{Przykład:}
+{\color{green}
+\begin{verbatim}
+ > see baddie is 9
+ > taste lunch is someone elses dinner
+ > smell flowers is c:
+ > flower is :c
+\end{verbatim}
+}
+
+    \item Dla typów złożonych:
+    \begin{itemize}
+        \item \texttt{multiple} definiuje dynamiczną tablicę.
+        \item \texttt{about} i potem wyrażenie definiuje tablicę znanym rozmiarze.
+        \item \texttt{someone elses} definiuje referencję do zmiennej (nie jest tworzona jej kopia).
+    \end{itemize}
+    \item Tablicę można inicjować słowem \texttt{is} i podaniem rozdzielonych przecinkami lub \texttt{and} wartości.
+    \item Dostęp do tablicy jest przez poprzedzenie nazwy tablicy numerem elementu (zaczynając od 0), z dodatkiem \texttt{'th}. Przed \texttt{'th} może się pojawić tylko pojedyncza nazwa lub liczba całkowita.
+    \textbf{Składnia dostępu i tworzenia tablicy:}
+{\color{green}
+\begin{Verbatim}
+> {typ zmiennej} multiple {nazwa zmiennej}
+> {typ zmiennej} about {wyrażenie} {nazwa zmiennej}
+> {typ zmiennej} multiple {nazwa zmiennej} is {wyrażenie}
+> and {wyrażenie}, {wyrażenie}
+> {całkowity literał, pojedyncza nazwa}'th {nazwa tablicy}
+\end{Verbatim}
+}
+
+\textbf{Przykład dostępu:}
+{\color{green}
+\begin{verbatim}
+ > see multiple baddies
+ > see about 5 men is 1,2,3,4,5
+ > see man is 4'th men
+ > see best is 2
+ > man is best'th men
+\end{verbatim}
+}
+    \item Zmiana typu zmiennej "castowanie" odbywa się przez przypisanie do nowej zmiennej, zmiennej o innym typie.
+    \item Przy operacji dodawania z zmienną typu \texttt{hear} (string), pozostałe zmienne są zamieniane na \texttt{hear} (string) i konkatenowane.
+
+    \textbf{Składnia zmiany typu zmiennej:}
+    {\color{green}
+    \begin{Verbatim}
+    > {typ zmiennej} {nazwa zmiennej} is {literał, funkcja, zmienna, wyrażenie (o innym typie)}
+    \end{Verbatim}
+    }
+
+    \textbf{Przykład:}
+    {\color{green}
+    \begin{verbatim}
+    > taste baddie is 9.5
+    > see girl is baddie
+    > hear boy is joined by girl
+    \end{verbatim}
+    }
+\end{itemize}
+
+\newpage
+
+\section{Definiowanie struktur (typów)}
+
+Aby stworzyć nową strukturę/typ, należy użyć poniższej składni:
+
+\begin{itemize}
+    \item \texttt{> look around} rozpoczyna definicję struktury.
+    \item \texttt{> struct\_name} to nazwa struktury.
+    \item Następnie definiujemy zmienne, funkcje, pętle wewnątrz struktury.
+    \item \texttt{> lose interest} oznacza zakończenie definicji struktury.
+    \item Aby dostać się do zawartości pól zmiennych należy podać ich nazwę, a potem napisać \texttt{'s } i nazwę pola.
+    \item Nazwy struktur muszą być poprawnymi nazwami (patrz nazwa zmiennej).
+    \item Deklaracja struktury utrzymuje się w całym programie.
+
+\end{itemize}
+\textbf{Składnia struktury:}
+{ \color{green}
+\begin{verbatim}
+ > look around
+ > {nazwa_struktury}
+ > {typ_zmiennej} {nazwa_zmiennej}
+ > {deklaracja funkcji}
+ .
+ .
+ > lose interest
+ >
+ > spot {nazwa_struktury} {nazwa_zmiennej}
+ > {nazwa_zmiennej}'s {nazwa_pola} is {wyrażnie, funkcja}
+ > {inna_zmienna} is {nazwa_zmiennej}'s {nazwa_pola}
+\end{verbatim}
+}
+\textbf{Przykład:}
+{ \color{green}
+\begin{verbatim}
+ > look around
+ > Human
+ > see age
+ > hear name
+ > smell alive
+ > lose interest
+
+ > spot Human Anon
+ > Anon's age is 18
+ > see number is Anon's age
+\end{verbatim}
+}
+
+\section{Zasięg zmiennych}
+
+\begin{itemize}
+    \item Zmienna obowiązuje do momentu napotkania pustej linii.
+    \item Po napotkaniu pustej linii zmienne zdefiniowane powyżej przestają być dostępne.
+    \item Nie stosuje się to do deklaracji funkcji i struktur. Ale sama zdefiniowana struktur (z danymi) już jest usuwana.
+\end{itemize}
+
+\textbf{Przykład:}
+{\color{green}
+\begin{Verbatim}[commandchars=\\\{\}]
+> see baddie
+\textcolor{red}{tutaj jest komentarz}
+> spit baddie  \textcolor{red}{# baddie wciąż istnieje}
+\textcolor{red}{drugi komentarz}
+
+> spit baddie  \textcolor{red}{# błąd! baddie nie istnieje, ponieważ wystąpiła pusta linijka}
+\end{Verbatim}
+}
+\section{Operacje logiczne}
+
+\begin{itemize}
+
+
+\item GTL zawiera wartości logiczne:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ccc}
+false          & → & :c   \\
+true           & → & c:
+\end{tabular}
+\end{table}
+
+
+\item GTL zawiera operacje logiczne do porównywania zmiennych:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ccc}
+==              & → & vibe with   \\
+!=              & → & doesn't vibe with       \\
+\textless{}     & → & beaten by      \\
+\textless{}=    & → & doesn't beat   \\
+\textgreater{}  & → & beats          \\
+=\textgreater{} & → & unbeaten by    \\
+\&\&            & → & also            \\
+||              & → & alternatively  \\
+zaprzeczenie    & → & not
+\end{tabular}
+\end{table}
+
+
+\item GTL zawiera podstawowe operatory matematyczne:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ccl}
+X+Y             & → & > X joined by Y                               \\
+X+=Y            & → & > X is joined by Y                            \\
+X++             & → & > X evolves                               \\
+X*Y             & → & > X breeding like Y times                     \\
+X*=Y            & → & > X is breeding like Y times                  \\
+-Y              & → & > the literal opposite of Y                   \\
+X--             & → & > X devolves                               \\
+$\frac{1}{Y}$   & → & > flipped Y                                   \\
+X\%Y            & → & > X whatever left from Y                      \\
+X\%=Y           & → & > X is whatever left from Y
+\end{tabular}
+\end{table}
+
+\item Podobnie jak w innych językach operator modulo, \textit{++}, \textit{--} można wykonać tylko na liczbach całkowitych.
+\item \texttt{evolves devolves} można użyć tylko w osobnej linijce, a nie w wyrażeniu.
+Na zmienne tekstowe działa tylko dodawanie, konkatenuje ono oba ciągi znaków.
+GTL nie zawiera operatorów odejmowania, ani dzielenia. Zamiast tego trzeba dodawać liczbę przeciwną oraz mnożyć przez odwrotność.\\
+
+\textbf{Przykład:}
+{\color{green}
+\begin{verbatim}
+ > see baddie is 9
+ > taste division is 5 breeding like flipped baddie times
+ > see subtraction is 7 joined by the literal opposite of baddie
+\end{verbatim}
+}
+
+\newpage
+
+\item Kolejność wykonywania operatorów:
+\begin{enumerate}
+    \item flipped
+    \item the literal opposite of ; breeding like \{wyrażenie\} times
+    \item whatever left from
+    \item joined by
+    \item \{operatory porówniania\}
+    \item not
+    \item also
+    \item alternatively
+
+\end{enumerate}
+
+\item Operatory na tym samym poziomie są wykonywane od lewej do prawej.
+\item Przed operatorami \texttt{also} i \texttt{alternatively} może wystąpić nowa linijka. \\
+Dodatkowo w mnożeniu \texttt{breeding like \{wyrażenie\} times} przed oraz po wyrażeniu może wystąpić nowa linijka.
+
+\end{itemize}
+
+\section{Wyrażenia}
+
+\begin{itemize}
+    \item Wyrażenie to:
+    \begin{itemize}
+        \item literał
+        \item zmienna
+    \end{itemize}
+    \item Literał to:
+    \begin{itemize}
+        \item liczba całkowita (bez znaku)
+        \item liczba zmiennoprzecinkowa z kropką jako separator części całkowitej od ułamkowej
+        \item ciąg znaków w podwójnych cudzysłowach
+        \item :c - oznacza wartość false, c: - oznacza wartość true
+    \end{itemize}
+    \item Zmienna to:
+    \begin{itemize}
+        \item nazwa zmiennej
+        \item dostęp do zmiennej struktury
+        \item dostęp do zmiennej w tablicy
+    \end{itemize}
+    \item Ważne! W literałach występują tylko cyfry i kropki, a nazwa jest dowolna. Dlatego \texttt{-1000} jest to zmienna o nazwie -1000. Aby zrobić -1000 należy użyć \texttt{the literal opposite of 1000}.
+\end{itemize}
+\section{Warunki \textit{if}}
+
+GTL ma bardzo intuicyjnie zrobione warunki:
+
+\begin{itemize}
+    \item \texttt{> implying \{warunek\}} rozpoczyna warunek \textit{if}.
+    \item Następnie podajemy kolejne instrukcje do wykonania w \textit{if}.
+    \item \texttt{>or} \{warunek\} rozpoczyna część \textit{else if}.
+    \item Następnie podajemy kolejne instrukcje do wykonania w \textit{else if}.
+    \item \texttt{> or not} rozpoczyna część \textit{else}.
+    \item Następnie podajemy kolejne instrukcje do wykonania w \textit{else}.
+    \item \texttt{> or sth} kończy \textit{if}'a.
+
+\end{itemize}
+\textbf{Składnia if'a:}
+{ \color{green}
+\begin{verbatim}
+ > implying {wyrażenie}
+ .
+ .
+ >or {wyrażenie}
+ .
+ .
+ >or not
+ .
+ .
+ >or sth
+\end{verbatim}
+}
+\textbf{Przykład:}
+{ \color{green}
+\begin{verbatim}
+ > implying anon beaten by max
+ > spit max
+ > or anon beaten by jessica
+ > spit jessica
+ > or not
+ > spit anon
+ > or sth
+\end{verbatim}
+}
+
+\section{Pętle i iteratory}
+
+Aby stworzyć pętle \textit{while} należy użyć poniższej składni:
+
+\begin{itemize}
+    \item \texttt{> think that} rozpoczyna pętlę \textit{while}, po której znajduje się warunek.
+    \item Następnie podajemy kolejne linijki zawartości pętli.
+    \item \texttt{> reconsider} oznacza konice pętli.
+\end{itemize}
+
+\textbf{Składnia pętli while:}
+{ \color{green}
+\begin{verbatim}
+ > think that {warunek}
+ .
+ .
+ > reconsider
+\end{verbatim}
+}
+
+\textbf{Przykład:}
+{ \color{green}
+\begin{verbatim}
+ > see anon is 0
+ > see jessica is 6
+ > think that anon doesn't vibe with jessica
+ > anon is joined by 2
+ > spit anon
+ > reconsider
+\end{verbatim}
+}
+
+\newpage
+
+\section{Funkcje}
+
+\begin{itemize}
+    \item Funkcje są definiowane za pomocą słowa kluczowego \texttt{be}.
+    \item Nazwa funkcji musi być nazwą (patrz zmienne).
+    \item Typ zwracany musi być określony w następnej linii. Zmienna przechowująca wartość zwracaną jest wtedy tworzona. Typ jest określany przez podanie typu i dodanie końcówki \texttt{int}. Jeśli nie jest określony typ zwracany funkcja niczego nie zwraca.
+    \item Argumenty funkcji są podawane po słowie kluczowym \texttt{likes}, a wiele argumentów oddziela się przecinkiem lub słowem \texttt{and}. Typ jest określany przez podanie typu i dodanie końcówki \texttt{int}. W przypadku pominięcia funkcja nie przyjmuje żadnych argumentów.
+    \item Jeśli chcemy przenieść argumenty przenieść do następnej linijki trzeba zastosować słowo kluczowe \texttt{and}. \texttt{and} piszemy na początku przeniesionej linijki.
+    \item Przekazywanie przez referencję: przed typem argumentu należy użyć słowa \texttt{someone elses}.
+    \item Funkcja musi kończyć się słowem \texttt{profit}.
+    \item Funkcja może mieć każdą nazwę (podobnie jak zmienna), z wyjątkiem zarezerwowanej nazwy \texttt{me}. Funkcja o nazwie \texttt{me} oznacza \texttt{main()}, która jest wykonywana domyślnie przy uruchomieniu programu.
+    \item Aby wywołać funkcje trzeba użyć słowa \texttt{call nazwa\_funkcji}. Aby wywołać funkcję z przypisaniem do zmiennej należy użyć słowa \texttt{calling}. Aby wywołać funkcję z argumentami należy po jej nazwie podać słowo \texttt{regarding}, po tym rozdzielone przecinkiem lub słowem \texttt{and} argumenty.
+    \item Funkcje nie zagnieżdżone istnieją w całym programie. Funkcje zagnieżdżone są dostępne tylko w danym poziomie zagnieżdżenia.
+    \item Możliwe jest przeciążenie funkcji. Deklaracja funkcji o tej samej nazwie ale innych argumetach (inny typ lub różna ilość argumentów).
+    \item Możliwe jest podanie wartości domyślnych parametrów.
+\end{itemize}
+
+\textbf{Składnia definicji funkcji:}
+{\color{green}
+\begin{Verbatim}[commandchars=\\\{\}]
+ > be \{nazwa_funkcji\}
+ > \{typ_zwracany\}ing {nazwa_zmiennej}
+ > likes \{typ_zmiennej\}ing \{nazwa_zmiennej\}, \{typ_zmiennej\}ing \{nazwa_zmiennej\}
+ > and \{typ_zmiennej\}ing \{nazwa_zmiennej\}
+ > \{kod_funkcji\}
+ > profit
+\end{Verbatim}
+}
+
+\textbf{Składnia wywołania funkcji:}
+{\color{green}
+\begin{Verbatim}
+> call {nazwa funkcji} regarding {argument}, {argument}
+> and {argument}
+
+> {zmienna} is calling {nazwa funkcji} regarding {argument}, {argument}
+> and {argument}
+\end{Verbatim}
+}
+
+\textbf{Przykład:}
+{\color{green}
+\begin{Verbatim}
+ > be Anon
+ > seeing money
+ > likes seeing someone elses baddie and spotting math equations
+ > money is math joined by the literal opposite of baddie
+ > baddie is joined by 1
+ > profit
+
+ > see baddie is 7
+ > see Ivone is calling Anon regarding baddie and the literal opposite of 1000
+\end{Verbatim}
+}
+
+
+
+Funkcja \texttt{Anon} oblicza wartość na podstawie zmiennych \texttt{math} i \texttt{baddie}, a następnie zwraca wartość przez zmienną \texttt{money}.
+
+\section{Importowanie z innych plików}
+\begin{itemize}
+    \item Importowanie odbywa się słowem kluczowym \texttt{invite}. Po którym występuje nazwa, zagnieżdżona nazwa lub lista nazwa.
+    \item GTL kolejność szukania użytej nazwy zmiennej:
+    \begin{enumerate}
+        \item lokalna historia
+        \item globalne historie
+        \item zmiennej w invite
+        \item pliki o podanej nazwie w \texttt{invite} i w tych plikach zaproszone nazwy struktur
+        \item katalogi o podanej nazwie w \texttt{invite} i powtórzenie kroku poprzedniego
+    \end{enumerate}
+    \item \texttt{invite} może przyjmować listę, wtedy z tego pliku będą pobrane wskazane elementy
+    \item Zaproszone pliki są traktowane jak struktury.
+    \item Interpreter zapamiętuje zaproszone już pliki, unika to błędu cyrkulacji \texttt{invite}.
+    \item Zapraszane mogą być pliki, struktury, funkcje lub inne zmienne.
+\end{itemize}
+
+\textbf{Składnia importu:}
+{ \color{green}
+\begin{verbatim}
+ > invite {zmienna}, {zmienna}
+ > and {zmienna}
+ > invite {plik}'s {zmienna}, {zmienna}
+\end{verbatim}
+}
+\textbf{Przykład:}
+{ \color{green}
+\begin{verbatim}
+ > invite basia's cake, fake
+ > and bake
+ > invite baker's bread's flour
+\end{verbatim}
+}
+
+\section{Wypisywwanie i wpisywanie}
+
+GTL bardzo prosto robi wczytywanie i wypisywanie danych. Stosując analogię do C++:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ccc}
+cout          & → & spit   \\
+cin           & → & swallow
+\end{tabular}
+\end{table}
+
+\textbf{Składnia:}
+{ \color{green}
+\begin{verbatim}
+ > see anon
+ > swallow anon
+ > spit anon
+\end{verbatim}
+}
+
+\textbf{Przykład:}
+{ \color{green}
+\begin{verbatim}
+ > see anon
+ > swallow anon
+ > spit anon
+\end{verbatim}
+}
+
+\newpage
+
+\section{Przykładowe programy}
+
+\textbf{Przykład Hello World:}
+{\color{green}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{red}{Hello World}
+ > be me
+ > spit "Hello, world!"
+ > profit
+\end{Verbatim}
+}
+
+\textbf{Przykład fibbonaci:}
+{\color{green}
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{red}{This program spits out given ammount of numbers of the fibonacci sequence}
+ >be fibonacci
+ > like anon
+ > see apple is 1
+ > see pear is 1
+ > see brother is 0
+ > think that anon beats brother
+ > parity is brother whatever left from 2
+ > implying parity
+ > spit apple
+ > apple is joined by pear
+ > or not
+ > spit pear
+ > pear is joined by apple
+ > or sth
+ > brother evolves
+ > reconsider
+ > profit
+
+ > be me
+ > see something
+ > swallow something
+ > call fibonacci regarding something
+ > profit
+\end{Verbatim}
+}
+
+
+
+
+\end{document}
