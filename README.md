@@ -14,21 +14,24 @@ This is a **Java** implementation of the interpreter for the language using the 
 
 ## 📦 Installation guide
 ### Requirements
-- **Java 1.8** (must be available in your system's `PATH`)
+- **Java 23** (must be available in your system's `PATH`)
 - Windows, Linux, or macOS terminal access
 
 #### 1. Install Java
-The following instructions are fore the **MINIMAL REQUIRED** java version, in that case v1.8.
+The following instructions are for the required java version as of writing this, in that case v23. (1.8 before)
 We highly recommend using the latest LTS version of Java.
 
-Check if Java 1.8 is already installed:
+Check if Java 23 is already installed:
 ```sh
 java -version
 ```
 
 If not installed:\
-Download Java 1.8 from the Oracle Java Archive or another trusted source.\
+Download Java 23 from the Oracle Java Archive or another trusted source.\
 Add Java's bin directory to your system's PATH.
+
+Then set the `JAVA_HOME` environment variable to point to the Java installation directory.\
+
 
 #### 2. Download the App
 Go to the Releases section of this repository.\
@@ -36,7 +39,7 @@ Download the latest release.\
 Unzip it to desired folder.\
 Interpreter is GTL.exe file in bin folder.
 
-#### 3. (Optional) Associate .gtl File Extension (Windows Only)
+#### 4. (Optional) Associate .gtl File Extension (Windows Only)
 To make .gtl files open widows Settings/Apps/Default Apps\
 Search for .gtl.\
 Click Choose default and navigate to GTL.exe file.
