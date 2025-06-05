@@ -82,6 +82,7 @@ public class GreenTextLangInterpreter {
         String testing_syntax_err = "tests/testing_syntax_err.gtl";
         String struct = "tests/struct_test.gtl";
         String arrays_struct = "tests/arrays_structs_test.gtl";
+        String bubble = "bubble_sort.gtl";
         Path filePath = Path.of(System.getProperty("user.dir") + "/examples/" + test); // Change to test redeclaration
         run(filePath, false, false, System.err, System.out, System.in);
     }

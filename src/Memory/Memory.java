@@ -110,6 +110,19 @@ public class Memory {
         }
     }
 
+    public void createArray(String name, GreenTextLangParser.Type_ingContext typeCtx, int length) {
+        // check if exists
+        var memoryName = new Identifier(name);
+        try {
+            assertNotExists(memoryName);
+            Type type = Type.inferType_ing(typeCtx);
+            locals.peek().put(memoryName, new ArrayValue(new Value[length], type));
+        } catch (InterpreterException e) {
+            addLocation(e, typeCtx);
+            throw e;
+        }
+    }
+
     public void createArray(String name, GreenTextLangParser.TypeContext typeCtx, int length) {
         // check if exists
         var memoryName = new Identifier(name);
@@ -120,6 +133,18 @@ public class Memory {
         } catch (InterpreterException e) {
             addLocation(e, typeCtx);
             throw e;
+        }
+    }
+
+    public void createArray(String name, GreenTextLangParser.Type_ingContext typeCtx, int length, Value value) {
+        createArray(name, typeCtx, length);
+        if (value != null) {
+            try {
+                assign(name, value);
+            } catch (InterpreterException e) {
+                addLocation(e, typeCtx);
+                throw e;
+            }
         }
     }
 
