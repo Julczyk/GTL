@@ -119,14 +119,33 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
         String retValueName = null;
         if (funcCtx.function_return() != null) {
             var decl = funcCtx.function_return().variable_declaration_ing_without_elses();
-            retValueName = decl.NAME().getText();
             Value value = null;
-            if (decl.expressions() != null) {
-                value = visit(decl.expressions());
-            } else if (decl.function_call_ing() != null) {
-                value = visit(decl.function_call_ing());
+            retValueName = decl.NAME().getText();
+            if (decl.type_ing().complex_type_ing() != null) { // it's an array
+                int length = 0;
+                if (decl.type_ing().complex_type_ing().expression() != null) {
+                    var exp = decl.type_ing().complex_type_ing().expression();
+                    Value size = visit(exp);
+                    if (!(size instanceof IntegerValue)) {
+                        var e = new TypeException("You need to see the size of an array", "Size of an array must be an int not: " + size.toString());
+                        addLocation(e, decl);
+                        throw e;
+                    }
+                    length = Operators.getInt(size);
+                }
+                if (decl.expressions() != null) {
+                    value = visit(decl.expressions());
+                }
+                memory.createArray(retValueName, decl.type_ing(), length, value);
+            } else {
+                retValueName = decl.NAME().getText();
+                if (decl.expressions() != null) {
+                    value = visit(decl.expressions());
+                } else if (decl.function_call_ing() != null) {
+                    value = visit(decl.function_call_ing());
+                }
+                memory.createVariable(retValueName, decl.type_ing(), value);
             }
-            memory.createVariable(retValueName, decl.type_ing(), value);
         }
         List<Pair<String, GreenTextLangParser.Parent_variableContext>> translations = new ArrayList<>();
         if (funcCtx.function_arguments() != null) {
@@ -147,7 +166,22 @@ class GreenTextLangVisitorImpl extends GreenTextLangParserBaseVisitor<Value> {
                         translations.add(new Pair<>(name, valuePair.a));
                     }
                 }
-                memory.createVariable(name, decl.type_ing(), valuePair.b);
+                if (decl.type_ing().complex_type_ing() != null) { // it's an array
+                    int length = 0;
+                    if (decl.type_ing().complex_type_ing().expression() != null) {
+                        var exp = decl.type_ing().complex_type_ing().expression();
+                        Value size = visit(exp);
+                        if (!(size instanceof IntegerValue)) {
+                            var e = new TypeException("You need to see the size of an array", "Size of an array must be an int not: " + size.toString());
+                            addLocation(e, decl);
+                            throw e;
+                        }
+                        length = Operators.getInt(size);
+                    }
+                    memory.createArray(name, decl.type_ing(), length, valuePair.b);
+                } else {
+                    memory.createVariable(name, decl.type_ing(), valuePair.b);
+                }
             }
         }
         for (var stmt : function.getFunctionBody()) {
