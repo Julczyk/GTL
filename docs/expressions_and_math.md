@@ -30,4 +30,13 @@ In GTL `(` and `)` are used to group expressions in a standard way.\
 Intuition: Standard order of operations is used in mathematical expressions.
 1. Brackets
 2. Comparisons:
-   2.1. 
+   - NOT
+   - ALSO
+   - ALTERNATIVELY
+3. properties:
+   - the literal opposite of
+   - flipped
+4. Mathematical operations:
+   - breeding like
+   - joined by
+   - whatever left from
