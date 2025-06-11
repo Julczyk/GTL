@@ -8,9 +8,17 @@ on meme imageboards with notable mention of (now defunct) 4chan.
 While it is not intended to be taken completely seriously, it is a fully fledged language.
 However we often sacrificed some of the more advanced features and ease of use for the sake of resemblance to the original style and thus do not recommend using it for production code.
 
-### Implementation:
-This is a **Java** implementation of the interpreter for the language using the **ANTLR4**.
 
+## 📚 How to learn it
+To learn GTL, you can refer to the documentation available in both Polish and English:
+- For Polish documentation, see the `docs/pl/` directory.
+- For English documentation, see the `docs/en/` directory.
+
+Additionally, a complete course in Polish is available in the `docs/guide_pl.pdf` file, offering a structured approach to mastering GTL.
+
+
+## 🛠️ Implementation:
+This is a **Java** implementation of the interpreter for the language using the **ANTLR4**.
 
 ## 📦 Installation guide
 ### Requirements
