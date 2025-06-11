@@ -10,7 +10,7 @@ Funkcje niebędące zadeklarowanymi wewnątrz innych funkcji są globalne. Zmien
 Ponieważ w GTL w scopie globalnym nie istnieją zmienne, aby stworzyć coś w rodzaju zmiennej globalnej, należy stworzyć strukturę, która będzie zawierała wszystkie potrzebne zmienne. Następnie należy stworzyć instancję tej struktury w scopie globalnym.
 
 ## Zakresy lokalne
-Każda funkcja i zmienna niebędąca globalną obowiązuje w obrębie swojego zakresu i wszystkich podzakresów wewnątrz jego, lub do najbliższej pustej linii (cokolwiek wystąpi wcześniej).
+Każda funkcja i zmienna niebędąca globalną obowiązuje w obrębie swojego zakresu i wszystkich podzakresów wewnątrz niego.
 
 Zakresami lokalnymi są:
 - Ciała Funkcji

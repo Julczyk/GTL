@@ -7,7 +7,7 @@
 ## ordering
 - `>` := `beats`
 - `<` := `beaten by`
-- `=` := `is`
+# `=` (assignment) is `is`. For equality comparison, use `==` (`vibe with`).
 - `==` := `vibe with`
 - `>=` := `unbeaten by`
 - `<=` := `doesn't beat`
@@ -27,16 +27,23 @@
 In GTL `(` and `)` are used to group expressions in a standard way.\
 
 ## Order of operations
-Intuition: Standard order of operations is used in mathematical expressions.
-1. Brackets
-2. Comparisons:
-   - 2.1 NOT
-   - 2.2 ALSO
-   - 2.3 ALTERNATIVELY
-3. properties:
-   - 3.1 the literal opposite of
-   - 3.2 flipped
-4. Mathematical operations:
-   - 4.1 breeding like
-   - 4.2 joined by
-   - 4.3 whatever left from
+Standard order of operations is used in mathematical expressions.
+1. Brackets `()`
+2. Unary properties:
+   - `flipped`
+   - `the literal opposite of`
+3. Multiplicative operations:
+   - `breeding like Y times`
+   - `whatever left from Y`
+4. Additive operations:
+   - `joined by Y`
+5. Comparison operations:
+   - `beats`, `beaten by`, `vibe with`, `doesn't vibe with`, `unbeaten by`, `doesn't beat`
+6. Logical NOT:
+   - `not`
+7. Logical AND:
+   - `also`
+8. Logical OR:
+   - `alternatively`
+
+Operators at the same precedence level are evaluated left-to-right.
