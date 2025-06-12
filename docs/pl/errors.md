@@ -1,10 +1,9 @@
+# Błędy i komunikaty o błędach:
+W GTL, ze względu na konwencję memiczną, błędy mają dwa tryby:
+tryb **memiczny** i tryb **techniczny**.
 
-# Errors and error messages:
-In GTL, due to the meme convention, errors have two modes:
-**meme** mode and **technical** mode.
-
-Error messages are multi-part and consist of:
-1. ASCII art of a sad frog pepe seen below.
+Komunikaty o błędach są wieloczęściowe i składają się z:
+1. Grafiki ASCII smutnej żaby pepe, widocznej poniżej.
 ```
 ⠀⠀⠀⠀⠀⢠⠔⠊⠉⣉⡑⢴⠒⠉⠁⠢⡀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⢠⠃⠀⠊⠁⢀⣈⣙⣶⡀⠉⣉⣑⡢⡀⠀⠀⠀⠀⠀
@@ -17,17 +16,17 @@ Error messages are multi-part and consist of:
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⡃⠀⢸⠀⠈⠳⡤⠆⠀⢸⡄⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ```
-2. Path of the file where the error occurred.
-3. Line of code where the error occurred with specific token which caused the error highlighted with `^^^`
-4. error message in meme form
-it starts with `Womp Womp at [X,Y]` where `[X,Y]` is the position of the error in the line."
-5. error message in technical form
-Similarily it starts with `Error at [X,Y]` where `[X,Y]` is the position of the error in the line."
+2. Ścieżki pliku, w którym wystąpił błąd.
+3. Linii kodu, w której wystąpił błąd, z konkretnym tokenem, który spowodował błąd, podświetlonym za pomocą `^^^`
+4. komunikatu o błędzie w formie memicznej
+zaczyna się od `Womp Womp at [X,Y]`, gdzie `[X,Y]` to pozycja błędu w linii."
+5. komunikatu o błędzie w formie technicznej
+Podobnie zaczyna się od `Error at [X,Y]`, gdzie `[X,Y]` to pozycja błędu w linii."
 
-the errors can refer either to syntax/semantic or runtime.
-Both types have suggestions for fixing the error, though it's only for the most popular case, and not nearly all cases, so use them with caution.
+błędy mogą odnosić się do składni/semantyki lub czasu wykonania.
+Oba typy zawierają sugestie dotyczące naprawy błędu, chociaż dotyczą one tylko najpopularniejszych przypadków, a nie prawie wszystkich, więc używaj ich ostrożnie.
 
-## Example of an error message (both modes):
+## Przykład komunikatu o błędzie (oba tryby):
 ```
 ⠀⠀⠀⠀⠀⢠⠔⠊⠉⣉⡑⢴⠒⠉⠁⠢⡀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⢠⠃⠀⠊⠁⢀⣈⣙⣶⡀⠉⣉⣑⡢⡀⠀⠀⠀⠀⠀

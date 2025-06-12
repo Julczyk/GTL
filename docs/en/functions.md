@@ -5,6 +5,14 @@
  > profit
 ```
 Where we just declare it. No arguments, no return value. Just profit.
+
+## Main Function
+The main function is a special function that is the starting point of the program.
+In GTL, it is called "me" and is declared as follows:
+```
+ > be me
+```
+
 ## Declarations and arguments
 A function in GTL is declared as follows:
 ```
@@ -15,6 +23,7 @@ A function in GTL is declared as follows:
  ```
 Arguments are declared like standard [variables](variables.md) with a key difference of data keyword ending with a -ing suffix.
 Multiple parameters can be given also in consecutive lines starting with `likes` keyword.\
+Default parameter values are not currently supported.
 
 example:
 ```

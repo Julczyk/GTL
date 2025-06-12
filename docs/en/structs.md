@@ -1,11 +1,10 @@
-
 ## defining data structures:
 data structure are defined from line
 ` > look around`\
 followed by a line with structure name.\
 Then fields are listed with standard declarations of [variables/collections](variables.md).\
 #TODO: if needed follow with defini
-End definition with ` > vibe with it`
+End definition with ` > lose interest`
 
 example:
 ```
@@ -14,7 +13,7 @@ example:
  > see count
  > hear contents
  > hear about 5 attributes
- > vibe with it
+ > lose interest
 ```
 is equivalent with C++ code:
 ```C++
@@ -36,7 +35,7 @@ struct table{
  > think that it unbeaten by 5 joined by the literal opposite of it
  > spit it'th sister
  > profit
- > vibe with it
+ > lose interest
 ```
 
 ## Accessing data structures:
