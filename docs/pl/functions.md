@@ -5,6 +5,14 @@
  > profit
 ```
 Gdzie po prostu ją deklarujemy. Bez argumentów, bez wartości zwracanej. Tylko `profit`.
+
+## Funkcja główna
+Funkcja główna jest specjalną funkcją, która jest początkiem programu.
+w GTLu nazywa się "me" i jest deklarowana w następujący sposób:
+```
+ > be me
+```
+
 ## Deklaracje i argumenty
 Funkcję w GTL deklaruje się następująco:
 ```

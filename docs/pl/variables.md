@@ -25,6 +25,27 @@ Po nazwie użyj słowa kluczowego `is`, a następnie wartość lub [wyrażenie](
 >taste value
 ```
 
+## konwersja typów
+### Jawne Castowanie (Explicite)
+
+*   **Składnia:** `let me <typ> <wyrażenie_atom>`
+*   **Działanie:** Fraza `let me` służy do jawnego rzutowania wartości wynikającej z `<wyrażenie_atom>` na określony `<typ>`.
+*  **Przykład w GTL:**
+    `let me see "123"` – rzutuje string "123" na typ `see` (integer).
+    `let me taste hearingAmount` – jeśli `hearingAmount` jest np. typu `hear` (string), to próbuje rzutować jego wartość na `taste` (double).
+
+### 2. Niejawne Castowanie (Automatyczne)
+
+GTL intensywnie wykorzystuje niejawne castowanie w różnych sytuacjach:
+
+1.  **Przypisania do zmiennych:** - 
+ Gdy przypisujesz wartość do zmiennej, która już istnieje (i ma określony typ), GTL próbuje automatycznie skonwertować przypisywaną wartość do typu zmiennej.
+2.  **Przypisania do elementów tablicy:** -
+Gdy ustawiasz wartość elementu tablicy, przypisywana wartość jest automatycznie konwertowana do typu elementów tej tablicy.
+3.  **Operacje arytmetyczne i logiczne:**
+   Jeśli bezpośrednia konwersja w ramach operacji nie jest możliwa, może być rzucony `wyjątek.
+4.  **Przekazywanie argumentów do funkcji:**
+
 ## kolekcje
 - `about` - słowo kluczowe podczas deklarowania tablicy o stałym rozmiarze.
 - `multiple` - słowo kluczowe podczas deklarowania tablicy dynamicznej.

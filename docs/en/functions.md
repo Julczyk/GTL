@@ -5,6 +5,14 @@
  > profit
 ```
 Where we just declare it. No arguments, no return value. Just profit.
+
+## Main Function
+The main function is a special function that is the starting point of the program.
+In GTL, it is called "me" and is declared as follows:
+```
+ > be me
+```
+
 ## Declarations and arguments
 A function in GTL is declared as follows:
 ```
